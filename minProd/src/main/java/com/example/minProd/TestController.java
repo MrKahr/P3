@@ -17,7 +17,7 @@ public class TestController {
 
 	@GetMapping("/something")
 	public String something() {
-		return "Go away!";
+		return MinProdApplication.alice.firstName;
 	}
 
 	@PutMapping("/responder") // Recieves PUT requests and can respond

@@ -8,6 +8,8 @@ import org.springframework.boot.CommandLineRunner;
 @SpringBootApplication
 public class MinProdApplication implements CommandLineRunner {
 
+	public static Customer alice;
+
 	@Autowired
 	private CustomerRepository repository;
 
@@ -42,7 +44,7 @@ public class MinProdApplication implements CommandLineRunner {
 		for (Customer customer : repository.findByLastName("Smith")) {
 			System.out.println(customer);
 		}
-
+		alice = repository.findByFirstName("Alice");
 	}
 
 }
