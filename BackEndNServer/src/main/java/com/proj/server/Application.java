@@ -1,4 +1,4 @@
-package com.example.minProd;
+package com.proj.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
 @SpringBootApplication
-public class MinProdApplication implements CommandLineRunner {
+public class Application implements CommandLineRunner {
 
 	public static Customer alice;
 
@@ -14,7 +14,7 @@ public class MinProdApplication implements CommandLineRunner {
 	private CustomerRepository repository;
 
 	public static void main(String[] args) {
-		SpringApplication.run(MinProdApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 
 	@Override

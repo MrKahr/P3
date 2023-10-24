@@ -1,4 +1,4 @@
-package com.example.minProd;
+package com.proj.server;
 
 import java.util.List;
 
