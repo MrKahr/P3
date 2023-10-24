@@ -1,4 +1,4 @@
-package com.example.minProd;
+package com.proj.server;
 import org.springframework.data.annotation.Id;
 
 public class Customer {

@@ -1,4 +1,4 @@
-package com.example.minProd;
+package com.proj.server;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "*") // Wildcard is a security risk! Only for testing purposes
-public class TestController {
+public class serverController {
 
 	@GetMapping("/") // GetMapping maps GET requests to return a response
 	public String index() {
@@ -17,7 +17,7 @@ public class TestController {
 
 	@GetMapping("/something")
 	public String something() {
-		return MinProdApplication.alice.firstName;
+		return Application.alice.firstName;
 	}
 
 	@PutMapping("/responder") // Recieves PUT requests and can respond
