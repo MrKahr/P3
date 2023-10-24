@@ -4,8 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import com.proj.database.CustomerRepository;
 
 @SpringBootApplication
+@EnableMongoRepositories(basePackages = "com.proj.database.CustomerRepository", basePackageClasses = CustomerRepository.class)
 public class Application implements CommandLineRunner {
 
 	public static Customer alice;
