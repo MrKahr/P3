@@ -1,0 +1,53 @@
+package com.proj.model.session;
+import java.time.LocalDateTime; 
+
+public class playSession {
+    // Field 
+    private String title;
+    private static Integer maxNumberOfPlayers = 6;
+    private Integer currentNumberOfPlayers;
+    private LocalDateTime date;
+    private String state; 
+    
+    // Constructor 
+    playSession(String title, Integer currentNumberOfPlayers, LocalDateTime date, String state){
+        this.title = title;
+        this.currentNumberOfPlayers = currentNumberOfPlayers;
+        this.date = date;
+        this.state = state;
+    }
+    // Method
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Integer getCurrentNumberOfPlayers() {
+        return currentNumberOfPlayers;
+    }
+
+    public static Integer getMaxNumberOfPlayers() {
+        return maxNumberOfPlayers;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setCurrentNumberOfPlayers(Integer currentNumberOfPlayers) {
+        this.currentNumberOfPlayers = currentNumberOfPlayers;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
+}
