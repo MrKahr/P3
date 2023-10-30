@@ -1,6 +1,7 @@
 package com.proj.users;
 
 public class Member extends User {
+    // Fields
     private String realName;
     private String phoneNumber;
     private String postalCode;
@@ -51,6 +52,4 @@ public class Member extends User {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    
 }

@@ -1,6 +1,7 @@
 package com.proj.users;
 
 public class Guest extends User {
+    // Fields
     private String characterInfo;
     // Maybe characterInfo attribute could be replaced with "String description" to hold a text box displayed on the user's profile
 

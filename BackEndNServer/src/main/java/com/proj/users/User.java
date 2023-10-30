@@ -3,6 +3,7 @@ package com.proj.users;
 import java.time.LocalDate;
 
 public abstract class User {
+    // Fields
     private String userName;
     private LocalDate registerDate;
     private LocalDate deletionDate; // We might want to store these as strings in the database and have a method to turn it into a date object
