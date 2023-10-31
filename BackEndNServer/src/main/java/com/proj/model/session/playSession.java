@@ -4,17 +4,18 @@ import java.time.LocalDateTime;
 public class playSession {
     // Field 
     private String title;
-    private Integer maxNumberOfPlayers = 6;
+    private Integer maxNumberOfPlayers;
     private Integer currentNumberOfPlayers;
     private LocalDateTime date;
     private String state; 
     
     // Constructor 
-    playSession(String title, Integer currentNumberOfPlayers, LocalDateTime date, String state){
+    playSession(String title, Integer currentNumberOfPlayers, LocalDateTime date, String state, Integer maxNumberOfPlayers){
         this.title = title;
         this.currentNumberOfPlayers = currentNumberOfPlayers;
         this.date = date;
         this.state = state;
+        this.maxNumberOfPlayers = maxNumberOfPlayers;
     }
     // Method
 
