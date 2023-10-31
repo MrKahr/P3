@@ -7,7 +7,7 @@ public class Reward {
     private String description;
 
     // Constructor
-    Reward(String name, Integer amount, String description){
+    public Reward(String name, Integer amount, String description){
         this.name = name;
         this.amount = amount;
         this.description = description;

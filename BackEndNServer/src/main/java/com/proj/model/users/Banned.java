@@ -1,4 +1,4 @@
-package com.proj.users;
+package com.proj.model.users;
 
 import java.time.Duration;
 
