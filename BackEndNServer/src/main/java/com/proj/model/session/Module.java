@@ -7,14 +7,13 @@ public class Module {
     String levelRange; // Consider range start/range end
 
     // Constructor
-    Module(String name, String description, String levelRange) {
+    public Module(String name, String description, String levelRange) {
         this.name = name;
         this.description = description;
         this.levelRange = levelRange;
     };
 
     // Method
-
     public String getName() {
         return name;
     }

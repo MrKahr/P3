@@ -1,10 +1,14 @@
-package com.proj.users;
+package com.proj.model.users;
 
 public class Guest extends User {
-    // Fields
+    // Field
     private String characterInfo;
-    // Maybe characterInfo attribute could be replaced with "String description" to hold a text box displayed on the user's profile
 
+    // Constructor 
+    public Guest(){};
+
+    // Method 
+    // Maybe characterInfo attribute could be replaced with "String description" to hold a text box displayed on the user's profile
     public String getCharacterInfo() {
         return characterInfo;
     }

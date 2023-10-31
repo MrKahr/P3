@@ -1,13 +1,15 @@
-package com.proj.users;
+package com.proj.model.users;
 
 import java.util.ArrayList;
 
 public class DM extends Member {
-    // Fields
+    // Field
     private ArrayList<String> hostedSessions; // We might prefer another data structure
 
-    //Getters
+    // Constructor 
+    public DM(){};
 
+    // Method
     public ArrayList<String> getHostedSessions() {
         return hostedSessions;
     }

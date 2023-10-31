@@ -10,7 +10,7 @@ public class playSession {
     private String state; 
     
     // Constructor 
-    playSession(String title, Integer currentNumberOfPlayers, LocalDateTime date, String state, Integer maxNumberOfPlayers){
+    public playSession(String title, Integer currentNumberOfPlayers, LocalDateTime date, String state, Integer maxNumberOfPlayers){
         this.title = title;
         this.currentNumberOfPlayers = currentNumberOfPlayers;
         this.date = date;
@@ -18,7 +18,6 @@ public class playSession {
         this.maxNumberOfPlayers = maxNumberOfPlayers;
     }
     // Method
-
     public String getTitle() {
         return title;
     }
