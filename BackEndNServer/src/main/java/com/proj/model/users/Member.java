@@ -1,16 +1,17 @@
-package com.proj.users;
+package com.proj.model.users;
 
 public class Member extends User {
-    // Fields
+    // Field
     private String realName;
     private String phoneNumber;
     private String postalCode;
     private String address;
     private String email;
 
+    // Constructor 
+    public Member(){};
 
-    // Getters
-
+    // Method
     public String getRealName() {
         return realName;
     }
@@ -30,8 +31,6 @@ public class Member extends User {
     public String getEmail() {
         return email;
     }
-
-    // Setters
 
     public void setRealName(String realName) {
         this.realName = realName;

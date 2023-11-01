@@ -1,14 +1,16 @@
-package com.proj.users;
+package com.proj.model.users;
 
 import java.time.Duration;
 
 public class Banned extends User {
-    // Fields
+    // Field
     private Duration duration; // Java time object to use with LocalDateTime for date arithmetic. Consider having an end-date for ban instead like "LocalDateTime banEnd"
     private String reason;
 
-    // Getters
+    // Constructor
+    public Banned(){};
 
+    // Method
     public Duration getDuration() {
         return duration;
     }
@@ -16,8 +18,6 @@ public class Banned extends User {
     public String getReason() {
         return reason;
     }
-
-    //Setters
 
     public void setDuration(Duration duration) {
         this.duration = duration;

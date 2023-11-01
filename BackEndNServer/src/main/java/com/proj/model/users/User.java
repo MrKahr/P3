@@ -1,17 +1,18 @@
-package com.proj.users;
+package com.proj.model.users;
 
 import java.time.LocalDate;
 
 public abstract class User {
-    // Fields
+    // Field
     private String userName;
     private LocalDate registerDate;
     private LocalDate deletionDate; // We might want to store these as strings in the database and have a method to turn it into a date object
     // Password and email likely also go here
 
+    // Constructor 
+    public User(){};
 
-    // Getters
-
+    // Method
     public String getUserName() {
         return userName;
     }
@@ -23,8 +24,6 @@ public abstract class User {
     public LocalDate getDeletionDate() {
         return deletionDate;
     }  
-
-    // Setters
 
     public void setUserName(String userName) {
         this.userName = userName;
