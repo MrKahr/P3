@@ -1,4 +1,4 @@
-package com.proj.database.accessingdatamysql;
+package com.proj.database;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

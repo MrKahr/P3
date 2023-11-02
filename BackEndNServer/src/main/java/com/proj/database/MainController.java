@@ -1,4 +1,4 @@
-package com.proj.database.accessingdatamysql;
+package com.proj.database;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

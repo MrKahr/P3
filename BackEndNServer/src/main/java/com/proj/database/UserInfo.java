@@ -1,4 +1,4 @@
-package com.proj.database.accessingdatamysql;
+package com.proj.database;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
