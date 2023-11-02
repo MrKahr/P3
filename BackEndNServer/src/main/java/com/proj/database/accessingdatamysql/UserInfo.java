@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 //entity model
 
 @Entity // This tells Hibernate to make a table out of this class
-public class User {
+public class UserInfo {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Integer id;
