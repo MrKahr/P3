@@ -1,10 +1,21 @@
 package com.proj.model.session;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Module {
+
     // Field
-    String name;
-    String description;
-    String levelRange; // Consider range start/range end
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+
+    private String name;
+    private String description;
+    private String levelRange; // Consider range start/range end
 
     // Constructor
     public Module(String name, String description, String levelRange) {
