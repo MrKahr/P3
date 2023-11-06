@@ -28,7 +28,7 @@ public class Member extends Guest {
         this.postalCode = postalCode;
         this.address = address;
         this.email = email;
-    };
+    }
 
     // Method
     public String getRealName() {

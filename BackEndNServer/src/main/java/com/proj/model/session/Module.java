@@ -38,4 +38,9 @@ public class Module {
         this.levelRange = levelRange;
     }
 
+    @Override
+    public String toString(){
+        return this.name + "\n" + this.description + "\nlevels:" + this.levelRange;
+    }
+
 }
