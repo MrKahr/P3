@@ -13,9 +13,15 @@ import jakarta.persistence.Id;
 public class Module {
 
     // Field
-    /* @GeneratedValue specifies how the primary key(A primary key is the column or columns that contain values that uniquely identify each row in a table) value is generated. 
-    It can be used with options like `AUTO`, `IDENTITY`, `SEQUENCE`, or `TABLE` and in use with @Id marks a field as the primary key of an entity. 
-    In Entity model the primary keys is id, name, description and levelRange and generationtype.AUTO to find the best way to generate the data*/
+    /*
+     * @GeneratedValue specifies how the primary key(A primary key is the column or
+     * columns that contain values that uniquely identify each row in a table) value
+     * is generated.
+     * It can be used with options like `AUTO`, `IDENTITY`, `SEQUENCE`, or `TABLE`
+     * and in use with @Id marks a field as the primary key of an entity.
+     * In Entity model the primary keys is id, name, description and levelRange and
+     * generationtype.AUTO to find the best way to generate the data
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -78,6 +84,13 @@ public class Module {
 
     public void setRemovedDate(LocalDateTime removedDate) {
         this.removedDate = removedDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Name:\n" + getName()
+                + "\n Description:\n" + getDescription()
+                + "\n Level Range: \n" + getLevelRange();
     }
 
 }
