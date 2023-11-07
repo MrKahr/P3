@@ -1,4 +1,4 @@
-package com.proj.Exceptions;
+package com.proj.exceptions;
 
 public class InvalidInputException extends RuntimeException {
     public InvalidInputException() {

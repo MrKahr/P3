@@ -1,5 +1,7 @@
 package com.proj.model.session;
 
+import java.time.LocalDateTime;
+
 /* jakarta persistence (JPA) is a application programming interface that provides specification to describe 
 the handling of relational data in java. JPA provides a number of annotations for mapping of java objects to database*/
 import jakarta.persistence.Entity;
@@ -21,6 +23,8 @@ public class Module {
     private String name;
     private String description;
     private String levelRange; // Consider range start/range end
+    private LocalDateTime addedDate;
+    private LocalDateTime removedDate;
 
     // Constructor
     /**
@@ -48,6 +52,14 @@ public class Module {
         return levelRange;
     }
 
+    public LocalDateTime getAddedDate() {
+        return addedDate;
+    }
+
+    public LocalDateTime getRemovedDate() {
+        return removedDate;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -58,6 +70,14 @@ public class Module {
 
     public void setLevelRange(String levelRange) {
         this.levelRange = levelRange;
+    }
+
+    public void setAddedDate(LocalDateTime addedDate) {
+        this.addedDate = addedDate;
+    }
+
+    public void setRemovedDate(LocalDateTime removedDate) {
+        this.removedDate = removedDate;
     }
 
 }
