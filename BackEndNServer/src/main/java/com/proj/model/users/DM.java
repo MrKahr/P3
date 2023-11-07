@@ -22,7 +22,12 @@ public class DM extends Member {
      */
     public DM(String userName, String password, String realName, String phoneNumber, String postalCode, String address, String email, ArrayList<String> hostedSessions){
         super(userName, password, realName, phoneNumber, postalCode, address, email);
-        hostedSessions == null ? this.hostedSessions = new ArrayList<String>(); : this.hostedSessions = hostedSessions; // One-liner if-else to make code more compact
+        if(hostedSessions != null){
+            this.hostedSessions = hostedSessions;
+        }
+        else{
+            this.hostedSessions = new ArrayList<String>();
+        }
     }
 
     // Method
