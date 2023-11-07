@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 
-import com.proj.exceptions.FailedValidationException;
-import com.proj.exceptions.InvalidInputException;
-import com.proj.exceptions.NoModuleFoundException;
+import com.proj.exception.FailedValidationException;
+import com.proj.exception.InvalidInputException;
+import com.proj.exception.NoModuleFoundException;
 import com.proj.model.session.Module;
 
 public class ModuleManager { // TODO: Integration test to be added later

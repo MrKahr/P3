@@ -1,4 +1,4 @@
-package com.proj.exceptions;
+package com.proj.exception;
 
 public class NoModuleFoundException extends RuntimeException {
 
