@@ -1,12 +1,38 @@
 package com.proj.model.session;
 
+import java.time.LocalDateTime;
+
+/* jakarta persistence (JPA) is a application programming interface that provides specification to describe 
+the handling of relational data in java. JPA provides a number of annotations for mapping of java objects to database*/
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Module {
+
     // Field
-    String name;
-    String description;
-    String levelRange; // Consider range start/range end
+    /* @GeneratedValue specifies how the primary key(A primary key is the column or columns that contain values that uniquely identify each row in a table) value is generated. 
+    It can be used with options like `AUTO`, `IDENTITY`, `SEQUENCE`, or `TABLE` and in use with @Id marks a field as the primary key of an entity. 
+    In Entity model the primary keys is id, name, description and levelRange and generationtype.AUTO to find the best way to generate the data*/
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+
+    private String name;
+    private String description;
+    private String levelRange; // Consider range start/range end
+    private LocalDateTime addedDate;
+    private LocalDateTime removedDate;
 
     // Constructor
+    /**
+     * 
+     * @param name
+     * @param description
+     * @param levelRange
+     */
     public Module(String name, String description, String levelRange) {
         this.name = name;
         this.description = description;
@@ -26,6 +52,14 @@ public class Module {
         return levelRange;
     }
 
+    public LocalDateTime getAddedDate() {
+        return addedDate;
+    }
+
+    public LocalDateTime getRemovedDate() {
+        return removedDate;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -38,9 +72,12 @@ public class Module {
         this.levelRange = levelRange;
     }
 
-    @Override
-    public String toString(){
-        return this.name + "\n" + this.description + "\nlevels:" + this.levelRange;
+    public void setAddedDate(LocalDateTime addedDate) {
+        this.addedDate = addedDate;
+    }
+
+    public void setRemovedDate(LocalDateTime removedDate) {
+        this.removedDate = removedDate;
     }
 
 }
