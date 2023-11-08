@@ -9,6 +9,7 @@ import java.util.Objects;
 public class playSession {
     // Field
     private String id;
+    private String title;
     private Integer maxNumberOfPlayers;
     private Integer currentNumberOfPlayers;
     private LocalDateTime date;
@@ -19,7 +20,7 @@ public class playSession {
     // Constructor
     /**
      * Creates a play session for players to attend
-     * 
+     * @param title                  - Use to show correct session on frontend
      * @param id                     - id of the playsession \\TODO: Find way to
      *                               reliably generated ID
      * @param currentNumberOfPlayers - number of players associated with the current
@@ -42,6 +43,10 @@ public class playSession {
     }
 
     // Method
+    public String getTitle() {
+        return title;
+    }
+
     public String getId() {
         return id;
     }
@@ -68,6 +73,10 @@ public class playSession {
 
     public Module getModule() {
         return this.module;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setId(String title) {
@@ -97,7 +106,6 @@ public class playSession {
         if (Objects.isNull(module)) {
             throw new NullPointerException("Module doesn't exist"); // TODO: add new no module found exception
         } else {
-            System.out.println("Setting module " + module.getName());
             this.module = module;
             this.addModuleSet(module);
         }
