@@ -1,6 +1,8 @@
 package com.proj.function;
 
 import com.proj.model.users.*;
+import com.proj.exception.*;
+
 
 /**
  * Class responsible for handling all user management except assigning roles
@@ -26,12 +28,12 @@ public class AccountManager {
     public Guest createAccount(String userName, String password, boolean captcha, boolean requestMembership) {
         try {
             validateCreation(userName, captcha);
-        } catch (invalidCaptchaException invlce) {
+        } catch (InvalidCaptchaException invlce) {
             // TODO: Send message to frontend: your captcha is wrong.
-        } catch (invalidLoginException invlle) {
+        } catch (InvalidLoginException invlle) {
             // TODO: Send message to frontend: your username or password is incorrect.
         }
-        if (requestMembership) {
+        if(requestMembership) {
             requestMembership(userName);
         }
 
@@ -48,18 +50,18 @@ public class AccountManager {
      * @param password Password of user.
      * @param captcha  Boolean showing if captcha was correct or not.
      * @return True if the username does not exist and the captcha is correct.
-     * @throws invalidLoginException   When the login request either had wrong
+     * @throws InvalidLoginException   When the login request either had wrong
      *                                 username or password.
-     * @throws invalidCaptchaException When the captcha wasn't solved correctly.
+     * @throws InvalidCaptchaException When the captcha wasn't solved correctly.
      */
     public boolean validateCreation(String userName, boolean captcha)
-            throws invalidLoginException, invalidCaptchaException {
+            throws InvalidLoginException, InvalidCaptchaException {
         boolean isvalid = false;
         // TODO: We could perform user input validation of username here
         if (captcha) {
             try {
-                lookupAccount(userName, false);
-            } catch (userNotFoundException usrnfe) {
+                lookupAccount(userName);
+            } catch (UserNotFoundException usrnfe) {
                 // TODO: throw new invalidLoginException()
             }
         } else {
@@ -72,13 +74,13 @@ public class AccountManager {
      * Makes a request for the specified username to the database.
      * @param userName Display name of the user.
      * @return User object.
-     * @throws userNotFoundException When a username is not found in the database.
+     * @throws UserNotFoundException When a username is not found in the database.
      */
-    public User lookupAccount(String userName) throws userNotFoundException {
+    public User lookupAccount(String userName) throws UserNotFoundException {
         // TODO: Request to database goes here
         
         if(request = 404){ 
-            // TODO: throw new userNotFoundException()
+            throw new UserNotFoundException("User ");
         }
 
         // Single user
@@ -106,18 +108,18 @@ public class AccountManager {
      * @param password Password of user.
      * @param captcha  Boolean showing if captcha was correct or not.
      * @return True if login request is legitimate (valid credentials and captcha).
-     * @throws invalidLoginException   When the login request either had wrong
+     * @throws InvalidLoginException   When the login request either had wrong
      *                                 username or password.
-     * @throws invalidCaptchaException When the captcha wasn't solved correctly.
+     * @throws InvalidCaptchaException When the captcha wasn't solved correctly.
      */
     public boolean validateLogin(String userName, String password, boolean captcha)
-            throws invalidLoginException, invalidCaptchaException {
+            throws InvalidLoginException, InvalidCaptchaException {
         boolean isvalid = false;
         if (captcha) {
             try {
-                lookupAccount(userName, false);
-            } catch (userNotFoundException usrnfe) {
-                // TODO: throw new invalidLoginException()
+                lookupAccount(userName);
+            } catch (UserNotFoundException usrnfe) {
+                throw new InvalidLoginException("");
             }
         } else {
             /* TODO: throw new invalidCaptchaException */}
