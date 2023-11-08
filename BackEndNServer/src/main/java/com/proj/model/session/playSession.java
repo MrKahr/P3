@@ -1,5 +1,7 @@
 package com.proj.model.session;
 import java.time.LocalDateTime; 
+import java.util.ArrayList;
+import com.proj.model.events.ModuleSet;
 
 public class playSession {
     // Field 
@@ -8,6 +10,7 @@ public class playSession {
     private Integer currentNumberOfPlayers;
     private LocalDateTime date;
     private String state; 
+    private ArrayList<ModuleSet> modulesetEvents;
     
     // Constructor 
     public playSession(String title, Integer currentNumberOfPlayers, LocalDateTime date, String state, Integer maxNumberOfPlayers){
@@ -53,5 +56,15 @@ public class playSession {
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
+
+    public void setReward(){
+
+    }
+
+    public void setModule(Module module){
+        // We need an array of these to keep track of events
+    }
+
+    public void removeModule(){}
 
 }
