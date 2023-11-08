@@ -25,9 +25,9 @@ public class AccountManager {
         this.numberOfAccounts = numberOfAccounts;
     }
 
-    public Guest createAccount(String userName, String password, boolean captcha, boolean isMembershipRequested) {
+    public Guest createAccount(String userName, String password, boolean isCaptchaSuccesful, boolean isMembershipRequested) {
         try {
-            validateCreation(userName, captcha);
+            validateCreation(userName, isCaptchaSuccesful);
         } catch (InvalidCaptchaException invlce) {
             // TODO: Send message to frontend: your captcha is wrong.
         } catch (InvalidLoginException invlle) {
@@ -48,17 +48,17 @@ public class AccountManager {
      * 
      * @param userName Display name of user.
      * @param password Password of user.
-     * @param captcha  Boolean showing if captcha was correct or not.
+     * @param isCaptchaSuccesful  Boolean showing if captcha was correct or not.
      * @return True if the username does not exist and the captcha is correct.
      * @throws InvalidLoginException   When the login request either had wrong
      *                                 username or password.
      * @throws InvalidCaptchaException When the captcha wasn't solved correctly.
      */
-    public boolean validateCreation(String userName, boolean captcha)
+    public boolean validateCreation(String userName, boolean isCaptchaSuccesful)
             throws InvalidLoginException, InvalidCaptchaException {
         boolean isvalid = false;
         // TODO: We could perform user input validation of username here
-        if (captcha) {
+        if (isCaptchaSuccesful) {
             try {
                 lookupAccount(userName);
             } catch (UserNotFoundException usrnfe) {
@@ -106,16 +106,16 @@ public class AccountManager {
      * 
      * @param userName Display name of user.
      * @param password Password of user.
-     * @param captcha  Boolean showing if captcha was correct or not.
+     * @param isCaptchaSuccesful  Boolean showing if captcha was correct or not.
      * @return True if login request is legitimate (valid credentials and captcha).
      * @throws InvalidLoginException   When the login request either had wrong
      *                                 username or password.
      * @throws InvalidCaptchaException When the captcha wasn't solved correctly.
      */
-    public boolean validateLogin(String userName, String password, boolean captcha)
+    public boolean validateLogin(String userName, String password, boolean isCaptchaSuccesful)
             throws InvalidLoginException, InvalidCaptchaException {
         boolean isvalid = false;
-        if (captcha) {
+        if (isCaptchaSuccesful) {
             try {
                 lookupAccount(userName);
             } catch (UserNotFoundException usrnfe) {
