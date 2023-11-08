@@ -6,7 +6,7 @@ import com.proj.model.events.ModuleSet;
 import java.util.Objects;
 
 //TODO: Consider renaming ModuleSetEvent for added readability
-public class playSession {
+public class PlaySession {
     // Field
     private String id;
     private String title;
@@ -31,7 +31,7 @@ public class playSession {
      * @param maxNumberOfPlayers     - current maximal number of players allowed in
      *                               a session
      */
-    public playSession(String title, String id, Integer currentNumberOfPlayers, LocalDateTime date, String state,
+    public PlaySession(String title, String id, Integer currentNumberOfPlayers, LocalDateTime date, String state,
             Integer maxNumberOfPlayers, Module module) {
         this.title = title;
         this.id = id;
