@@ -157,4 +157,7 @@ public class playSession {
             this.addModuleSet(emptyModule); // Module set event fixed /
         }
     }
+    public void setReward(){
+
+    }
 }
