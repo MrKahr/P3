@@ -3,11 +3,11 @@ import java.time.LocalDate;
 
 public class SessionManager {
     // Field
-    private LocalDate currentDate; 
+    private LocalDate currentDate;
 
-    // Constructor 
+    // Constructor
     public SessionManager(LocalDate currentDate){
-        this.currentDate = currentDate;    
+        this.currentDate = currentDate;
     }
 
     // Method
