@@ -25,7 +25,7 @@ public class AccountManager {
         this.numberOfAccounts = numberOfAccounts;
     }
 
-    public Guest createAccount(String userName, String password, boolean captcha, boolean requestMembership) {
+    public Guest createAccount(String userName, String password, boolean captcha, boolean isMembershipRequested) {
         try {
             validateCreation(userName, captcha);
         } catch (InvalidCaptchaException invlce) {
@@ -33,7 +33,7 @@ public class AccountManager {
         } catch (InvalidLoginException invlle) {
             // TODO: Send message to frontend: your username or password is incorrect.
         }
-        if(requestMembership) {
+        if(isMembershipRequested) {
             requestMembership(userName);
         }
 
