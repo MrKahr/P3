@@ -31,8 +31,9 @@ public class playSession {
      * @param maxNumberOfPlayers     - current maximal number of players allowed in
      *                               a session
      */
-    public playSession(String id, Integer currentNumberOfPlayers, LocalDateTime date, String state,
+    public playSession(String title, String id, Integer currentNumberOfPlayers, LocalDateTime date, String state,
             Integer maxNumberOfPlayers, Module module) {
+        this.title = title;
         this.id = id;
         this.currentNumberOfPlayers = currentNumberOfPlayers;
         this.date = date;
