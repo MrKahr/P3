@@ -1,3 +1,5 @@
+//!!DEPRECATED!!
+//THIS FUNCTIONALITY HAS BEEN TRANSFERRED TO THE USER CLASS
 package com.proj.model.users;
 
 import java.time.Duration;
