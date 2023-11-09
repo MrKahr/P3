@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 
 @Entity
 public class Module {
-
     // Field
     /*
      * @GeneratedValue specifies how the primary key(A primary key is the column or
@@ -25,7 +24,6 @@ public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-
     private String name;
     private String description;
     private String levelRange; // Consider range start/range end

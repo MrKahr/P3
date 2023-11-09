@@ -1,15 +1,21 @@
 package com.proj.function;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
+
 import com.proj.model.users.*;
 import com.proj.exception.*;
 
-
+//TODO: remove all instances of captcha as this is handeld by front end 
 /**
  * Class responsible for handling all user management except assigning roles
  */
 public class AccountManager {
     // Field
     private Integer numberOfAccounts;
+
+    @Autowired
+    private AccountRepository AccountRepository;
 
     // Constructor
     public AccountManager(Integer numberOfAccounts) {
@@ -34,23 +40,28 @@ public class AccountManager {
      * @return A new guest object with requested attributes.
      * @throws InvalidCaptchaException When the captcha wasn't solved correctly.
      */
-    public Guest createAccount(String userName, String password, boolean isCaptchaSuccesful, boolean isMembershipRequested) {
+    public void createAccount(String userName, String password, boolean isCaptchaSuccesful, boolean isMembershipRequested) {
         if(isCaptchaSuccesful){
             try {
                 validateCreation(userName);
+
+                if(isMembershipRequested) {
+                    requestMembership(userName);
+                }
+
+                Guest guest = new Guest(userName, password);
+                Account account = new Account(guest);
+
+                AccountRepository.save(account); //TODO: Consider whether IllegalArgumentException
+                this.numberOfAccounts++; // Increment number of accounts since we just created one.
+
             } catch (UsernameAlreadyUsedException invlle) {
                 // TODO: Send message to frontend: the username is already taken.
                 
-            }
-            if(isMembershipRequested) {
-                requestMembership(userName);
-            }
-            Guest guest = new Guest(userName, password);
-            this.numberOfAccounts++; // Increment number of accounts since we just created one.
-            return guest;
-            }
+            } 
+        }
         else {
-            throw new InvalidCaptchaException("Captcha invalid"); //TODO: The caller of createAccount should probably handle captcha (or a dedicated method)
+            throw new InvalidCaptchaException("Captcha invalid"); //TODO: REMOVE - capta
         }
     }
 
@@ -80,6 +91,7 @@ public class AccountManager {
      */
     public User lookupAccount(String userName) throws UserNotFoundException {
         // TODO: Request to database goes here
+
         int request = 200;// Dummy request 
         if(request == 404){ 
             throw new UserNotFoundException(String.format("User '%s' does not exist in the database.", userName));
@@ -97,6 +109,8 @@ public class AccountManager {
      */
     public void getAccountList() {
         // TODO: Request to database goes here
+        // See https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html
+
 
         // Check return type of database. if singular, wrap all users in a list or
         // something
@@ -147,8 +161,9 @@ public class AccountManager {
         boolean isLegalOperation = false;
 
         try{
-            User user = lookupAccount(userName);
-            String currentAcessLevel = "hello"; 
+            User user = lookupAccount(userName); //TODO: Consider whether an object is returned from database or whether we need to convert this object
+            String currentAcessLevel = user.getClass().toString(); // Runtime class -  see https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#getClass--
+            
             if(currentAcessLevel.equals(requiredAccessLevel)){
                 isLegalOperation = true;
             }
