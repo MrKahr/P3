@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
  * Container for user because springboot needs a reference to a model 
  * //TODO: Consider using the template design pattern (Java design patterns s. 327)
  */
-@Entity
+//@Entity
 public class Account {
     // Field
     /*
@@ -22,8 +22,8 @@ public class Account {
      * and in use with @Id marks a field as the primary key of an entity.
      * generationtype.AUTO to find the best way to generate the data
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private User user; 
 
     public Account(User user){

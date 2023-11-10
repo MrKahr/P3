@@ -5,6 +5,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 
 import com.proj.model.users.*;
 import com.proj.exception.*;
+import java.util.Optional; // Class that is returned if object is not found in database 
 
 //TODO: remove all instances of captcha as this is handeld by front end 
 /**
@@ -15,7 +16,7 @@ public class AccountManager {
     private Integer numberOfAccounts;
 
     @Autowired
-    private AccountRepository AccountRepository;
+    private AccountRepository accountRepository;
 
     // Constructor
     public AccountManager(Integer numberOfAccounts) {
@@ -35,34 +36,27 @@ public class AccountManager {
      * 
      * @param userName Display name of user.
      * @param password Password of user.
-     * @param isCaptchaSuccesful  Boolean showing if captcha was correct or not.
      * @param isMembershipRequested Boolean showing if user checked the request for membership button on the frontend.
      * @return A new guest object with requested attributes.
-     * @throws InvalidCaptchaException When the captcha wasn't solved correctly.
      */
-    public void createAccount(String userName, String password, boolean isCaptchaSuccesful, boolean isMembershipRequested) {
-        if(isCaptchaSuccesful){
-            try {
-                validateCreation(userName);
+    public void createAccount(String userName, String password, boolean isMembershipRequested) {
+        try {
+            validateCreation(userName);
 
-                if(isMembershipRequested) {
-                    requestMembership(userName);
-                }
+            if(isMembershipRequested) {
+                requestMembership(userName);
+            }
 
-                Guest guest = new Guest(userName, password);
-                Account account = new Account(guest);
+            Guest guest = new Guest(userName, password);
+            Account account = new Account(guest);
 
-                AccountRepository.save(account); //TODO: Consider whether IllegalArgumentException
-                this.numberOfAccounts++; // Increment number of accounts since we just created one.
+            accountRepository.save(account); //TODO: Consider whether IllegalArgumentException
+            this.numberOfAccounts++; // Increment number of accounts since we just created one.
 
-            } catch (UsernameAlreadyUsedException invlle) {
-                // TODO: Send message to frontend: the username is already taken.
-                
-            } 
-        }
-        else {
-            throw new InvalidCaptchaException("Captcha invalid"); //TODO: REMOVE - capta
-        }
+        } catch (UsernameAlreadyUsedException invlle) {
+            // TODO: Send message to frontend: the username is already taken.
+            
+        } 
     }
 
     /**
@@ -76,7 +70,7 @@ public class AccountManager {
     public boolean validateCreation(String userName) {
         // TODO: We could perform user input validation of username here
         try {
-            lookupAccount(userName);
+            //accountExists(userName);
         } catch (UserNotFoundException usrnfe) { // This error means creation is valid since UserNotFound means this username is available
             return true;
         }
@@ -84,24 +78,38 @@ public class AccountManager {
     }
 
     /**
-     * Makes a request for the specified username to the database.
-     * @param userName Display name of the user.
-     * @return User object.
-     * @throws UserNotFoundException When a username is not found in the database.
+     * Queries the database for account and gets account if it exists  
+     * @param userID Display name of the user.
+     * @return account object 
+     * @throws UserNotFoundException Username is not found in the database.
+     * @throws IllegalArgumentException userID is null.
      */
-    public User lookupAccount(String userName) throws UserNotFoundException {
-        // TODO: Request to database goes here
-
-        int request = 200;// Dummy request 
-        if(request == 404){ 
-            throw new UserNotFoundException(String.format("User '%s' does not exist in the database.", userName));
+    public Account lookupAccount(Integer userID) throws UserNotFoundException, IllegalArgumentException {
+        Account account;
+        Optional dataBaseObject;
+        if(accountExists(userID)){
+            account = accountRepository.findById(userID).get();  
+        } else {
+            throw new UserNotFoundException("User with userID '"+userID+"' does not exist in the database.");
         }
-
-        // Single user
-        User dummyUser = new Guest("LovesToLoot", "youshallpass123");
-        return dummyUser;
+        return account; 
     }
 
+    /**
+     * Makes a request to the database for a given userID.
+     * @param userID The ID of the user to search for.
+     * @return True if userID is found, false otherwise.
+     * @throws IllegalArgumentException UserID is null.
+    */
+    public boolean accountExists(Integer userID) throws IllegalArgumentException {
+        Optional dataBaseObject = accountRepository.findById(userID);
+        boolean isFoundInDB = false;
+        // This check exists because we don't consider empty accounts account
+        if(accountRepository.existsById(userID) && !(dataBaseObject.isEmpty())){
+            isFoundInDB = true;
+        }
+        return isFoundInDB;
+    }
     /**
      * Retrieves all user accounts from the database. Username only.
      * 
@@ -123,23 +131,17 @@ public class AccountManager {
      * 
      * @param userName Display name of user.
      * @param password Password of user.
-     * @param isCaptchaSuccesful  Boolean showing if captcha was correct or not.
      * @return True if login request is legitimate (valid credentials and captcha).
      * @throws InvalidLoginException   When the login request either had wrong
      *                                 username or password.
-     * @throws InvalidCaptchaException When the captcha wasn't solved correctly.
      */
-    public boolean validateLogin(String userName, String password, boolean isCaptchaSuccesful)
-            throws InvalidLoginException, InvalidCaptchaException {
+    public boolean validateLogin(String userName, String password)
+            throws InvalidLoginException {
         boolean isvalid = false;
-        if (isCaptchaSuccesful) {
-            try {
-                lookupAccount(userName);
-            } catch (UserNotFoundException usrnfe) {
-                throw new InvalidLoginException(String.format("Login failed with: %s", usrnfe.getMessage()), usrnfe);
-            }
-        } else {
-            throw new InvalidCaptchaException("Captcha invalid");
+        try {
+            //accountExists(userName);
+        } catch (UserNotFoundException usrnfe) {
+            throw new InvalidLoginException(String.format("Login failed with: %s", usrnfe.getMessage()), usrnfe);
         }
         isvalid = true;
         return isvalid;
@@ -157,23 +159,7 @@ public class AccountManager {
      * @return
     */
     public boolean manageAccessLevel(String userName, String requiredAccessLevel) {
-        // Check whether user has the right access level 
-        boolean isLegalOperation = false;
-
-        try{
-            User user = lookupAccount(userName); //TODO: Consider whether an object is returned from database or whether we need to convert this object
-            String currentAcessLevel = user.getClass().toString(); // Runtime class -  see https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#getClass--
-            
-            if(currentAcessLevel.equals(requiredAccessLevel)){
-                isLegalOperation = true;
-            }
-        } catch(UserNotFoundException usfe){
-            isLegalOperation = false;
-        } catch(IllegalUserOperationException iuoe){
-            isLegalOperation = false;
-        }
-        
-        return isLegalOperation;
+        return false;
     }
 
     public void deactivateAccount(String userName) {
