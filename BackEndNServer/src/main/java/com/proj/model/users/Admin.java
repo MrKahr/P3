@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * A class that represents a user with the access level "Admin".
  */
-public class Admin extends DM {
+public class Admin extends Role {
     // Field
     private ArrayList<String> listOfRoleChanges; // The ArrayList containing all role change events the user has
                                                  // performed (bans excluded)
@@ -16,13 +16,6 @@ public class Admin extends DM {
      * Creates an Admin object with supplied parameters.
      * 
      * @Pre-con: Expects all arguments to be sanitized.
-     * @param realName          The user's full name
-     * @param phoneNumber       The user's mobile phone number
-     * @param postalCode        The postal code associated with a users home address
-     * @param address           The user's physical address
-     * @param email             The user's email address
-     * @param hostedSessions    The ArrayList containing all sessions the user has
-     *                          hosted
      * @param listOfRoleChanges The ArrayList containing all role change events the
      *                          user has performed (bans excluded). This param is
      *                          optional. Must be null if not used
@@ -30,10 +23,7 @@ public class Admin extends DM {
      *                          by the user. This param is optional. Must be null if
      *                          not used
      */
-    public Admin(String userName, String password, String realName, String phoneNumber, String postalCode,
-            String address, String email, ArrayList<String> hostedSessions, ArrayList<String> listOfRoleChanges,
-            ArrayList<String> listOfBans) {
-        super(userName, password, realName, phoneNumber, postalCode, address, email, hostedSessions);
+    public Admin(ArrayList<String> listOfRoleChanges, ArrayList<String> listOfBans) {
         if (listOfRoleChanges != null) {
             this.listOfRoleChanges = listOfRoleChanges;
         } else {

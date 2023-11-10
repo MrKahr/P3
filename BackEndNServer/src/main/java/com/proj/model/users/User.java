@@ -1,47 +1,72 @@
 package com.proj.model.users;
 import java.time.Duration;
 import java.time.LocalDate;
-// TODO consider whether we want constructor chaining or we want to use a factory design pattern
-public abstract class User {
+
+/**
+ * This class represents a user and contains fields for all the possible roles a user can have.
+ * It is set up to keep this info as objects that are subclasses of Role.
+ * Basic user info is also kept here. It is also an object, for consistency's sake, but could be defined as a few fields of another type.
+ */
+public class User {
     // Field
-    private String userName;
-    private String password; //TODO: Remember to encrypt this
-    private LocalDate registerDate;
-    private LocalDate deletionDate; // We might want to store these as strings in the database and have a method to turn it into a date object
-    private Duration banDuration;   //If this field is greater than 0, the user is considered banned!
-    private String banReason;       //Accompanying the banDuration, this field holds the reason for a ban. It could be an ArrayList so we can track previous bans.
+    private BasicUserInfo basicUserInfo;    //Required
+    private Guest guestInfo;                //Optional
+    private Member memberInfo;              //Optional
+    private DM dmInfo;                      //Optional
+    private Admin adminInfo;                //Optional
+    private SuperAdmin superAdminInfo;      //Optional
+
+    //Constructor
+    public User(BasicUserInfo obj){
+        this.basicUserInfo = obj;
+    }
 
     // Method
-    public String getUserName() {
-        return userName;
+    public void setBasicUserInfo(BasicUserInfo obj){    //remove information by passing null to the setter-methods.
+        this.basicUserInfo = obj;
     }
 
-    public LocalDate getRegisterDate() {
-        return registerDate;
+    public void setGuestInfo(Guest obj){
+        this.guestInfo = obj;
+    }
+    
+    public void setMemberInfo(Member obj){
+        this.memberInfo = obj;
+    }
+    
+    public void setDmInfo(DM obj){
+        this.dmInfo = obj;
+    }
+    
+    public void setAdminInfo(Admin obj){
+        this.adminInfo = obj;
+    }
+    
+    public void setSuperAdminInfo(SuperAdmin obj){
+        this.superAdminInfo = obj;
     }
 
-    public LocalDate getDeletionDate() {
-        return deletionDate;
+    public BasicUserInfo getBasicUserInfo(){
+        return this.basicUserInfo;
+    }
+    
+    public Guest getGuestInfo(){
+        return this.guestInfo;
     }
 
-    public String getPassword() {
-        return password;
+    public Member getMemberInfo(){
+        return this.memberInfo;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public DM getDmInfo(){
+        return this.dmInfo;
     }
 
-    public void setPassword(String password){
-        this.password = password;
+    public Admin getAdminInfo(){
+        return this.adminInfo;
     }
-
-    public void setRegisterDate(LocalDate registerDate) {
-        this.registerDate = registerDate;
+    
+    public SuperAdmin getSuperAdminInfo(){
+        return this.superAdminInfo;
     }
-
-    public void setDeletionDate(LocalDate deletionDate) {
-        this.deletionDate = deletionDate;
-    }
-
 }
