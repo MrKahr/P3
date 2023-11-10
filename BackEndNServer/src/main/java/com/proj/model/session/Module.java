@@ -2,13 +2,17 @@ package com.proj.model.session;
 
 import java.time.LocalDateTime;
 
-/* jakarta persistence (JPA) is a application programming interface that provides specification to describe 
-the handling of relational data in java. JPA provides a number of annotations for mapping of java objects to database*/
+/* jakarta persistence (JPA) is a application programming interface that provides specification to describe
+ * the handling of relational data in java. JPA provides a number of annotations for mapping of java objects to database*/
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+/**
+ * Description of an official DnD module to be used in a playsession
+ * Be aware that java has a "Module" by default, which is different
+ */
 @Entity
 public class Module {
 
@@ -43,7 +47,7 @@ public class Module {
         this.name = name;
         this.description = description;
         this.levelRange = levelRange;
-    };
+    }
 
     // Method
     public String getName() {

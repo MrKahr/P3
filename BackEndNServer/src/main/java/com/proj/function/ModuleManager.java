@@ -10,6 +10,22 @@ import com.proj.exception.InvalidInputException;
 import com.proj.exception.NoModuleFoundException;
 import com.proj.model.session.Module;
 
+/**
+ * ModuleManager is responsible for creating, removing, updating and validating the DnD modules.
+ * - createModule: The method creates new modules with the string objects "name", "description" and "levelRange".
+ *   After creating the module dato of creation will be add and the module is saved in the database.
+ * - removeModule: The method takes the module and deletes it from the database. It add the dato of removal and saves it.
+ * - updateModule: The method finds the module by ID and sets it to moduleToUpdate. It checks if it can find the moduleID
+ *   and turns a exception if it can't. The new values of the string objects within the module are the set.
+ *   The module is then validated and saved if the validation fails an exception is thrown.
+ * - validateModule: The method sets the min and max for the "levelRange" and then gets the "levelRange", "name" and "description".
+ *   It then checks if description contains "\\" or "^" if present then exception is thrown. It then checks if name is empty and
+ *   if it's too long exceptions are thrown if true. The "levelRange" is then checked if it's less than min or more than max.
+ *   The max range is also checked if it's less than the min and if the max range is more than the max.
+ *   If any is true than an exception is thrown. If the method runs through without exceptions it will return true.
+ *   If the method catches any exceptions it will return false and the validation will fail.
+ *   (PS levelRange isn't that same for every module it differentiate in each module)
+ */
 public class ModuleManager { // TODO: Integration test to be added later
 
     @Autowired
@@ -23,22 +39,17 @@ public class ModuleManager { // TODO: Integration test to be added later
      * @param name        of module
      * @param description of module
      * @param levelRange  of module
-     * @return The added module or null
+     * @return The added module
      */
-    public Module createModule(String name, String description, String levelRange) {
-        try {
-            Module module = new Module(name, description, levelRange);
-            if (validateModule(module)) {
-                // Add module to database
-                module.setAddedDate(LocalDateTime.now());
-                moduleRepository.save(module);
-                return module;
-            } else {
-                return null; // If this is reached validation error is printed by validateModule
-            }
-        } catch (IllegalArgumentException e) { // Not a module
-            System.out.println(e.getMessage());
-            return null;
+    public Module createModule(String name, String description, String levelRange)
+            throws IllegalArgumentException, FailedValidationException {
+        Module module = new Module(name, description, levelRange);
+        if (validateModule(module)) {
+            // Add module to database
+            module.setAddedDate(LocalDateTime.now());
+            return moduleRepository.save(module);
+        } else {
+            throw new FailedValidationException("Validation failed");
         }
     }
 
@@ -48,20 +59,11 @@ public class ModuleManager { // TODO: Integration test to be added later
      * @param module to remove
      * @return removed module
      */
-    public Module removeModule(Module module) {
-        try {
-            // Remove module from database
-            moduleRepository.delete(module); // deleteById(id): Delete an entity by its ID.
-            module.setRemovedDate(LocalDateTime.now());
-            return module;
-        } catch (IllegalArgumentException e) { // Not a module
-            System.out.println(e.getMessage());
-            return null;
-        } catch (OptimisticLockingFailureException e) { // No module to remove
-            System.out.println(e.getMessage());
-            return null;
-        }
-
+    public Module removeModule(Module module) throws IllegalArgumentException, OptimisticLockingFailureException {
+        // Remove module from database
+        moduleRepository.delete(module); // deleteById(id): Delete an entity by its ID.
+        module.setRemovedDate(LocalDateTime.now());
+        return module;
     }
 
     /**
@@ -71,33 +73,25 @@ public class ModuleManager { // TODO: Integration test to be added later
      * @param name        of module
      * @param description of module
      * @param levelRange  of module
-     * @return saved module or null, if save failed
+     * @return saved module
      */
     public Module updateModule(Integer moduleID, String name, String description, String levelRange)
-            throws NoModuleFoundException, FailedValidationException {
+            throws NoModuleFoundException, FailedValidationException, IllegalArgumentException {
         Object moduleObject = moduleRepository.findById(moduleID);
         Module moduleToUpdate;
-        if (moduleObject instanceof Module) { // If module is found we store it in moduleToUpdate, else we store
-                                              // null
+        if (moduleObject instanceof Module) { // If module is found we store it in moduleToUpdate, else we throw
             moduleToUpdate = (Module) moduleObject;
         } else {
-            // moduleToUpdate = null; // Throw exception
             throw new NoModuleFoundException("No module was found with the ID: " + moduleID);
-        } 
+        }
 
         // Update module from database
         moduleToUpdate.setName(name);
         moduleToUpdate.setDescription(description);
         moduleToUpdate.setLevelRange(levelRange);
         if (validateModule(moduleToUpdate)) {
-            try {
             return moduleRepository.save(moduleToUpdate);
-            } catch(IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                return null;
-            }
         } else {
-            // return null; // Throw exception
             throw new FailedValidationException("The validation of module failed");
         }
     }
