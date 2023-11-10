@@ -15,7 +15,7 @@ import com.proj.model.session.Module;
  * - createModule: The method creates new modules with the string objects "name", "description" and "levelRange".
  *   After creating the module dato of creation will be add and the module is saved in the database.
  * - removeModule: The method takes the module and deletes it from the database. It add the dato of removal and saves it.
- * - updateModule: The method finds the module by ID and sets it to moduleToUpdate. It checks if it can find the moduleID
+ * - updateModule: The method finds the module by ID and sets it to moduleUpdate. It checks if it can find the moduleID
  *   and turns a exception if it can't. The new values of the string objects within the module are the set.
  *   The module is then validated and saved if the validation fails an exception is thrown.
  * - validateModule: The method sets the min and max for the "levelRange" and then gets the "levelRange", "name" and "description".
@@ -75,22 +75,22 @@ public class ModuleManager { // TODO: Integration test to be added later
      * @param levelRange  of module
      * @return saved module
      */
-    public Module updateModule(Integer moduleID, String name, String description, String levelRange)
+    public Module updateModule(Integer id, String name, String description, String levelRange)
             throws NoModuleFoundException, FailedValidationException, IllegalArgumentException {
-        Object moduleObject = moduleRepository.findById(moduleID);
-        Module moduleToUpdate;
+        Object moduleObject = moduleRepository.findById(id);
+        Module moduleUpdate;
         if (moduleObject instanceof Module) { // If module is found we store it in moduleToUpdate, else we throw
-            moduleToUpdate = (Module) moduleObject;
+            moduleUpdate = (Module) moduleObject;
         } else {
-            throw new NoModuleFoundException("No module was found with the ID: " + moduleID);
+            throw new NoModuleFoundException("No module was found with the ID: " + id);
         }
 
         // Update module from database
-        moduleToUpdate.setName(name);
-        moduleToUpdate.setDescription(description);
-        moduleToUpdate.setLevelRange(levelRange);
-        if (validateModule(moduleToUpdate)) {
-            return moduleRepository.save(moduleToUpdate);
+        moduleUpdate.setName(name);
+        moduleUpdate.setDescription(description);
+        moduleUpdate.setLevelRange(levelRange);
+        if (validateModule(moduleUpdate)) {
+            return moduleRepository.save(moduleUpdate);
         } else {
             throw new FailedValidationException("The validation of module failed");
         }

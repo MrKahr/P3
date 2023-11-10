@@ -50,6 +50,10 @@ public class Module {
     }
 
     // Method
+    public Integer getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -68,6 +72,10 @@ public class Module {
 
     public LocalDateTime getRemovedDate() {
         return removedDate;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setName(String name) {
