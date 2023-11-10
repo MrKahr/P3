@@ -5,7 +5,7 @@ public class ModuleSet {
     private String changedTo;
 
     // Constructor 
-    ModuleSet(String changedFrom, String changedTo){
+    public ModuleSet(String changedFrom, String changedTo){
         this.changedFrom = changedFrom;
         this.changedTo = changedTo;
     }
