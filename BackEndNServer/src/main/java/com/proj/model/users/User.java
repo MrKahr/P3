@@ -21,6 +21,12 @@ public class User {
     // Method
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+
+    public Integer getid(){
+        return this.id;
+    }
+
     public String getUserName() {
         return userName;
     }

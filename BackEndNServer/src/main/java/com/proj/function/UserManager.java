@@ -5,9 +5,10 @@ import org.springframework.dao.OptimisticLockingFailureException;
 
 import com.proj.model.users.*;
 import com.proj.exception.*;
+import com.proj.database.UserRepository;
 import java.util.Optional; // Class that is returned if object is not found in database 
 
-//TODO: remove all instances of captcha as this is handeld by front end 
+
 /**
  * Class responsible for handling all user management except assigning roles
  */
@@ -16,7 +17,7 @@ public class UserManager {
     private Integer numberOfUsers;
 
     @Autowired
-    private UserRepository userRepository;
+    public UserRepository userRepository;
 
     // Constructor
     public UserManager(Integer numberOfUsers) {
@@ -31,6 +32,12 @@ public class UserManager {
     public void setNumberOfUsers(Integer numberOfUsers) {
         this.numberOfUsers = numberOfUsers;
     }
+
+    // Method Database
+    public void saveUser(User user){
+        userRepository.save(user);
+    }
+
 
     /**
      * 

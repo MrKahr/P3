@@ -1,4 +1,4 @@
-package com.proj.function;
+package com.proj.database;
 
 import org.springframework.data.repository.CrudRepository;
 
