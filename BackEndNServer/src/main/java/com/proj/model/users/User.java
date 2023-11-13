@@ -2,7 +2,14 @@ package com.proj.model.users;
 import java.time.Duration;
 import java.time.LocalDate;
 // TODO consider whether we want constructor chaining or we want to use a factory design pattern
-public abstract class User {
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+
+@Entity
+public class User {
     // Field
     private String userName;
     private String password; //TODO: Remember to encrypt this
@@ -12,6 +19,8 @@ public abstract class User {
     private String banReason;       //Accompanying the banDuration, this field holds the reason for a ban. It could be an ArrayList so we can track previous bans.
 
     // Method
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public String getUserName() {
         return userName;
     }
