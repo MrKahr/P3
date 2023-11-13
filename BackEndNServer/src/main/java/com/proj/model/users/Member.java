@@ -72,4 +72,13 @@ public class Member extends Role {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public RoleType getRoleType(){
+        return RoleType.MEMBER;
+    }
+
+    public RoleType[] getRoleDependencies(){
+        RoleType[] types = {RoleType.GUEST};
+        return types;
+    }
 }

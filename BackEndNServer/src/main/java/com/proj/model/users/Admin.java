@@ -45,4 +45,13 @@ public class Admin extends Role {
     public ArrayList<String> getListOfBans() {
         return listOfBans;
     }
+
+    public RoleType getRoleType(){
+        return RoleType.ADMIN;
+    }
+
+    public RoleType[] getRoleDependencies(){
+        RoleType[] types = {RoleType.MEMBER};
+        return types;
+    }
 }

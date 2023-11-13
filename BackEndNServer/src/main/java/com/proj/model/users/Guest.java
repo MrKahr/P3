@@ -8,7 +8,12 @@ public class Guest extends Role {
     private String characterInfo;
 
     // Constructor 
+    public Guest(){};
 
+    public Guest(String characterInfo){
+        this.characterInfo = characterInfo;
+    }
+    
     // Method 
     
     // Maybe characterInfo attribute could be replaced with "String description" to hold a text box displayed on the user's profile
@@ -20,4 +25,12 @@ public class Guest extends Role {
         this.characterInfo = characterInfo;
     }
 
+    public RoleType getRoleType(){
+        return RoleType.GUEST;
+    }
+
+    public RoleType[] getRoleDependencies(){
+        RoleType[] types = {};
+        return types;
+    }
 }

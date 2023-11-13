@@ -45,7 +45,7 @@ public class AccountManager {
             if(isMembershipRequested) {
                 requestMembership(userName);
             }
-            Guest guest = new Guest(userName, password);
+            Guest guest = new Guest(userName);
             this.numberOfAccounts++; // Increment number of accounts since we just created one.
             return guest;
             }
@@ -78,7 +78,7 @@ public class AccountManager {
      * @return User object.
      * @throws UserNotFoundException When a username is not found in the database.
      */
-    public User lookupAccount(String userName) throws UserNotFoundException {
+    public Guest lookupAccount(String userName) throws UserNotFoundException {
         // TODO: Request to database goes here
         int request = 200;// Dummy request 
         if(request == 404){ 
@@ -86,7 +86,7 @@ public class AccountManager {
         }
 
         // Single user
-        User dummyUser = new Guest("LovesToLoot", "youshallpass123");
+        Guest dummyUser = new Guest("youshallpass123");
         return dummyUser;
     }
 
@@ -147,7 +147,7 @@ public class AccountManager {
         boolean isLegalOperation = false;
 
         try{
-            User user = lookupAccount(userName);
+            Guest user = lookupAccount(userName);
             String currentAcessLevel = "hello"; 
             if(currentAcessLevel.equals(requiredAccessLevel)){
                 isLegalOperation = true;

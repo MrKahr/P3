@@ -6,5 +6,8 @@ package com.proj.model.users;
 */
 
 public abstract class Role {
-    
+    //Method
+    public abstract RoleType getRoleType();
+
+    public abstract RoleType[] getRoleDependencies();
 }

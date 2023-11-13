@@ -1,35 +1,37 @@
 package com.proj.model.events;
 
 import java.time.LocalDate;
-
-import com.proj.model.users.User;
+import com.proj.model.users.*;
 
 public class RoleChanged {
     // Field
+    //Could need a field for the user's ID here.
     private LocalDate date;
-    private String newRole;
-    private User previousUserObject;
+    private User affectedUser;
+    private Role newRoleObject;
+    private Role previousRoleObject;
 
     // Constructor
-    public RoleChanged(LocalDate date, String newRole) {
-        this.date = date;
-        this.newRole = newRole;
-        this. previousUserObject = null;
+    /**
+     * Creates an object of class RoleChanged and sets its date-attribute using localdate.now().
+     * @param user The user affected by the role change.
+     * @param newRoleObject The role that was added to the user.
+     * @param previousRoleObject The role that was replaced by newRoleObject. Should be null if no role object was present before.
+     */
+    public RoleChanged(User user, Role newRoleObject, Role previousRoleObject) {
+        this.date = LocalDate.now();
+        this.affectedUser = user;
+        this.newRoleObject = newRoleObject;
+        this.previousRoleObject = previousRoleObject;
     }
 
-    public RoleChanged(LocalDate date, String newRole, User user) {
-        this.date = date;
-        this.newRole = newRole;
-        this.previousUserObject = user;     //this constructor is used when we ban someone, so we can restore their account when the ban expires.
-    }    
-
-    // Method -  No setters eince we model instantenous events as object instanstiations.
+    // Method -  No setters since we model instantenous events as object instanstiations.
     public LocalDate getDate() {
         return this.date;
     }
 
-    public String getNewRole() {
-        return this.newRole;
+    public Role getNewRole() {
+        return this.newRoleObject;
     }
 
 

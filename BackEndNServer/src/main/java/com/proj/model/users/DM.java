@@ -39,4 +39,13 @@ public class DM extends Role {
     public void removeHostedSession(int index) {
         this.hostedSessions.remove(index);
     }
+
+    public RoleType getRoleType(){
+        return RoleType.DM;
+    }
+
+    public RoleType[] getRoleDependencies(){
+        RoleType[] types = {RoleType.MEMBER};
+        return types;
+    }
 }
