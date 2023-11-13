@@ -13,7 +13,7 @@ public class PlaySession {
     private Integer maxNumberOfPlayers;
     private Integer currentNumberOfPlayers;
     private LocalDateTime date;
-    private String state;
+    private Integer state;
     private ArrayList<ModuleSet> moduleSetEvents;
     private Module module; // TODO: Consider whether we want object or simple string description
 
@@ -31,7 +31,7 @@ public class PlaySession {
      * @param maxNumberOfPlayers     - current maximal number of players allowed in
      *                               a session
      */
-    public PlaySession(String title, String id, Integer currentNumberOfPlayers, LocalDateTime date, String state,
+    public PlaySession(String title, String id, Integer currentNumberOfPlayers, LocalDateTime date, int state,
             Integer maxNumberOfPlayers, Module module) {
         this.title = title;
         this.id = id;
@@ -64,7 +64,7 @@ public class PlaySession {
         return date;
     }
 
-    public String getState() {
+    public int getState() {
         return state;
     }
 
