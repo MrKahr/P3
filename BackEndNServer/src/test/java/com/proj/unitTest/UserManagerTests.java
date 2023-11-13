@@ -9,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.proj.function.AccountManager;
+import com.proj.function.UserManager;
 import com.proj.exception.*;
 import com.proj.model.users.*;
-import com.proj.function.AccountRepository;
+import com.proj.function.UserRepository;
 
-public class AccountManagerTests {
-        AccountManager accountManager = new AccountManager(0);
+public class UserManagerTests {
+        //UserManager accountManager = new UserManager(0);
         //Account accountOne = new Account(new Guest("Fisk", "FiskPassword"));
         //Account accountTWo = new Account(new Guest("Aborre", "AborrePassword"));
         //AccountManager.accountRepository.save(accountOne);

@@ -11,25 +11,25 @@ import java.util.Optional; // Class that is returned if object is not found in d
 /**
  * Class responsible for handling all user management except assigning roles
  */
-public class AccountManager {
+public class UserManager {
     // Field
-    private Integer numberOfAccounts;
+    private Integer numberOfUsers;
 
     @Autowired
-    private AccountRepository accountRepository;
+    private UserRepository userRepository;
 
     // Constructor
-    public AccountManager(Integer numberOfAccounts) {
-        this.numberOfAccounts = numberOfAccounts;
+    public UserManager(Integer numberOfUsers) {
+        this.numberOfUsers = numberOfUsers;
     }
 
     // Method
-    public Integer getNumberOfAccounts() {
-        return this.numberOfAccounts;
+    public Integer getNumberOfUsers() {
+        return this.numberOfUsers;
     }
 
-    public void setNumberOfAccounts(Integer numberOfAccounts) {
-        this.numberOfAccounts = numberOfAccounts;
+    public void setNumberOfUsers(Integer numberOfUsers) {
+        this.numberOfUsers = numberOfUsers;
     }
 
     /**
@@ -50,8 +50,8 @@ public class AccountManager {
             Guest guest = new Guest(userName, password);
             //Account account = new Account(guest);
 
-            accountRepository.save(guest); //TODO: Consider whether IllegalArgumentException
-            this.numberOfAccounts++; // Increment number of accounts since we just created one.
+            userRepository.save(guest); //TODO: Consider whether IllegalArgumentException
+            this.numberOfUsers++; // Increment number of accounts since we just created one.
 
         } catch (UsernameAlreadyUsedException invlle) {
             // TODO: Send message to frontend: the username is already taken.
@@ -80,19 +80,21 @@ public class AccountManager {
     /**
      * Queries the database for account and gets account if it exists  
      * @param userID Display name of the user.
-     * @return account object 
+     * @return User object 
      * @throws UserNotFoundException Username is not found in the database.
      * @throws IllegalArgumentException userID is null.
      */
     public User lookupAccount(Integer userID) throws UserNotFoundException, IllegalArgumentException {
-        User account;
+        String Dummy = "0"; // Dummy quick fix 
+        
+        User user;
         Optional dataBaseObject;
-        if(accountExists(userID)){
-            account = accountRepository.findById(userID).get();  
+        if(userExists(userID)){
+            user = userRepository.findById(userID).get();  
         } else {
             throw new UserNotFoundException("User with userID '"+userID+"' does not exist in the database.");
         }
-        return account; 
+        return user; 
     }
 
     /**
@@ -101,11 +103,13 @@ public class AccountManager {
      * @return True if userID is found, false otherwise.
      * @throws IllegalArgumentException UserID is null.
     */
-    public boolean accountExists(Integer userID) throws IllegalArgumentException {
-        Optional dataBaseObject = accountRepository.findById(userID);
+    public boolean userExists(Integer userID) throws IllegalArgumentException {
+         String dummy = "0"; // Dummy quick fix
+        
+        Optional dataBaseObject = userRepository.findById(userID);
         boolean isFoundInDB = false;
         // This check exists because we don't consider empty accounts account
-        if(accountRepository.existsById(userID) && !(dataBaseObject.isEmpty())){
+        if(userRepository.existsById(userID) && !(dataBaseObject.isEmpty())){
             isFoundInDB = true;
         }
         return isFoundInDB;
@@ -138,8 +142,11 @@ public class AccountManager {
     public boolean validateLogin(String userName, String password)
             throws InvalidLoginException {
         boolean isvalid = false;
+
+        Integer userID = 0; // Dummy quick fix
+
         try {
-            //accountExists(userName);
+            userExists(userID);
         } catch (UserNotFoundException usrnfe) {
             throw new InvalidLoginException(String.format("Login failed with: %s", usrnfe.getMessage()), usrnfe);
         }
