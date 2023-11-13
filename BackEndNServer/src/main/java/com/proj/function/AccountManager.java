@@ -48,9 +48,9 @@ public class AccountManager {
             }
 
             Guest guest = new Guest(userName, password);
-            Account account = new Account(guest);
+            //Account account = new Account(guest);
 
-            accountRepository.save(account); //TODO: Consider whether IllegalArgumentException
+            accountRepository.save(guest); //TODO: Consider whether IllegalArgumentException
             this.numberOfAccounts++; // Increment number of accounts since we just created one.
 
         } catch (UsernameAlreadyUsedException invlle) {
@@ -84,8 +84,8 @@ public class AccountManager {
      * @throws UserNotFoundException Username is not found in the database.
      * @throws IllegalArgumentException userID is null.
      */
-    public Account lookupAccount(Integer userID) throws UserNotFoundException, IllegalArgumentException {
-        Account account;
+    public User lookupAccount(Integer userID) throws UserNotFoundException, IllegalArgumentException {
+        User account;
         Optional dataBaseObject;
         if(accountExists(userID)){
             account = accountRepository.findById(userID).get();  

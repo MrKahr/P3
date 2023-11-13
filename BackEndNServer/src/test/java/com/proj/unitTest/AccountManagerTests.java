@@ -16,8 +16,8 @@ import com.proj.function.AccountRepository;
 
 public class AccountManagerTests {
         AccountManager accountManager = new AccountManager(0);
-        Account accountOne = new Account(new Guest("Fisk", "FiskPassword"));
-        Account accountTWo = new Account(new Guest("Aborre", "AborrePassword"));
+        //Account accountOne = new Account(new Guest("Fisk", "FiskPassword"));
+        //Account accountTWo = new Account(new Guest("Aborre", "AborrePassword"));
         //AccountManager.accountRepository.save(accountOne);
         //AccountRepository accountRepo = accountManager.getAccountRepository();
         //accountRepo.save(accountOne);
