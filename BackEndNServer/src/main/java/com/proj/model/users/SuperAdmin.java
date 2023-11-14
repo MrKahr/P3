@@ -6,10 +6,12 @@ import java.util.ArrayList;
  */
 public class SuperAdmin extends Role {
     // Method
+    @Override
     public RoleType getRoleType(){
         return RoleType.SUPERADMIN;
     }
 
+    @Override
     public RoleType[] getRoleDependencies(){
         RoleType[] types = {RoleType.ADMIN, RoleType.MEMBER};
         return types;

@@ -25,10 +25,12 @@ public class Guest extends Role {
         this.characterInfo = characterInfo;
     }
 
+    @Override
     public RoleType getRoleType(){
         return RoleType.GUEST;
     }
 
+    @Override
     public RoleType[] getRoleDependencies(){
         RoleType[] types = {};
         return types;

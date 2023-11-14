@@ -46,10 +46,12 @@ public class Admin extends Role {
         return listOfBans;
     }
 
+    @Override
     public RoleType getRoleType(){
         return RoleType.ADMIN;
     }
 
+    @Override
     public RoleType[] getRoleDependencies(){
         RoleType[] types = {RoleType.MEMBER};
         return types;

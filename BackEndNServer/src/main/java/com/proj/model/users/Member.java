@@ -73,10 +73,12 @@ public class Member extends Role {
         this.email = email;
     }
 
+    @Override
     public RoleType getRoleType(){
         return RoleType.MEMBER;
     }
 
+    @Override
     public RoleType[] getRoleDependencies(){
         RoleType[] types = {RoleType.GUEST};
         return types;

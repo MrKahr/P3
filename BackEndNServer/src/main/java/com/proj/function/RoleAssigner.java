@@ -16,6 +16,12 @@ public class RoleAssigner {
     // Constructor 
     
     //Method
+    /**
+     * Places the given role object in the given user object.
+     * @param userObject The user who should get assigned the role.
+     * @param newRoleObject The role to give the user. Extends the Role class and implements functions to provide its type.
+     * @return A RoleChanged object that contains the affected user, the role object that was added, and, if present, the role object that was replaced.
+     */
     public static RoleChanged setRole(User userObject, Role newRoleObject){
 
         Role previousRoleObject = null;

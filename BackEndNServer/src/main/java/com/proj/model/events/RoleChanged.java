@@ -34,5 +34,8 @@ public class RoleChanged {
         return this.newRoleObject;
     }
 
+    public Role getPreviousRole() {
+        return this.previousRoleObject;
+    }
 
 }

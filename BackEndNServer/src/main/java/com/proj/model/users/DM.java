@@ -40,10 +40,12 @@ public class DM extends Role {
         this.hostedSessions.remove(index);
     }
 
+    @Override
     public RoleType getRoleType(){
         return RoleType.DM;
     }
 
+    @Override
     public RoleType[] getRoleDependencies(){
         RoleType[] types = {RoleType.MEMBER};
         return types;
