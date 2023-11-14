@@ -47,10 +47,11 @@ public class UserManager {
                 requestMembership(userName);
             }
 
-            Guest guest = new Guest(userName, password);
+            //TODO: Fix me
+            //Guest guest = new Guest(userName, password);
             //Account account = new Account(guest);
 
-            userRepository.save(guest); //TODO: Consider whether IllegalArgumentException
+            //userRepository.save(guest); //TODO: Consider whether IllegalArgumentException
             this.numberOfUsers++; // Increment number of accounts since we just created one.
 
         } catch (UsernameAlreadyUsedException invlle) {
