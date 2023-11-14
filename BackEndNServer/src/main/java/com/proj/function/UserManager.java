@@ -1,12 +1,14 @@
 package com.proj.function;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
+
+import java.util.Optional; // Class that is returned if object is not found in database 
 
 import com.proj.model.users.*;
 import com.proj.exception.*;
 import com.proj.database.UserRepository;
-import java.util.Optional; // Class that is returned if object is not found in database 
+import com.proj.database.UserRepositoryManager;
+
 
 
 /**
@@ -15,9 +17,6 @@ import java.util.Optional; // Class that is returned if object is not found in d
 public class UserManager {
     // Field
     private Integer numberOfUsers;
-
-    @Autowired
-    public UserRepository userRepository;
 
     // Constructor
     public UserManager(Integer numberOfUsers) {
@@ -33,12 +32,6 @@ public class UserManager {
         this.numberOfUsers = numberOfUsers;
     }
 
-    // Method Database
-    public void saveUser(User user){
-        userRepository.save(user);
-    }
-
-
     /**
      * 
      * @param userName Display name of user.
@@ -48,6 +41,9 @@ public class UserManager {
      */
     public void createAccount(String userName, String password, boolean isMembershipRequested) {
         try {
+            UserRepositoryManager userRepoMan = new UserRepositoryManager();
+
+
             validateCreation(userName);
 
             if(isMembershipRequested) {
@@ -56,8 +52,8 @@ public class UserManager {
 
             Guest guest = new Guest(userName, password);
             //Account account = new Account(guest);
-
-            userRepository.save(guest); //TODO: Consider whether IllegalArgumentException
+            userRepoMan.save(guest);
+            //userRepository.save(guest); //TODO: Consider whether IllegalArgumentException
             this.numberOfUsers++; // Increment number of accounts since we just created one.
 
         } catch (UsernameAlreadyUsedException invlle) {

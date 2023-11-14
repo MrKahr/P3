@@ -6,4 +6,5 @@ import com.proj.model.users.User;
 
 public interface UserRepository extends CrudRepository<User, Integer> {
     // You can define custom query methods here if needed
+
 }
