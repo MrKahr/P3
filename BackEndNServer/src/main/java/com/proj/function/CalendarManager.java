@@ -1,9 +1,9 @@
 package com.proj.function;
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.proj.exception.UserNotFoundException;
 import com.proj.model.session.PlaySession;
 import com.proj.model.session.Module;
 
@@ -32,6 +32,21 @@ public class CalendarManager {
         this.currentDate = LocalDate.now();
     }
 
+
+    
+    public boolean lookupModuleID(int moduleID){
+        boolean result = true;
+        try {
+            moduleRepository.findById(moduleID);
+        } catch (Exception e) {
+            System.out.println("Module not found " + e.getMessage());
+            result = false;
+        }
+        return result;
+    }
+
+
+
     public Boolean validateSession(PlaySession playSession){
         //Static Max values
         final int globalMaxNumberOfPlayers = 7;
@@ -43,48 +58,50 @@ public class CalendarManager {
         int state = playSession.getState();
         Module module = playSession.getModule();
         int moduleID = module.getId();
-        int moduleIDLookup = -1;
-        moduleIDLookup = moduleRepository.findById(moduleID);
-        //Validation Logic
-        // Session ID - TBD
+        //check if date is valid - done
         try {
-        if(1 == 1){
+            LocalDateTime date = playSession.getDate();
+        } catch (Exception e) {
+            System.out.println("Session has invalid date " + e.getMessage());
             return false;
-        }//Title - Title length within maxTitleLength size - Done
-         else if(title.length() > maxTitleLength || title.length() <= 0){
-            return false;
-        }//local max number of players within global max limit - Done
-         else if(maxNumberOfPlayers > globalMaxNumberOfPlayers){
-            return false;
-        }//Current number of players - not higher than maxNumberOfPlayers - Done
-         else if(currentNumberOfPlayers > maxNumberOfPlayers){
-            return false;
-        }//datetime - Valid LocalDateTime - WIP
-         else if(1==1){
-            return false;
-        }//state - Valid State, kan enten laves om til ENUM, state tal indenfor range - WIP
-        //Evt kan vi også tjekke om specifikke state conditions er opfyldt her.
-         else if(state < 0 || state > 3){
-            return false;
-        }//modulesetevents - Valid set of module IDs (TBD) - WIP
-         else if(1==1){
-            return false;
-        }//module - Valid module ID (TBD) - WIP
-         else if(moduleIDResult == -1){
-            return false;
-         }
-            
-        } else{
-            return true;
-        }
-
-        } catch(){
-            
         }
         
+        //Validation Logic
+        
+        try {// Session ID found in database - TBD
+            if(state < 0 || state > 4){
+                return false;
+            }//Title - Title length within maxTitleLength size - Done
+            else if(title.length() > maxTitleLength || title.length() <= 0){
+                return false;
+            }//local max number of players within global max limit - Done
+            else if(maxNumberOfPlayers > globalMaxNumberOfPlayers){
+                return false;
+            }//Current number of players - not higher than maxNumberOfPlayers - Done
+            else if(currentNumberOfPlayers > maxNumberOfPlayers){
+                return false;
+            }//state - Valid State, kan enten laves om til ENUM, state tal indenfor range - WIP
+            //Evt kan vi også tjekke om specifikke state conditions er opfyldt her.
+            else if(state < 0 || state > 3){
+                return false;
+            }//modulesetevents - Valid set of module IDs (TBD) - WIP
+            else if(state < 0 || state > 5){
+                return false;
+            }//module - Module ID found in database - Done
+            else if(lookupModuleID(moduleID) == false){
+                return false;
+            } else{
+                return true;//If validation is passed it will return true.
+            }
+        } catch(Exception e){
+            System.out.println("Session validation error " + e.getMessage());
+            return false;//Catch exception returns false if the validation failed.
+        }
 
     }
 
+    
+        
     public PlaySession sendSessionUpdate(){
         return null;
     }
