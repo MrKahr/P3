@@ -1,6 +1,4 @@
 package com.proj.model.users;
-import java.time.Duration;
-import java.time.LocalDate;
 
 /**
  * This class represents a user and contains fields for all the possible roles a user can have.

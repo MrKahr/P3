@@ -18,6 +18,7 @@ public class BasicUserInfo {
         this.userName = userName;
         this.password = password;
         this.registerDate = LocalDate.now();
+        this.expiredBans = new ArrayList<Ban>();
     }
 
     //Method
@@ -39,6 +40,10 @@ public class BasicUserInfo {
 
     public Ban getActiveBan(){
         return activeBan;
+    }
+
+    public ArrayList<Ban> getExpiredBans(){
+        return expiredBans;
     }
 
     public void setUserName(String userName) {
