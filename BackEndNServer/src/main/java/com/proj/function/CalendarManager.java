@@ -1,10 +1,14 @@
 package com.proj.function;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Optional;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.proj.model.session.PlaySession;
+import com.proj.exception.FailedValidationException;
+import com.proj.model.events.ModuleSet;
 import com.proj.model.session.Module;
 
 /**
@@ -15,7 +19,7 @@ import com.proj.model.session.Module;
 public class CalendarManager {
 
     @Autowired
-    private CalendarRepository calendarRepository;
+    private PlaySessionRepository playSessionRepository;
     private ModuleRepository moduleRepository;
 
     // Field
@@ -44,10 +48,13 @@ public class CalendarManager {
         }
         return result;
     }
-
-
-
-    public Boolean validateSession(PlaySession playSession){
+    
+    /**
+     * Validates the playSession
+     * @param playSession object to validate.
+     * @return True or false, true if the validation passed and false if it failed to validate.
+     */
+    public Boolean validatePlaySession(PlaySession playSession){
         //Static Max values
         final int globalMaxNumberOfPlayers = 7;
         final int maxTitleLength = 40;
@@ -100,29 +107,68 @@ public class CalendarManager {
 
     }
 
-    
+    //sendSessionUpdate - find the playSession in the database for comparison.
+    public PlaySession lookupPlaySessionID(String id){
+        PlaySession result;
+        try {
+            Optional<PlaySession> optionalPlaySession = playSessionRepository.findById(id);
+            if (optionalPlaySession.isPresent()) {
+            result = optionalPlaySession.get();
+            } else {
+            System.out.println("Session not found");
+            result = null;
+            }
+            result = playSessionRepository.findById(id).get();
+        } catch (Exception e) {
+            System.out.println("Session not found " + e.getMessage());
+            result = null;
+        }
+        return result;
+    }
+
+    /**
+     * Updates the playSession in the database
+     * 
+     * @param playSessionID       unique ID of playSession in database
+     * @param title               of playSession
+     * @param maxNumberOfPlayers  of playSession
+     * @param date                of playSession
+     * @param state               of playsession
+     * @param module              of playSession
+     * @return saved playSession
+     */
+    public PlaySession updatePlaySession(String id, String title, int maxNumberOfPlayers, LocalDateTime date, int state, Module module){
+        PlaySession playSessionUpdate;
+        playSessionUpdate = lookupPlaySessionID(id);
+
+        playSessionUpdate.setTitle(title);
+        playSessionUpdate.setMaxNumberOfPlayers(maxNumberOfPlayers);
+        playSessionUpdate.setDate(date);
+        playSessionUpdate.setState(state);
+        playSessionUpdate.setModule(module);
         
-    public PlaySession sendSessionUpdate(){
+        if (validatePlaySession(playSessionUpdate)){
+            return playSessionRepository.save(playSessionUpdate);
+        } else {
+            throw new FailedValidationException("Session validation error");
+        }
+    }
+
+    public PlaySession sendSessions(){
+        // REST response to GET request for session
+        
+        return null;
+    }
+    
+    public PlaySession getSessions(LocalDateTime startDate, LocalDateTime endDate){
+        //henter sessions i en tidsperiode fra databasen
         return null;
     }
 
-    public PlaySession sendCalendar(){
-        return null;
-    }
+    /**
+     * public PlaySession getSessionInfo(){
+     *   return null;
+     * }
+     */
 
-    public PlaySession getSessions(){
-        return null;
-    }
-
-    public PlaySession getSessionInfo(){
-        return null;
-    }
-
-    public PlaySession setSessionState(){
-        return null;
-    }
-
-    public PlaySession addToCalendar(){
-        return null;
-    }
 }

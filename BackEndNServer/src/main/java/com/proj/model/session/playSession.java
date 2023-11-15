@@ -96,6 +96,10 @@ public class PlaySession {
         this.date = date;
     }
 
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
     /**
      * Sets the module description of a module and adds a module set event to relect
      * this change

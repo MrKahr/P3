@@ -76,7 +76,7 @@ public class playSessionTest {
         PlaySession mySession = new PlaySession("Hej","1", 2, localdatetime, "Cancelled", 5, null);
 
         Executable e = () -> {mySession.removeModule();};
-        assertThrows(NullPointerException.class, e);        
+        assertThrows(NullPointerException.class, e);
     }
 
     @Test 
@@ -85,7 +85,7 @@ public class playSessionTest {
         Module mymodule = new Module("dnd1", "this is a session", "1-4");
         PlaySession mySession = new PlaySession("davs","1", 2, localdatetime, "Cancelled", 5, mymodule);
 
-        assertTrue(!(Objects.isNull(mySession.getModule())));        
+        assertTrue(!(Objects.isNull(mySession.getModule())));
     }
     
 }
