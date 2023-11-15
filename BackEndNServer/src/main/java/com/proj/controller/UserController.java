@@ -33,7 +33,7 @@ public class UserController {
     // @ResponseBody means the returned String is the response, not a view name
     // @RequestParam means it is a parameter from the GET or POST request
 
-    User user = new Guest(name, password); 
+    User user = new User(new BasicUserInfo(name, password)); 
     userManager.save(user);
 
     return "Director Saved Succesful";
