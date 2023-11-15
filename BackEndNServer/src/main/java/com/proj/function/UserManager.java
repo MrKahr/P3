@@ -7,7 +7,7 @@ import java.util.Optional; // Class that is returned if object is not found in d
 import com.proj.model.users.*;
 import com.proj.exception.*;
 import com.proj.database.UserRepository;
-import com.proj.database.UserRepositoryManager;
+//import com.proj.director.UserManager.*;
 
 
 
@@ -41,7 +41,7 @@ public class UserManager {
      */
     public void createAccount(String userName, String password, boolean isMembershipRequested) {
         try {
-            UserRepositoryManager userRepoMan = new UserRepositoryManager();
+            //UserRepositoryManager userRepoMan = new UserRepositoryManager();
 
 
             validateCreation(userName);
@@ -52,7 +52,7 @@ public class UserManager {
 
             Guest guest = new Guest(userName, password);
             //Account account = new Account(guest);
-            userRepoMan.save(guest);
+            //userRepoMan.save(guest);
             //userRepository.save(guest); //TODO: Consider whether IllegalArgumentException
             this.numberOfUsers++; // Increment number of accounts since we just created one.
 
@@ -90,10 +90,10 @@ public class UserManager {
     public User lookupAccount(Integer userID) throws UserNotFoundException, IllegalArgumentException {
         String Dummy = "0"; // Dummy quick fix 
         
-        User user;
+        User user = null;
         Optional dataBaseObject;
         if(userExists(userID)){
-            user = userRepository.findById(userID).get();  
+            //user = userRepository.findById(userID).get();  
         } else {
             throw new UserNotFoundException("User with userID '"+userID+"' does not exist in the database.");
         }
@@ -109,12 +109,12 @@ public class UserManager {
     public boolean userExists(Integer userID) throws IllegalArgumentException {
          String dummy = "0"; // Dummy quick fix
         
-        Optional dataBaseObject = userRepository.findById(userID);
+        //Optional dataBaseObject = userRepository.findById(userID);
         boolean isFoundInDB = false;
         // This check exists because we don't consider empty accounts account
-        if(userRepository.existsById(userID) && !(dataBaseObject.isEmpty())){
-            isFoundInDB = true;
-        }
+        //if(userRepository.existsById(userID) && !(dataBaseObject.isEmpty())){
+        //    isFoundInDB = true;
+        //}
         return isFoundInDB;
     }
     /**

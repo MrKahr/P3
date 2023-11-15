@@ -21,18 +21,17 @@ import com.proj.model.users.*;
 
 @Controller 
 @RequestMapping(path = "/P3")
+
 public class UserController {
     UserManager userManager = new UserManager();
 
-
-
-    @PostMapping(path="/add") // Map ONLY POST Requests
+  @PostMapping(path="/add") // Map ONLY POST Requests
   public @ResponseBody String addNewUser (@RequestParam String name
       , @RequestParam String password) {
     // @ResponseBody means the returned String is the response, not a view name
     // @RequestParam means it is a parameter from the GET or POST request
 
-    User user = new Guest("Fisk", "VerySecure"); 
+    User user = new Guest(name, password); 
     userManager.save(user);
 
     return "Director Saved Succesful";

@@ -3,11 +3,14 @@ package com.proj.director;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.proj.model.users.User;
 import com.proj.database.UserRepository;
 import com.proj.exception.UserNotFoundException;
 
+
+//@Repository
 public class UserManager extends Manager<User>{
     // Fields
     @Autowired
