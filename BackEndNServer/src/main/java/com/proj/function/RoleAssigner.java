@@ -1,92 +1,70 @@
 
 package com.proj.function;
-
-import com.proj.model.users.*;
-//import com.proj.model.users.Member; //need to import this as long as java.lang.reflect.* is here, since it also defines a Member class.
-
-import java.time.Duration;
-
 import com.proj.model.events.RoleChanged;
-
+import com.proj.model.users.*;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.ArrayList;
-//import java.lang.reflect.*;
 
 /**
- * The class that is responsible for handling the reassignment of user roles. 
- * @param T the type of user to assign a new role to.
+ * The class that is responsible for handling and logging the (re)assignment of user roles. 
  */
 
-public class RoleAssigner<T> {
+public class RoleAssigner {
+    // Field
+
+    // Constructor 
+    
     //Method
+    /**
+     * Places the given role object in the given user object.
+     * @param userObject The user who should get assigned the role.
+     * @param newRoleObject The role to give the user. Extends the Role class and implements functions to provide its type.
+     * @return A RoleChanged object that contains the affected user, the role object that was added, and, if present, the role object that was replaced.
+     */
+    public static RoleChanged setRole(User userObject, Role newRoleObject){
 
-    public Guest ToGuest(T user){
-        if (user instanceof Guest) {
-            return (Guest) user;
-        } else {                    //if the given user type is not Guest or anywhere in the -> Member -> DM -> Admin -> SuperAdmin chain, create a new representation and give that to the user
-            Guest replacementAccount = new Guest(null, null);
+        Role previousRoleObject = null;
+        
+        switch (newRoleObject.getRoleType()) {
+            case GUEST:
+                if(userObject.getGuestInfo() != null){  //might not need this if-statement, but maybe we want to do something else when the role's spot is taken at a later date
+                    previousRoleObject = userObject.getGuestInfo();
+                }
+                userObject.setGuestInfo((Guest)newRoleObject);
+                break;
+        
+            case MEMBER:
+                if(userObject.getMemberInfo() != null){
+                    previousRoleObject = userObject.getMemberInfo();
+                }
+                userObject.setMemberInfo((Member)newRoleObject);
+                break;
+
+            case DM:
+                if(userObject.getDmInfo() != null){
+                    previousRoleObject = userObject.getDmInfo();
+                }
+                userObject.setDmInfo((DM)newRoleObject);
+                break;
+
+            case ADMIN:
+                if(userObject.getAdminInfo() != null){
+                    previousRoleObject = userObject.getAdminInfo();
+                }
+                userObject.setAdminInfo((Admin)newRoleObject);
+                break;
             
-            //call something like "restoreAccount" to get all the information back
+            case SUPERADMIN:
+                if(userObject.getSuperAdminInfo() != null){
+                    previousRoleObject = userObject.getSuperAdminInfo();
+                }
+                userObject.setSuperAdminInfo((SuperAdmin)newRoleObject);
+                break;
 
-            return replacementAccount;
-            }
-    }
-
-    public Member ToMember(T user){
-        if(!(user instanceof Guest)){
-            //throw exception to say you need a guest or higher to get a member;
-        } else {
-            //check if all necessary information is defined and tell the user to get it for us if not
-            //getDeclaredFields or something similar might be useful
-            Member memberUser = (Member) user;
-
-            if(  //this if-statement is horrible and I hate it but I can't find any better way to do this.
-            memberUser.getRealName() == null ||
-            memberUser.getPhoneNumber() == null ||
-            memberUser.getPostalCode() == null ||
-            memberUser.getAddress() == null ||
-            memberUser.getEmail() == null
-            ){
-                //request info to put into the empty fields
-            }
-            return (Member) user;
+            default:
+                throw new IllegalArgumentException("newRoleObject returns unknown role type");
         }
-        return null;
-    }
-
-
-    public DM ToDM(T user) {
-        if(!(user instanceof Guest)){
-            //throw exception to say you need a guest or higher to get a member;
-        } else {
-            DM dm = (DM) user;
-            if(dm.getHostedSessions() == null){
-                dm.setHostedSessions(new ArrayList<String>());
-            }
-            return dm;
-        }
-        return null;
-    }
-
-    public Admin ToAdmin(T user){
-        if(!(user instanceof Guest)){
-            //throw exception to say you need a guest or higher to get a member;
-        } else {
-            Admin admin = (Admin) user;
-            if(admin.getListOfRoleChanges() == null || admin.getListOfBans() == null){
-                //throw something?
-            }
-            return admin;
-        }
-        return null;
-    }
-
-    public SuperAdmin ToSuperAdmin(T user){
-        if(!(user instanceof Guest)){
-            //throw exception to say you need a guest or higher to get a member;
-        } else {
-            SuperAdmin superAdmin = (SuperAdmin) user;
-            return superAdmin;
-        }
-        return null;
+        return new RoleChanged(userObject, newRoleObject, previousRoleObject);  //Return an event object to put in the database
     }
 }
