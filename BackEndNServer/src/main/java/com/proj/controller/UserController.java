@@ -23,7 +23,9 @@ import com.proj.model.users.*;
 @RequestMapping(path = "/P3")
 
 public class UserController {
-    UserManager userManager = new UserManager();
+  
+  @Autowired
+  UserManager userManager;
 
   @PostMapping(path="/add") // Map ONLY POST Requests
   public @ResponseBody String addNewUser (@RequestParam String name
