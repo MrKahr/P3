@@ -27,6 +27,17 @@ public class UserController {
   @Autowired
   UserManager userManager;
 
+  @GetMapping(path = "/hello")
+  public @ResponseBody Iterable<User> hello(){
+
+    User user = new User(new BasicUserInfo("name", "password")); 
+    userManager.save(user);
+
+
+    return userManager.findAll();
+  
+}
+
   @PostMapping(path="/add") // Map ONLY POST Requests
   public @ResponseBody String addNewUser (@RequestParam String name
       , @RequestParam String password) {
