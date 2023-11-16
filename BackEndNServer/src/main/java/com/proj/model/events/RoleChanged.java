@@ -1,12 +1,13 @@
 package com.proj.model.events;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import com.proj.model.users.*;
 
 public class RoleChanged {
     // Field
     //Could need a field for the user's ID here.
-    private LocalDate date;
+    private LocalDateTime date;
     private User affectedUser;
     private Role newRoleObject;
     private Role previousRoleObject;
@@ -19,14 +20,14 @@ public class RoleChanged {
      * @param previousRoleObject The role that was replaced by newRoleObject. Should be null if no role object was present before.
      */
     public RoleChanged(User user, Role newRoleObject, Role previousRoleObject) {
-        this.date = LocalDate.now();
+        this.date = LocalDateTime.now();
         this.affectedUser = user;
         this.newRoleObject = newRoleObject;
         this.previousRoleObject = previousRoleObject;
     }
 
     // Method -  No setters since we model instantenous events as object instanstiations.
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return this.date;
     }
 
@@ -37,5 +38,4 @@ public class RoleChanged {
     public Role getPreviousRole() {
         return this.previousRoleObject;
     }
-
 }

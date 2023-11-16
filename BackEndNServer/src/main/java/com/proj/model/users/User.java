@@ -1,6 +1,4 @@
 package com.proj.model.users;
-import java.time.Duration;
-import java.time.LocalDate;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
