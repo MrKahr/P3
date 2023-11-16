@@ -1,22 +1,22 @@
 package com.proj.function;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.OptimisticLockingFailureException;
 
 import com.proj.model.users.*;
 import com.proj.exception.*;
-import java.util.Optional; // Class that is returned if object is not found in database 
+import com.proj.repositoryhandler.UserdbHandler;
 
-//TODO: remove all instances of captcha as this is handeld by front end 
+// This class is broken/dummy code. NEEDS FULL REWRITE OF METHODS!!!!!
+// Check import statements
+
 /**
  * Class responsible for handling all user management except assigning roles
  */
 public class UserManager {
     // Field
-    private Integer numberOfUsers;
-
     @Autowired
-    private UserRepository userRepository;
+    UserdbHandler userdbHandler;
+    private Integer numberOfUsers;
 
     // Constructor
     public UserManager(Integer numberOfUsers) {
@@ -41,17 +41,14 @@ public class UserManager {
      */
     public void createAccount(String userName, String password, boolean isMembershipRequested) {
         try {
+            //UserRepositoryManager userRepoMan = new UserRepositoryManager();
+
+
             validateCreation(userName);
 
             if(isMembershipRequested) {
                 requestMembership(userName);
             }
-
-            //TODO: Fix me
-            //Guest guest = new Guest(userName, password);
-            //Account account = new Account(guest);
-
-            //userRepository.save(guest); //TODO: Consider whether IllegalArgumentException
             this.numberOfUsers++; // Increment number of accounts since we just created one.
 
         } catch (UsernameAlreadyUsedException invlle) {
@@ -88,10 +85,9 @@ public class UserManager {
     public User lookupAccount(Integer userID) throws UserNotFoundException, IllegalArgumentException {
         String Dummy = "0"; // Dummy quick fix 
         
-        User user;
-        Optional dataBaseObject;
+        User user = null;
         if(userExists(userID)){
-            user = userRepository.findById(userID).get();  
+            //user = userRepository.findById(userID).get();  
         } else {
             throw new UserNotFoundException("User with userID '"+userID+"' does not exist in the database.");
         }
@@ -107,12 +103,12 @@ public class UserManager {
     public boolean userExists(Integer userID) throws IllegalArgumentException {
          String dummy = "0"; // Dummy quick fix
         
-        Optional dataBaseObject = userRepository.findById(userID);
+        //Optional dataBaseObject = userRepository.findById(userID);
         boolean isFoundInDB = false;
         // This check exists because we don't consider empty accounts account
-        if(userRepository.existsById(userID) && !(dataBaseObject.isEmpty())){
-            isFoundInDB = true;
-        }
+        //if(userRepository.existsById(userID) && !(dataBaseObject.isEmpty())){
+        //    isFoundInDB = true;
+        //}
         return isFoundInDB;
     }
     /**

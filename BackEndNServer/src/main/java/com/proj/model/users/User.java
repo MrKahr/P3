@@ -2,18 +2,35 @@ package com.proj.model.users;
 import java.time.Duration;
 import java.time.LocalDate;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 /**
  * This class represents a user and contains fields for all the possible roles a user can have.
  * It is set up to keep this info as objects that are subclasses of Role.
  * Basic user info is also kept here. It is also an object, for consistency's sake, but could be defined as a few fields of another type.
  */
+@Entity
 public class User {
     // Field
+    @JdbcTypeCode(SqlTypes.JSON)
     private BasicUserInfo basicUserInfo;    //Required
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+    @JdbcTypeCode(SqlTypes.JSON)
     private Guest guestInfo;                //Optional
+    @JdbcTypeCode(SqlTypes.JSON)
     private Member memberInfo;              //Optional
+    @JdbcTypeCode(SqlTypes.JSON)
     private DM dmInfo;                      //Optional
+    @JdbcTypeCode(SqlTypes.JSON)
     private Admin adminInfo;                //Optional
+    @JdbcTypeCode(SqlTypes.JSON)                
     private SuperAdmin superAdminInfo;      //Optional
 
     //Constructor

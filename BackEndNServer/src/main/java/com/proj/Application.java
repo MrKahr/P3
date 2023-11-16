@@ -1,9 +1,14 @@
 package com.proj;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
+import com.proj.model.users.*;
+import com.proj.repositoryhandler.UserdbHandler;
+
+@EnableJpaRepositories(basePackages={"com.proj.repositories"})
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
@@ -12,10 +17,9 @@ public class Application implements CommandLineRunner {
 		//SpringApplication.run(AccessingDataMysqlApplication.class, args);
 	}
 
-	@Override
+	@Override // Overrides abstract run method
 	public void run(String... args) throws Exception {
-
-
+		
 	}
 
 }
