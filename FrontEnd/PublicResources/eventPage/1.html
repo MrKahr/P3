@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details</title>
+    <link rel="stylesheet" href="../../Styles/eventStyle.css">
+</head>
+
+<body>
+    <h1 class="title" id="event-title">Event Title</h1>
+    <div id="event-container" class="container">
+        <div class="box left-box">
+            <h3>Date and Time</h3>
+            <span id="event-date-time"></span>
+            <h3>DM</h3>
+            <span id="dm"></span>
+            <h3>Players</h3><span id="signups"></span>
+            <ul id="user-list">
+            </ul>
+        </div>
+
+        <div class="box middle-box">
+
+            <h2>About the event</h2>
+            <span id="event-description"></span>
+            <h3>Rewards</h3>
+            <span>Rewards are only available to DM and players.</span>
+        </div>
+
+        <div class="box right-box">
+            <h2 id="module-name">Module</h2>
+            <p>Level range: <span id="level-range"></span>
+            </p>
+            <h3>Description</h3>
+                <span id="module-description"></span>
+        </div>
+    </div>
+    <div class="container">
+        <dialog>
+            <div id="inside-dialog">
+                <p>You need to sign in to join events (you can't lol)</p>
+            </div>
+        </dialog>
+        <button class="event-button">Join event</button>
+    </div>
+
+    <script src="../../Scripts/eventRequests.js"></script>
+</body>
+
+</html>
