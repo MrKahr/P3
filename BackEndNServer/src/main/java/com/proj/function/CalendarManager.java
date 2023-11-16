@@ -3,6 +3,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,7 +38,9 @@ public class CalendarManager {
     }
 
 
-    
+    /**
+     * LookModule is used by validationPlaySession to find the module and see if it exists in the database.
+     */
     public boolean lookupModuleID(int moduleID){
         boolean result = true;
         try {
@@ -154,14 +157,18 @@ public class CalendarManager {
         }
     }
 
+    /* public List < PlaySession > findAll() {
+        return playSessionRepository.f
+    } */
+
+    public PlaySession getSessions(LocalDateTime startDate, LocalDateTime endDate){
+        //henter sessions i en tidsperiode fra databasen
+        return null;
+    }
+
     public PlaySession sendSessions(){
         // REST response to GET request for session
         
-        return null;
-    }
-    
-    public PlaySession getSessions(LocalDateTime startDate, LocalDateTime endDate){
-        //henter sessions i en tidsperiode fra databasen
         return null;
     }
 

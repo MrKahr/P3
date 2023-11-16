@@ -3,11 +3,21 @@ package com.proj.model.session;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import com.proj.model.events.ModuleSet;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.util.Objects;
 
 //TODO: Consider renaming ModuleSetEvent for added readability
+@Entity
 public class PlaySession {
     // Field
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
     private String title;
     private Integer maxNumberOfPlayers;
