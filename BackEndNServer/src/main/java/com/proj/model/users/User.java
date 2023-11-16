@@ -1,47 +1,87 @@
 package com.proj.model.users;
-import java.time.Duration;
-import java.time.LocalDate;
-// TODO consider whether we want constructor chaining or we want to use a factory design pattern
-public abstract class User {
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+/**
+ * This class represents a user and contains fields for all the possible roles a user can have.
+ * It is set up to keep this info as objects that are subclasses of Role.
+ * Basic user info is also kept here. It is also an object, for consistency's sake, but could be defined as a few fields of another type.
+ */
+@Entity
+public class User {
     // Field
-    private String userName;
-    private String password; //TODO: Remember to encrypt this
-    private LocalDate registerDate;
-    private LocalDate deletionDate; // We might want to store these as strings in the database and have a method to turn it into a date object
-    private Duration banDuration;   //If this field is greater than 0, the user is considered banned!
-    private String banReason;       //Accompanying the banDuration, this field holds the reason for a ban. It could be an ArrayList so we can track previous bans.
+    @JdbcTypeCode(SqlTypes.JSON)
+    private BasicUserInfo basicUserInfo;    //Required
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Guest guestInfo;                //Optional
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Member memberInfo;              //Optional
+    @JdbcTypeCode(SqlTypes.JSON)
+    private DM dmInfo;                      //Optional
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Admin adminInfo;                //Optional
+    @JdbcTypeCode(SqlTypes.JSON)                
+    private SuperAdmin superAdminInfo;      //Optional
+
+    //Constructor
+    public User(BasicUserInfo basicUserInfo){
+        this.basicUserInfo = basicUserInfo;
+    }
 
     // Method
-    public String getUserName() {
-        return userName;
+    public void setBasicUserInfo(BasicUserInfo basicUserInfo){    //remove information by passing null to the setter-methods.
+        this.basicUserInfo = basicUserInfo;
     }
 
-    public LocalDate getRegisterDate() {
-        return registerDate;
+    public void setGuestInfo(Guest guestInfo){
+        this.guestInfo = guestInfo;
+    }
+    
+    public void setMemberInfo(Member memberInfo){
+        this.memberInfo = memberInfo;
+    }
+    
+    public void setDmInfo(DM dmInfo){
+        this.dmInfo = dmInfo;
+    }
+    
+    public void setAdminInfo(Admin adminInfo){
+        this.adminInfo = adminInfo;
+    }
+    
+    public void setSuperAdminInfo(SuperAdmin superAdminInfo){
+        this.superAdminInfo = superAdminInfo;
     }
 
-    public LocalDate getDeletionDate() {
-        return deletionDate;
+    public BasicUserInfo getBasicUserInfo(){
+        return this.basicUserInfo;
+    }
+    
+    public Guest getGuestInfo(){
+        return this.guestInfo;
     }
 
-    public String getPassword() {
-        return password;
+    public Member getMemberInfo(){
+        return this.memberInfo;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public DM getDmInfo(){
+        return this.dmInfo;
     }
 
-    public void setPassword(String password){
-        this.password = password;
+    public Admin getAdminInfo(){
+        return this.adminInfo;
     }
-
-    public void setRegisterDate(LocalDate registerDate) {
-        this.registerDate = registerDate;
+    
+    public SuperAdmin getSuperAdminInfo(){
+        return this.superAdminInfo;
     }
-
-    public void setDeletionDate(LocalDate deletionDate) {
-        this.deletionDate = deletionDate;
-    }
-
 }

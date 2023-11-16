@@ -1,9 +1,12 @@
 package com.proj.model.users;
 
+//The constructor for this method used to use constructor chaining. This link has some info on that
+//https://docs.oracle.com/javase/tutorial/java/IandI/super.html
+
 /**
  * A class that represents a user with the access level "Member". 
  */
-public class Member extends Guest {
+public class Member extends Role {
     // Field
     private String realName;
     private String phoneNumber;
@@ -22,7 +25,6 @@ public class Member extends Guest {
      * @param email The user's email address
      */
     public Member(String userName, String password, String realName, String phoneNumber, String postalCode, String address, String email){
-        super(userName, password); // For constructor chaining see  e.g. https://docs.oracle.com/javase/tutorial/java/IandI/super.html
         this.realName = realName;
         this.phoneNumber = phoneNumber;
         this.postalCode = postalCode;
@@ -69,5 +71,16 @@ public class Member extends Guest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public RoleType getRoleType(){
+        return RoleType.MEMBER;
+    }
+
+    @Override
+    public RoleType[] getRoleDependencies(){
+        RoleType[] types = {RoleType.GUEST};
+        return types;
     }
 }

@@ -9,30 +9,14 @@ import com.proj.exception.FailedValidationException;
 import com.proj.exception.InvalidInputException;
 import com.proj.exception.NoModuleFoundException;
 import com.proj.model.session.Module;
+import com.proj.repositories.ModuleRepository;
 
-/**
- * ModuleManager is responsible for creating, removing, updating and validating the DnD modules.
- * - createModule: The method creates new modules with the string objects "name", "description" and "levelRange".
- *   After creating the module dato of creation will be add and the module is saved in the database.
- * - removeModule: The method takes the module and deletes it from the database. It add the dato of removal and saves it.
- * - updateModule: The method finds the module by ID and sets it to moduleUpdate. It checks if it can find the moduleID
- *   and turns a exception if it can't. The new values of the string objects within the module are the set.
- *   The module is then validated and saved if the validation fails an exception is thrown.
- * - validateModule: The method sets the min and max for the "levelRange" and then gets the "levelRange", "name" and "description".
- *   It then checks if description contains "\\" or "^" if present then exception is thrown. It then checks if name is empty and
- *   if it's too long exceptions are thrown if true. The "levelRange" is then checked if it's less than min or more than max.
- *   The max range is also checked if it's less than the min and if the max range is more than the max.
- *   If any is true than an exception is thrown. If the method runs through without exceptions it will return true.
- *   If the method catches any exceptions it will return false and the validation will fail.
- *   (PS levelRange isn't that same for every module it differentiate in each module)
- */
 public class ModuleManager { // TODO: Integration test to be added later
-
+    // Field
     @Autowired
     private ModuleRepository moduleRepository;
 
     // Method
-
     /**
      * Creates module and saves it on database
      * 

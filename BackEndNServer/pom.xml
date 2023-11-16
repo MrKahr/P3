@@ -12,9 +12,9 @@
 	<artifactId>BackEndNServer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>BackEndNServer</name>
-	<description>Demo project for Spring Boot with mongoDB and mysql </description>
+	<description>P3 Project</description>
 	<properties>
-		<start-class>com.proj.server.Application</start-class>
+		<start-class>com.proj.Application</start-class>
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
@@ -46,5 +46,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
