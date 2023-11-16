@@ -1,20 +1,21 @@
 package com.proj.function;
 
-import org.springframework.dao.OptimisticLockingFailureException;
-
-import java.util.Optional; // Class that is returned if object is not found in database 
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.proj.model.users.*;
-import com.proj.repositories.UserRepository;
 import com.proj.exception.*;
+import com.proj.repositoryhandler.UserdbHandler;
 
-
+// This class is broken/dummy code. NEEDS FULL REWRITE OF METHODS!!!!!
+// Check import statements
 
 /**
  * Class responsible for handling all user management except assigning roles
  */
 public class UserManager {
     // Field
+    @Autowired
+    UserdbHandler userdbHandler;
     private Integer numberOfUsers;
 
     // Constructor
@@ -48,12 +49,6 @@ public class UserManager {
             if(isMembershipRequested) {
                 requestMembership(userName);
             }
-
-            //TODO: Fix me
-            //Guest guest = new Guest(userName, password);
-            //Account account = new Account(guest);
-
-            //userRepository.save(guest); //TODO: Consider whether IllegalArgumentException
             this.numberOfUsers++; // Increment number of accounts since we just created one.
 
         } catch (UsernameAlreadyUsedException invlle) {
@@ -91,7 +86,6 @@ public class UserManager {
         String Dummy = "0"; // Dummy quick fix 
         
         User user = null;
-        Optional dataBaseObject;
         if(userExists(userID)){
             //user = userRepository.findById(userID).get();  
         } else {

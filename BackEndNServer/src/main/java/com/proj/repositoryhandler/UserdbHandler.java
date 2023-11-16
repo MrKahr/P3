@@ -12,11 +12,11 @@ import com.proj.exception.UserNotFoundException;
 
 @Service
 public class UserdbHandler extends DbHandler<User>{
-    // Fields
+    // Field
     @Autowired
     private UserRepository userRepository;
 
-    //Methods
+    //Method
     @Override
     public void save(User user){
         userRepository.save(user);

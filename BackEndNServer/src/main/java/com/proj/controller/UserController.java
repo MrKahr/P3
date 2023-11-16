@@ -16,25 +16,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.proj.model.users.*;
-import com.proj.repositoryhandler.*;
 
+// The call hierarchy for the database connection is: Controller -> Manager -> Handler
 
 @Controller 
 @RequestMapping(path = "/P3")
 
 public class UserController {
   
-  @Autowired
-  UserdbHandler userdbHandler;
-
   @GetMapping(path = "/hello")
-  public @ResponseBody Iterable<User> hello(){
+  public @ResponseBody String hello(){
 
     User user = new User(new BasicUserInfo("name", "password")); 
-    userdbHandler.save(user);
+    //userdbHandler.save(user);
 
-
-    return userdbHandler.findAll();
+  return "Fisk";
+    //return userdbHandler.findAll();
   
 }
 
@@ -45,14 +42,14 @@ public class UserController {
     // @RequestParam means it is a parameter from the GET or POST request
 
     User user = new User(new BasicUserInfo(name, password)); 
-    userdbHandler.save(user);
+    //userdbHandler.save(user);
 
     return "Director Saved Succesful";
   }
 
   @GetMapping(path="/all")
-  public @ResponseBody Iterable<User> getAllUsers() {
+  public @ResponseBody String getAllUsers() {
     // This returns a JSON or XML with the users
-    return userdbHandler.findAll();
+    return "Fisk";//userdbHandler.findAll();
   }
 }

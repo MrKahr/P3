@@ -12,34 +12,28 @@ import com.proj.model.session.Module;
 import com.proj.repositories.ModuleRepository;
 
 public class ModuleManager { // TODO: Integration test to be added later
-
+    // Field
     @Autowired
     private ModuleRepository moduleRepository;
 
     // Method
-
     /**
      * Creates module and saves it on database
      * 
      * @param name        of module
      * @param description of module
      * @param levelRange  of module
-     * @return The added module or null
+     * @return The added module
      */
-    public Module createModule(String name, String description, String levelRange) {
-        try {
-            Module module = new Module(name, description, levelRange);
-            if (validateModule(module)) {
-                // Add module to database
-                module.setAddedDate(LocalDateTime.now());
-                moduleRepository.save(module);
-                return module;
-            } else {
-                return null; // If this is reached validation error is printed by validateModule
-            }
-        } catch (IllegalArgumentException e) { // Not a module
-            System.out.println(e.getMessage());
-            return null;
+    public Module createModule(String name, String description, String levelRange)
+            throws IllegalArgumentException, FailedValidationException {
+        Module module = new Module(name, description, levelRange);
+        if (validateModule(module)) {
+            // Add module to database
+            module.setAddedDate(LocalDateTime.now());
+            return moduleRepository.save(module);
+        } else {
+            throw new FailedValidationException("Validation failed");
         }
     }
 
@@ -49,20 +43,11 @@ public class ModuleManager { // TODO: Integration test to be added later
      * @param module to remove
      * @return removed module
      */
-    public Module removeModule(Module module) {
-        try {
-            // Remove module from database
-            moduleRepository.delete(module); // deleteById(id): Delete an entity by its ID.
-            module.setRemovedDate(LocalDateTime.now());
-            return module;
-        } catch (IllegalArgumentException e) { // Not a module
-            System.out.println(e.getMessage());
-            return null;
-        } catch (OptimisticLockingFailureException e) { // No module to remove
-            System.out.println(e.getMessage());
-            return null;
-        }
-
+    public Module removeModule(Module module) throws IllegalArgumentException, OptimisticLockingFailureException {
+        // Remove module from database
+        moduleRepository.delete(module); // deleteById(id): Delete an entity by its ID.
+        module.setRemovedDate(LocalDateTime.now());
+        return module;
     }
 
     /**
@@ -72,33 +57,25 @@ public class ModuleManager { // TODO: Integration test to be added later
      * @param name        of module
      * @param description of module
      * @param levelRange  of module
-     * @return saved module or null, if save failed
+     * @return saved module
      */
-    public Module updateModule(Integer moduleID, String name, String description, String levelRange)
-            throws NoModuleFoundException, FailedValidationException {
-        Object moduleObject = moduleRepository.findById(moduleID);
-        Module moduleToUpdate;
-        if (moduleObject instanceof Module) { // If module is found we store it in moduleToUpdate, else we store
-                                              // null
-            moduleToUpdate = (Module) moduleObject;
+    public Module updateModule(Integer id, String name, String description, String levelRange)
+            throws NoModuleFoundException, FailedValidationException, IllegalArgumentException {
+        Object moduleObject = moduleRepository.findById(id);
+        Module moduleUpdate;
+        if (moduleObject instanceof Module) { // If module is found we store it in moduleToUpdate, else we throw
+            moduleUpdate = (Module) moduleObject;
         } else {
-            // moduleToUpdate = null; // Throw exception
-            throw new NoModuleFoundException("No module was found with the ID: " + moduleID);
-        } 
+            throw new NoModuleFoundException("No module was found with the ID: " + id);
+        }
 
         // Update module from database
-        moduleToUpdate.setName(name);
-        moduleToUpdate.setDescription(description);
-        moduleToUpdate.setLevelRange(levelRange);
-        if (validateModule(moduleToUpdate)) {
-            try {
-            return moduleRepository.save(moduleToUpdate);
-            } catch(IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                return null;
-            }
+        moduleUpdate.setName(name);
+        moduleUpdate.setDescription(description);
+        moduleUpdate.setLevelRange(levelRange);
+        if (validateModule(moduleUpdate)) {
+            return moduleRepository.save(moduleUpdate);
         } else {
-            // return null; // Throw exception
             throw new FailedValidationException("The validation of module failed");
         }
     }
