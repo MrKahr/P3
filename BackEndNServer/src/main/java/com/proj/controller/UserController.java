@@ -20,11 +20,19 @@ import com.proj.model.users.*;
 // The call hierarchy for the database connection is: Controller -> Manager -> Handler
 
 @Controller 
-@RequestMapping(path = "/P3")
+@RequestMapping(path = "/user")
 
 public class UserController {
   
-  @GetMapping(path = "/hello")
+  //TODO: Get single user 
+  //TODO: Get multiple users 
+  //TODO: Get all users 
+  //TODO: Add users to DB 
+  //TODO: Add multiple users to DB 
+  //TODO: Delete users in DB 
+  //TODO: Delete mulitiple users in DB 
+
+  @GetMapping(path = "/get")
   public @ResponseBody String hello(){
 
     User user = new User(new BasicUserInfo("name", "password")); 
