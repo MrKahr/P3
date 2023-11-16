@@ -5,9 +5,8 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import java.util.Optional; // Class that is returned if object is not found in database 
 
 import com.proj.model.users.*;
+import com.proj.repositories.UserRepository;
 import com.proj.exception.*;
-import com.proj.database.UserRepository;
-//import com.proj.director.UserManager.*;
 
 
 

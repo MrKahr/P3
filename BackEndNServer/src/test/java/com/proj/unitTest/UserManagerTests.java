@@ -15,7 +15,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import com.proj.function.UserManager;
 import com.proj.exception.*;
 import com.proj.model.users.*;
-import com.proj.database.UserRepository;
+import com.proj.repositories.UserRepository;
 
 // THIS IS NOT FOR USE - ONLY REFERENCE
 

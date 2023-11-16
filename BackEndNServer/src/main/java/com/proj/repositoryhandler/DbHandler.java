@@ -1,7 +1,7 @@
-package com.proj.director;
+package com.proj.repositoryhandler;
 import java.util.Optional; 
 
-public abstract class Manager<T> {
+public abstract class DbHandler<T> {
     public abstract void save(T elem);
     public abstract void saveAll(Iterable<T> iter);
     public abstract T findById(Integer id);

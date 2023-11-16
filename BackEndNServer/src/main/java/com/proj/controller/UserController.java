@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.proj.director.UserManager;
 import com.proj.model.users.*;
+import com.proj.repositoryhandler.*;
 
 
 @Controller 
@@ -25,16 +25,16 @@ import com.proj.model.users.*;
 public class UserController {
   
   @Autowired
-  UserManager userManager;
+  UserdbHandler userdbHandler;
 
   @GetMapping(path = "/hello")
   public @ResponseBody Iterable<User> hello(){
 
     User user = new User(new BasicUserInfo("name", "password")); 
-    userManager.save(user);
+    userdbHandler.save(user);
 
 
-    return userManager.findAll();
+    return userdbHandler.findAll();
   
 }
 
@@ -45,7 +45,7 @@ public class UserController {
     // @RequestParam means it is a parameter from the GET or POST request
 
     User user = new User(new BasicUserInfo(name, password)); 
-    userManager.save(user);
+    userdbHandler.save(user);
 
     return "Director Saved Succesful";
   }
@@ -53,6 +53,6 @@ public class UserController {
   @GetMapping(path="/all")
   public @ResponseBody Iterable<User> getAllUsers() {
     // This returns a JSON or XML with the users
-    return userManager.findAll();
+    return userdbHandler.findAll();
   }
 }

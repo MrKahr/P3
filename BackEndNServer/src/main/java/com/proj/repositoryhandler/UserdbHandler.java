@@ -1,4 +1,4 @@
-package com.proj.director;
+package com.proj.repositoryhandler;
 
 import java.util.NoSuchElementException;
 
@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proj.model.users.User;
-import com.proj.database.UserRepository;
+import com.proj.repositories.UserRepository;
 import com.proj.exception.UserNotFoundException;
 
 
 @Service
-public class UserManager extends Manager<User>{
+public class UserdbHandler extends DbHandler<User>{
     // Fields
     @Autowired
     private UserRepository userRepository;

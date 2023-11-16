@@ -1,13 +1,15 @@
-package com.proj.director;
+package com.proj.repositoryhandler;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import com.proj.database.ModuleRepository;
 import com.proj.model.session.Module;
+import com.proj.repositories.ModuleRepository;
 import com.proj.exception.NoModuleFoundException;
 
-public class ModuleManager extends Manager<Module>{
+@Service
+public class ModuledbHandler extends DbHandler<Module>{
     // Fields
     @Autowired
     private ModuleRepository moduleRepository;

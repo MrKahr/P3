@@ -5,10 +5,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
-import com.proj.director.UserManager;
 import com.proj.model.users.*;
+import com.proj.repositoryhandler.UserdbHandler;
 
-@EnableJpaRepositories(basePackages={"com.proj.database"})
+@EnableJpaRepositories(basePackages={"com.proj.repositories"})
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 

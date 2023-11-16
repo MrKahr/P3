@@ -9,7 +9,7 @@ import com.proj.exception.FailedValidationException;
 import com.proj.exception.InvalidInputException;
 import com.proj.exception.NoModuleFoundException;
 import com.proj.model.session.Module;
-import com.proj.database.ModuleRepository;
+import com.proj.repositories.ModuleRepository;
 
 public class ModuleManager { // TODO: Integration test to be added later
 
