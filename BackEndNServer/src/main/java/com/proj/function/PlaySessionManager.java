@@ -2,7 +2,6 @@ package com.proj.function;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,30 +10,30 @@ import com.proj.model.session.PlaySession;
 import com.proj.exception.FailedValidationException;
 import com.proj.model.events.ModuleSet;
 import com.proj.model.session.Module;
+import com.proj.repositoryhandler.ModuledbHandler;
 
 /**
  * CalendarManager is responsible for setting the current date, validating the session, 
  */
 
 
-public class CalendarManager {
+public class PlaySessionManager {
 
     @Autowired
     private PlaySessionRepository playSessionRepository;
-    private ModuleRepository moduleRepository;
 
     // Field
-    private LocalDate currentDate;
+    private LocalDateTime currentDate;
 
     // Constructor
-    public CalendarManager(LocalDate currentDate){
+    public PlaySessionManager(LocalDateTime currentDate){
         this.currentDate = currentDate;
     }
 
 
     // Method
     public void setCurrentDate(){
-        this.currentDate = LocalDate.now();
+        this.currentDate = LocalDateTime.now();
     }
 
 
