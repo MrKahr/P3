@@ -9,17 +9,16 @@ import com.proj.exception.FailedValidationException;
 import com.proj.exception.InvalidInputException;
 import com.proj.exception.NoModuleFoundException;
 import com.proj.model.session.Module;
-import com.proj.repositories.ModuleRepository;
+import com.proj.repositoryhandler.ModuledbHandler;
 
 public class ModuleManager { // TODO: Integration test to be added later
     // Field
     @Autowired
-    private ModuleRepository moduleRepository;
-
+    ModuledbHandler moduledbHandler;
     // Method
     /**
      * Creates module and saves it on database
-     * 
+     *
      * @param name        of module
      * @param description of module
      * @param levelRange  of module
@@ -31,7 +30,8 @@ public class ModuleManager { // TODO: Integration test to be added later
         if (validateModule(module)) {
             // Add module to database
             module.setAddedDate(LocalDateTime.now());
-            return moduleRepository.save(module);
+            moduledbHandler.save(module);
+            return module;
         } else {
             throw new FailedValidationException("Validation failed");
         }
@@ -45,7 +45,7 @@ public class ModuleManager { // TODO: Integration test to be added later
      */
     public Module removeModule(Module module) throws IllegalArgumentException, OptimisticLockingFailureException {
         // Remove module from database
-        moduleRepository.delete(module); // deleteById(id): Delete an entity by its ID.
+        moduledbHandler.delete(module); // deleteById(id): Delete an entity by its ID.
         module.setRemovedDate(LocalDateTime.now());
         return module;
     }
@@ -61,7 +61,7 @@ public class ModuleManager { // TODO: Integration test to be added later
      */
     public Module updateModule(Integer id, String name, String description, String levelRange)
             throws NoModuleFoundException, FailedValidationException, IllegalArgumentException {
-        Object moduleObject = moduleRepository.findById(id);
+        Object moduleObject = moduledbHandler.findById(id);
         Module moduleUpdate;
         if (moduleObject instanceof Module) { // If module is found we store it in moduleToUpdate, else we throw
             moduleUpdate = (Module) moduleObject;
@@ -74,7 +74,8 @@ public class ModuleManager { // TODO: Integration test to be added later
         moduleUpdate.setDescription(description);
         moduleUpdate.setLevelRange(levelRange);
         if (validateModule(moduleUpdate)) {
-            return moduleRepository.save(moduleUpdate);
+            moduledbHandler.save(moduleUpdate);
+            return moduleUpdate;
         } else {
             throw new FailedValidationException("The validation of module failed");
         }

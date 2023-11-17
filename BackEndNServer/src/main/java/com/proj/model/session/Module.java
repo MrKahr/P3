@@ -2,6 +2,9 @@ package com.proj.model.session;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 /* jakarta persistence (JPA) is a application programming interface that provides specification to describe
  * the handling of relational data in java. JPA provides a number of annotations for mapping of java objects to database*/
 import jakarta.persistence.Entity;
@@ -28,10 +31,15 @@ public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    @JdbcTypeCode(SqlTypes.JSON)
     private String name;
+    @JdbcTypeCode(SqlTypes.JSON)
     private String description;
+    @JdbcTypeCode(SqlTypes.JSON)
     private String levelRange; // Consider range start/range end
+    @JdbcTypeCode(SqlTypes.JSON)
     private LocalDateTime addedDate;
+    @JdbcTypeCode(SqlTypes.JSON)
     private LocalDateTime removedDate;
 
     // Constructor

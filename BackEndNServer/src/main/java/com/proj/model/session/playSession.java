@@ -11,6 +11,9 @@ import jakarta.persistence.Id;
 
 import java.util.Objects;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 //TODO: Consider renaming ModuleSetEvent for added readability
 @Entity
 public class PlaySession {
@@ -18,13 +21,20 @@ public class PlaySession {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private Integer id;
+    @JdbcTypeCode(SqlTypes.JSON)
     private String title;
+    @JdbcTypeCode(SqlTypes.JSON)
     private Integer maxNumberOfPlayers;
+    @JdbcTypeCode(SqlTypes.JSON)
     private Integer currentNumberOfPlayers;
+    @JdbcTypeCode(SqlTypes.JSON)
     private LocalDateTime date;
-    private Integer state;
+    @JdbcTypeCode(SqlTypes.JSON)
+    private PlaySessionStateEnum state;
+    @JdbcTypeCode(SqlTypes.JSON)
     private ArrayList<ModuleSet> moduleSetEvents;
+    @JdbcTypeCode(SqlTypes.JSON)
     private Module module; // TODO: Consider whether we want object or simple string description
 
     // Constructor
@@ -41,7 +51,7 @@ public class PlaySession {
      * @param maxNumberOfPlayers     - current maximal number of players allowed in
      *                               a session
      */
-    public PlaySession(String title, String id, Integer currentNumberOfPlayers, LocalDateTime date, int state,
+    public PlaySession(String title, Integer id, Integer currentNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state,
             Integer maxNumberOfPlayers, Module module) {
         this.title = title;
         this.id = id;
@@ -58,7 +68,7 @@ public class PlaySession {
         return title;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -74,7 +84,7 @@ public class PlaySession {
         return date;
     }
 
-    public int getState() {
+    public PlaySessionStateEnum getState() {
         return state;
     }
 
@@ -90,8 +100,8 @@ public class PlaySession {
         this.title = title;
     }
 
-    public void setId(String title) {
-        this.id = title;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setMaxNumberOfPlayers(Integer maxNumberOfPlayers) {
@@ -106,7 +116,7 @@ public class PlaySession {
         this.date = date;
     }
 
-    public void setState(Integer state) {
+    public void setState(PlaySessionStateEnum state) {
         this.state = state;
     }
 

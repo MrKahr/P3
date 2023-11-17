@@ -3,24 +3,29 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.List;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.proj.model.session.PlaySession;
-import com.proj.exception.FailedValidationException;
+import com.proj.model.session.PlaySessionStateEnum;
 import com.proj.model.events.ModuleSet;
 import com.proj.model.session.Module;
+import com.proj.exception.FailedValidationException;
+import com.proj.exception.PlaySessionNotFoundException;
 import com.proj.repositoryhandler.ModuledbHandler;
+import com.proj.repositoryhandler.PlaySessionHandler;
 
 /**
- * CalendarManager is responsible for setting the current date, validating the session, 
+ * CalendarManager is responsible for setting the current date, validating the session,
  */
 
 
 public class PlaySessionManager {
 
     @Autowired
-    private PlaySessionRepository playSessionRepository;
+    PlaySessionHandler playSessionHandler;
+    ModuledbHandler moduledbHandler;
 
     // Field
     private LocalDateTime currentDate;
@@ -43,7 +48,7 @@ public class PlaySessionManager {
     public boolean lookupModuleID(int moduleID){
         boolean result = true;
         try {
-            moduleRepository.findById(moduleID);
+            moduledbHandler.findById(moduleID);
         } catch (Exception e) {
             System.out.println("Module not found " + e.getMessage());
             result = false;
@@ -61,27 +66,20 @@ public class PlaySessionManager {
         final int globalMaxNumberOfPlayers = 7;
         final int maxTitleLength = 40;
         String title = playSession.getTitle();
-        String id = playSession.getId();
+        Integer id = playSession.getId();
         int maxNumberOfPlayers = playSession.getMaxNumberOfPlayers();
         int currentNumberOfPlayers = playSession.getCurrentNumberOfPlayers();
-        int state = playSession.getState();
+        PlaySessionStateEnum state = playSession.getState();
         Module module = playSession.getModule();
         int moduleID = module.getId();
-        //check if date is valid - done
-        try {
-            LocalDateTime date = playSession.getDate();
-        } catch (Exception e) {
-            System.out.println("Session has invalid date " + e.getMessage());
-            return false;
-        }
         
         //Validation Logic
         
         try {// Session ID found in database - TBD
-            if(state < 0 || state > 4){
-                return false;
-            }//Title - Title length within maxTitleLength size - Done
-            else if(title.length() > maxTitleLength || title.length() <= 0){
+            lookupPlaySessionID(id); //throws exception if not found
+            playSession.getDate(); //throws exception if not found
+            //Title - Title length within maxTitleLength size - Done
+            if(title.length() > maxTitleLength || title.length() <= 0){
                 return false;
             }//local max number of players within global max limit - Done
             else if(maxNumberOfPlayers > globalMaxNumberOfPlayers){
@@ -91,10 +89,7 @@ public class PlaySessionManager {
                 return false;
             }//state - Valid State, kan enten laves om til ENUM, state tal indenfor range - WIP
             //Evt kan vi også tjekke om specifikke state conditions er opfyldt her.
-            else if(state < 0 || state > 3){
-                return false;
-            }//modulesetevents - Valid set of module IDs (TBD) - WIP
-            else if(state < 0 || state > 5){
+            else if(state != PlaySessionStateEnum.PLANNED && state != PlaySessionStateEnum.CANCELLED && state != PlaySessionStateEnum.CONCLUDED && state != PlaySessionStateEnum.REWARDSRELEASED){
                 return false;
             }//module - Module ID found in database - Done
             else if(lookupModuleID(moduleID) == false){
@@ -110,27 +105,23 @@ public class PlaySessionManager {
     }
 
     //sendSessionUpdate - find the playSession in the database for comparison.
-    public PlaySession lookupPlaySessionID(String id){
+    //Optional<PlaySession>
+
+    public PlaySession lookupPlaySessionID(Integer id){
         PlaySession result;
-        try {
-            Optional<PlaySession> optionalPlaySession = playSessionRepository.findById(id);
-            if (optionalPlaySession.isPresent()) {
-            result = optionalPlaySession.get();
-            } else {
-            System.out.println("Session not found");
-            result = null;
-            }
-            result = playSessionRepository.findById(id).get();
-        } catch (Exception e) {
-            System.out.println("Session not found " + e.getMessage());
-            result = null;
+        Object optionalPlaySession = playSessionHandler.findById(id); //ERROR
+        if (optionalPlaySession instanceof PlaySession) {
+            result = (PlaySession) optionalPlaySession;
+        } else {
+            throw new PlaySessionNotFoundException("Session not found");
         }
+        result = playSessionHandler.findById(id);//ERROR
         return result;
     }
 
     /**
      * Updates the playSession in the database
-     * 
+     *
      * @param playSessionID       unique ID of playSession in database
      * @param title               of playSession
      * @param maxNumberOfPlayers  of playSession
@@ -139,7 +130,7 @@ public class PlaySessionManager {
      * @param module              of playSession
      * @return saved playSession
      */
-    public PlaySession updatePlaySession(String id, String title, int maxNumberOfPlayers, LocalDateTime date, int state, Module module){
+    public PlaySession updatePlaySession(int id, String title, int maxNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state, Module module){
         PlaySession playSessionUpdate;
         playSessionUpdate = lookupPlaySessionID(id);
 
@@ -150,7 +141,8 @@ public class PlaySessionManager {
         playSessionUpdate.setModule(module);
         
         if (validatePlaySession(playSessionUpdate)){
-            return playSessionRepository.save(playSessionUpdate);
+            playSessionHandler.save(playSessionUpdate);
+            return playSessionUpdate;
         } else {
             throw new FailedValidationException("Session validation error");
         }
@@ -160,15 +152,18 @@ public class PlaySessionManager {
         return playSessionRepository.f
     } */
 
-    public PlaySession getSessions(LocalDateTime startDate, LocalDateTime endDate){
+    public List<PlaySession> getSessions(LocalDateTime startDate, LocalDateTime endDate){
         //henter sessions i en tidsperiode fra databasen
-        return null;
+        Iterable<PlaySession> playSessions = playSessionHandler.findByDateBetween(startDate, endDate);
+        List<PlaySession> result = new ArrayList<>();
+        playSessions.forEach(result::add);
+
+        return result;
     }
 
-    public PlaySession sendSessions(){
+    public void sendSessions(Iterable<PlaySession> sessions){
         // REST response to GET request for session
         
-        return null;
     }
 
     /**
