@@ -5,12 +5,8 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.proj.model.users.User;
 import com.proj.repositories.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proj.exception.UserNotFoundException;
 
 /**
@@ -26,23 +22,20 @@ public class UserdbHandler extends DbHandler<User> {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private ObjectMapper objectmapper;
-
     // Method
     @Override
 
     public void save(User user) {
         try {
-            objectmapper.writeValueAsString(user);
+            System.out.println(user);
             userRepository.save(user);
-        } catch (JsonProcessingException jpe) {
-        /* TODO: This error is critical. 
-        The user should be informed in the web UI (Admin+). 
-        Another exception should propagate this error upwards. */ 
+        } catch (Exception e) {
+        //TODO: This error is critical. 
+        //The user should be informed in the web UI (Admin+). 
+        //Another exception should propagate this error upwards.
 
-            jpe.printStackTrace();
-            System.out.println(jpe.getMessage());
+            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 

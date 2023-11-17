@@ -1,9 +1,8 @@
 package com.proj.model.users;
-import java.time.Duration;
-import java.time.LocalDate;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,8 +28,8 @@ public class User {
     @JdbcTypeCode(SqlTypes.JSON)
     private DM dmInfo;                      //Optional
     @JdbcTypeCode(SqlTypes.JSON)
-    private Admin adminInfo;                //Optional
-    @JdbcTypeCode(SqlTypes.JSON)                
+    private Admin adminInfo;                //Optional             
+    @JdbcTypeCode(SqlTypes.JSON)
     private SuperAdmin superAdminInfo;      //Optional
 
     //Constructor

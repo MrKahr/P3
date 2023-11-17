@@ -20,10 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import com.proj.model.users.*;
 import com.proj.repositoryhandler.UserdbHandler;
@@ -70,7 +66,7 @@ public class UserController {
     try{
         User user = new User(new BasicUserInfo("name", "password")); 
         userdbHandler.save(user);
-        return "Save succesful. Id: '" + user.getId() + "";
+        return "Save succesful. Id: '" + user.getId() + "'";
     } catch(Exception e){
         e.printStackTrace();
         return "Save failed with: " + e.getMessage();

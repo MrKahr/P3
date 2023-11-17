@@ -16,6 +16,7 @@ public class UserManager {
     // Field
     @Autowired
     UserdbHandler userdbHandler;
+    
     private Integer numberOfUsers;
 
     // Constructor
