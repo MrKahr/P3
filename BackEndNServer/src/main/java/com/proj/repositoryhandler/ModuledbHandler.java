@@ -7,7 +7,11 @@ import org.springframework.stereotype.Service;
 import com.proj.model.session.Module;
 import com.proj.repositories.ModuleRepository;
 import com.proj.exception.NoModuleFoundException;
-
+/**
+ * Handles module saving, deleting and getting to a repository. 
+ * NOTE: be sure to instantitate one in the relevant manager (e.g. userdbHandler in UserManager).
+ * For more details and justification, see DbHandler.java
+ */
 @Service
 public class ModuledbHandler extends DbHandler<Module>{
     // Fields

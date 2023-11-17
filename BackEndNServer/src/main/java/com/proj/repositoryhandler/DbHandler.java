@@ -8,8 +8,15 @@ import java.util.Optional;
  * 3) Ensure that the client does not directly interact with the saving of databases through the CRUD-interface. 
  * 
  * To use a handler in a manager
- * 1) create a new instance of a manager from the repository type you want to interact with. 
+ * 1) create a new instance of a handler from the repository type you want to interact with. 
  * 2) make calls to handler like you would with a crud repository (except deleteall() - entire repositories cannot be deleted with this handler)
+ *
+ *   -- Here's an example with the user handler: 
+ *  @Autowired 
+ *  UserdbHandler userdbHandler;
+ *   -- Calling the handler in manager functions is similar to calling repository methods e.g. 
+ *  userdbHandler.save(user); 
+ * 
  */
 public abstract class DbHandler<T> {
     public abstract void save(T elem);

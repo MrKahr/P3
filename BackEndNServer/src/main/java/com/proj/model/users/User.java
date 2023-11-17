@@ -67,6 +67,10 @@ public class User {
         return this.basicUserInfo;
     }
     
+    public Integer getId(){
+        return this.id;
+    } 
+
     public Guest getGuestInfo(){
         return this.guestInfo;
     }

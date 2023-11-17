@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import com.proj.model.events.ModuleSet;
 import java.util.Objects;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 //TODO: Consider renaming ModuleSetEvent for added readability
 public class PlaySession {
     // Field
@@ -15,6 +18,7 @@ public class PlaySession {
     private LocalDateTime date;
     private String state;
     private ArrayList<ModuleSet> moduleSetEvents;
+    @JdbcTypeCode(SqlTypes.JSON)
     private Module module; // TODO: Consider whether we want object or simple string description
 
     // Constructor
