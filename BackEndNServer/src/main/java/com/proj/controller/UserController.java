@@ -28,117 +28,133 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.proj.model.users.*;
 import com.proj.repositoryhandler.UserdbHandler;
 import com.proj.model.session.PlaySession;
+import com.proj.exception.IllegalUserOperationException;
 import com.proj.model.session.Module;
 
 /**
- * This controller handles sending HTTP requests from frontend to the server for various operations on users. 
- * Operations include getting a user, modifying a user, deleting a user, creating a user or banning a user. 
+ * This controller handles sending HTTP requests from frontend to the server for
+ * various operations on users.
+ * Operations include getting a user, modifying a user, deleting a user,
+ * creating a user or banning a user.
  */
 
-   // Getting a user
-  //TODO: Get single user from db - Profilepage + Adminpage 
-  //TODO: Get multiple users from db - Adminpage
-  //TODO: Get all users from db - Adminpage 
-  
-  // Modifying a user
-  // TODO: Modify single user - Profile, Adminpage
-  // TODO: Modify multiple users in DB - Adminpage
-  
-  // Creating a user 
-  //TODO: Add users to DB - SignupPage
-  //TODO: Add multiple users to DB - MAYBE NOT NEEDED 
+// Getting a user
+// TODO: Get single user from db - Profilepage + Adminpage
+// TODO: Get multiple users from db - Adminpage
+// TODO: Get all users from db - Adminpage
 
-  // Deleting a user 
-  //TODO: Delete user in DB - Profile, Adminpage
-  //TODO: Delete mulitiple users in DB - MAYBE NOT NEEDED
+// Modifying a user
+// TODO: Modify single user - Profile, Adminpage
+// TODO: Modify multiple users in DB - Adminpage
 
-  // Banning a user
-  //TODO: Ban single user - Adminpage 
-  //TODO: Ban multiple users - MAYBE NOT NEEDED 
+// Creating a user
+// TODO: Add users to DB - SignupPage
+// TODO: Add multiple users to DB - MAYBE NOT NEEDED
 
-  
-@Controller 
+// Deleting a user
+// TODO: Delete user in DB - Profile, Adminpage
+// TODO: Delete mulitiple users in DB - MAYBE NOT NEEDED
+
+// Banning a user
+// TODO: Ban single user - Adminpage
+// TODO: Ban multiple users - MAYBE NOT NEEDED
+
+@Controller
 public class UserController {
-  @Autowired 
+  @Autowired
   UserdbHandler userdbHandler;
- 
+
   /**
    * Admin page for managing users. Must check access level. (Admin+)
+   * TODO: Check access level
+   * TODO: Make function flexible enough to return a couple of users
    */
-  @RequestMapping(path = "/user")
-  @ResponseBody Object adminPage(){
-    try{
-        User user = new User(new BasicUserInfo("name", "password")); 
-        userdbHandler.save(user);
-        return "Save succesful. Id: '" + user.getId() + "";
-    } catch(Exception e){
+  @RequestMapping(path = "/users")
+  @ResponseBody
+  ArrayList<User> getadminPageUsers(String userType, int numberOfUsersToDisplay) {
+
+    if (!userType.equals("Admin")) {
+      throw new IllegalUserOperationException("User is not allowed to access all users");
+    } else {
+      ArrayList<User> allUsers = new ArrayList<User>();
+      try {
+        // allUsers = userdbHandler.findall();
+        User user1 = new User(new BasicUserInfo("bob", "password"));
+        User user2 = new User(new BasicUserInfo("alice", "password"));
+        allUsers.add(user1);
+        allUsers.add(user2);
+        return allUsers;
+      } catch (Exception e) {
         e.printStackTrace();
-        return "Save failed with: " + e.getMessage();
+      }
+      return allUsers;
     }
-}
+
+  }
 
   /**
    * Page showing a specific user's profile. Must check access level (Member+)
    */
   @GetMapping(path = "/user/{id}")
-  public @ResponseBody Object profile(@PathVariable Integer id){
+  public @ResponseBody Object profile(@PathVariable Integer id) {
     User user = null;
     try {
       user = userdbHandler.findById(id);
       return user;
     } catch (Exception e) {
-        System.out.println("Finding user failed with: " + e.getMessage());
-        e.printStackTrace();
-        return user;
+      System.out.println("Finding user failed with: " + e.getMessage());
+      e.printStackTrace();
+      return user;
     }
   }
 
   /**
-   * Page showing the "Sign Up" interface. Must check if user is already logged in (and redirect to frontpage or something)
+   * Page showing the "Sign Up" interface. Must check if user is already logged in
+   * (and redirect to frontpage or something)
    */
-  //@RequestMapping(path = "/signup")
-  //public @ResponseBody 
-  //TODO: Consider enums (toString) status strings as response 
+  // @RequestMapping(path = "/signup")
+  // public @ResponseBody
+  // TODO: Consider enums (toString) status strings as response
 
   /**
-   * Login page requests sent to server. 
+   * Login page requests sent to server.
    */
   @GetMapping(path = "/login")
-  public @ResponseBody Object login(String s){return new User(new BasicUserInfo("Fisk", "Pass"));}
+  public @ResponseBody Object login(String s) {
+    return new User(new BasicUserInfo("Fisk", "Pass"));
+  }
 
-  //@GetMapping(path = "/login")
-  //public @ResponseBody String login(User f){return "User";}
+  // @GetMapping(path = "/login")
+  // public @ResponseBody String login(User f){return "User";}
 
-  
-  @PostMapping(path="/add") // Map ONLY POST Requests
-  public @ResponseBody Object addNewUser (@RequestParam String name
-      , @RequestParam String password) {
+  @PostMapping(path = "/add") // Map ONLY POST Requests
+  public @ResponseBody Object addNewUser(@RequestParam String name, @RequestParam String password) {
     // @ResponseBody means the returned String is the response, not a view name
     // @RequestParam means it is a parameter from the GET or POST request
 
-    User user = new User(new BasicUserInfo(name, password)); 
-    //userdbHandler.save(user);
+    User user = new User(new BasicUserInfo(name, password));
+    // userdbHandler.save(user);
 
     return "Director Saved Succesful";
   }
 
-  @GetMapping(path="/all")
+  @GetMapping(path = "/all")
   public @ResponseBody Object getAllUsers() {
     // This returns a JSON or XML with the users
-    return "Fisk";//userdbHandler.findAll();
+    return "Fisk";// userdbHandler.findAll();
   }
 
-    @GetMapping(path = "/publicCalendar")
-    public @ResponseBody PlaySession ShowCalendar() {
+  @GetMapping(path = "/publicCalendar")
+  public @ResponseBody PlaySession ShowCalendar() {
 
-        ArrayList<PlaySession> playSessionList = new ArrayList<PlaySession>();
-        LocalDateTime date = LocalDateTime.of(2023, 12, 12, 10, 10, 0);
-        Module module = new Module("Module Name", "Module Description", "2-10");
-        PlaySession playSession = new PlaySession("Name1", "2", 2, date, "Not yet", 6, module);
-        playSessionList.add(playSession);
-        playSession = new PlaySession("Name2", "3", 2, date, "Not yet", 6, module);
-        playSessionList.add(playSession);
+    ArrayList<PlaySession> playSessionList = new ArrayList<PlaySession>();
+    LocalDateTime date = LocalDateTime.of(2023, 12, 12, 10, 10, 0);
+    Module module = new Module("Module Name", "Module Description", "2-10");
+    PlaySession playSession = new PlaySession("Name1", "2", 2, date, "Not yet", 6, module);
+    playSessionList.add(playSession);
+    playSession = new PlaySession("Name2", "3", 2, date, "Not yet", 6, module);
+    playSessionList.add(playSession);
 
-        return playSessionList.get(0);
-    }
+    return playSessionList.get(0);
+  }
 }
