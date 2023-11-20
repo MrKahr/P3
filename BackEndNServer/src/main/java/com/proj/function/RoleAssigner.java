@@ -2,9 +2,6 @@
 package com.proj.function;
 import com.proj.model.events.RoleChanged;
 import com.proj.model.users.*;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 /**
  * The class that is responsible for handling and logging the (re)assignment of user roles. 
@@ -21,8 +18,12 @@ public class RoleAssigner {
      * @param userObject The user who should get assigned the role.
      * @param newRoleObject The role to give the user. Extends the Role class and implements functions to provide its type.
      * @return A RoleChanged object that contains the affected user, the role object that was added, and, if present, the role object that was replaced.
+     * @throws IllegalArgumentException Thrown if the user is missing the new role's dependencies or if the new role has an unreconized type.
      */
     public static RoleChanged setRole(User userObject, Role newRoleObject){
+        if(!dependenciesFulfilled(userObject, newRoleObject)){
+            throw new IllegalArgumentException("newRoleObject is missing dependencies!"); //throw an error if the role is missing its dependencies
+        }
 
         Role previousRoleObject = null;
         
@@ -67,4 +68,48 @@ public class RoleAssigner {
         }
         return new RoleChanged(userObject, newRoleObject, previousRoleObject);  //Return an event object to put in the database
     }
+
+    /**
+     * Checks if a role can be added to a given user by checking if the role's dependencies are present on the user.
+     * @param user The user to investigate.
+     * @param role The role whose dependencies should be looked for.
+     * @return True if all dependencies are present, false if a dependency is missing.
+     */
+    public static boolean dependenciesFulfilled(User user, Role role){
+        RoleType[] dependencies = role.getRoleDependencies();
+        int dependencyNeeded = dependencies.length;
+        int dependenciesFound = 0;
+        for (RoleType type : dependencies) {
+            Role dependency = getRoleByType(user, type);
+            if(dependency != null && dependency.isActive()){    //check if the role is present on the user and currently active
+                dependenciesFound++;
+            }
+        }
+        return dependencyNeeded == dependenciesFound;    //comparing the number of dependencies we need with the number of dependencies we found present
+    }
+
+    /**
+     * Gets a role object (or null) from a specified user. Remember to expand this method when adding new roles!
+     * @param user The user to get a role from.
+     * @param type The role's type. Should be the same as the return value for the role's getRoleType()-method.
+     * @return A Role-object corresponding to the given type, or null, if no such object is present on the user.
+     * @throws IllegalArgumentException Thrown if the given RoleType has not been accounted for.
+     */
+    private static Role getRoleByType(User user, RoleType type){
+        switch (type) {
+            case GUEST:
+                return user.getGuestInfo();
+            case MEMBER:
+                return user.getMemberInfo();
+            case DM:
+                return user.getDmInfo();
+            case ADMIN:
+                return user.getAdminInfo();
+            case SUPERADMIN:
+                return user.getSuperAdminInfo();
+            default:
+                throw new IllegalArgumentException("roleType not recognized!");
+        }
+    }
+
 }

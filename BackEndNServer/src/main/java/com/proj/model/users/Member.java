@@ -24,7 +24,7 @@ public class Member extends Role {
      * @param address The user's physical address
      * @param email The user's email address
      */
-    public Member(String userName, String password, String realName, String phoneNumber, String postalCode, String address, String email){
+    public Member(String realName, String phoneNumber, String postalCode, String address, String email){
         this.realName = realName;
         this.phoneNumber = phoneNumber;
         this.postalCode = postalCode;
