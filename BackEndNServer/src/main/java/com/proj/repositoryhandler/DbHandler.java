@@ -1,5 +1,4 @@
 package com.proj.repositoryhandler;
-import java.util.Optional; 
 /**
  * This responsiblity of a handler is to interact with the database, removing this responsiblity form the manager classes.
  * The benefits of this choice is that we 
