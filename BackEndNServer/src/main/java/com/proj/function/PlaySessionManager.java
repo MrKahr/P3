@@ -1,9 +1,7 @@
 package com.proj.function;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.List;
-import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,10 +15,8 @@ import com.proj.repositoryhandler.ModuledbHandler;
 import com.proj.repositoryhandler.PlaySessionHandler;
 
 /**
- * CalendarManager is responsible for setting the current date, validating the session,
+ * PlaySessionManager is responsible for setting the current date, validating the session,
  */
-
-
 public class PlaySessionManager {
 
     @Autowired
@@ -42,8 +38,11 @@ public class PlaySessionManager {
     }
 
 
+
     /**
      * LookModule is used by validationPlaySession to find the module and see if it exists in the database.
+     * @param moduleID is the id for the playSession that is requested.
+     * @return This will return true or false, true if found and false if not.
      */
     public boolean lookupModuleID(int moduleID){
         boolean result = true;
@@ -56,12 +55,14 @@ public class PlaySessionManager {
         return result;
     }
     
+
+
     /**
-     * Validates the playSession
+     * Validates the playSession with If statement.
      * @param playSession object to validate.
      * @return True or false, true if the validation passed and false if it failed to validate.
      */
-    public Boolean validatePlaySession(PlaySession playSession){
+    public Boolean validatePlaySession(PlaySession playSession, Boolean isNewSession){
         //Static Max values
         final int globalMaxNumberOfPlayers = 7;
         final int maxTitleLength = 40;
@@ -73,10 +74,12 @@ public class PlaySessionManager {
         Module module = playSession.getModule();
         int moduleID = module.getId();
         
-        //Validation Logic
-        
+        //Validation Logic - If statment that searches for errors in the playSession info.
         try {// Session ID found in database - TBD
-            lookupPlaySessionID(id); //throws exception if not found
+            if (!isNewSession) {
+                lookupPlaySessionID(id);
+            }
+             //throws exception if not found
             playSession.getDate(); //throws exception if not found
             //Title - Title length within maxTitleLength size - Done
             if(title.length() > maxTitleLength || title.length() <= 0){
@@ -104,9 +107,13 @@ public class PlaySessionManager {
 
     }
 
-    //sendSessionUpdate - find the playSession in the database for comparison.
-    //Optional<PlaySession>
 
+
+    /**
+     * LookupPlaySession is used by validationPlaySession and updatePlaySession to find the playSession and see if it exists in the database.
+     * @param id of playSession that is requested.
+     * @return The playSession id or throw exception.
+     */
     public PlaySession lookupPlaySessionID(Integer id){
         PlaySession result;
         Object optionalPlaySession = playSessionHandler.findById(id); //ERROR
@@ -119,18 +126,37 @@ public class PlaySessionManager {
         return result;
     }
 
+
+
+/**
+ * addNewPlaySession
+ * @param id
+ * @param title
+ * @param maxNumberOfPlayers
+ * @param date
+ * @param state
+ * @param module
+ */
+    public void addNewPlaySession(String title,int id, int currentNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state, int maxNumberOfPlayers, Module module){
+        PlaySession newPlaySession = new PlaySession(title,id,currentNumberOfPlayers, date, state, maxNumberOfPlayers, module);
+        if (validatePlaySession(newPlaySession, true)){
+            playSessionHandler.save(newPlaySession);
+        } else {
+            throw new FailedValidationException("Session validation error");
+        }
+    }
+
     /**
-     * Updates the playSession in the database
-     *
-     * @param playSessionID       unique ID of playSession in database
-     * @param title               of playSession
-     * @param maxNumberOfPlayers  of playSession
-     * @param date                of playSession
-     * @param state               of playsession
-     * @param module              of playSession
-     * @return saved playSession
+     * Updates the playSession in the database by resetting the playSession info.
+     * @param id unique ID of playSession in database
+     * @param title of playSession
+     * @param maxNumberOfPlayers of playSession
+     * @param date of playSession
+     * @param state of playSession
+     * @param module of playSession
+     * @return saved playSession.
      */
-    public PlaySession updatePlaySession(int id, String title, int maxNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state, Module module){
+    public void updatePlaySession(int id, String title, int maxNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state, Module module){
         PlaySession playSessionUpdate;
         playSessionUpdate = lookupPlaySessionID(id);
 
@@ -140,36 +166,27 @@ public class PlaySessionManager {
         playSessionUpdate.setState(state);
         playSessionUpdate.setModule(module);
         
-        if (validatePlaySession(playSessionUpdate)){
+        if (validatePlaySession(playSessionUpdate, false)){
             playSessionHandler.save(playSessionUpdate);
-            return playSessionUpdate;
         } else {
             throw new FailedValidationException("Session validation error");
         }
     }
 
-    /* public List < PlaySession > findAll() {
-        return playSessionRepository.f
-    } */
 
+
+    /**
+     * getSessions retrieve playSessions from the database within the time period requested the default time period is a month.
+     * @param startDate is the date that the user reqests the method starts retrieving playSessions.
+     * @param endDate is the date that the user request the method stops retrieving playSessions.
+     * @return playSessions within the time period.
+     */
     public List<PlaySession> getSessions(LocalDateTime startDate, LocalDateTime endDate){
         //henter sessions i en tidsperiode fra databasen
         Iterable<PlaySession> playSessions = playSessionHandler.findByDateBetween(startDate, endDate);
-        List<PlaySession> result = new ArrayList<>();
-        playSessions.forEach(result::add);
+        List<PlaySession> playSessionPeriod = new ArrayList<>();
+        playSessions.forEach(playSessionPeriod::add);
 
-        return result;
+        return playSessionPeriod;
     }
-
-    public void sendSessions(Iterable<PlaySession> sessions){
-        // REST response to GET request for session
-        
-    }
-
-    /**
-     * public PlaySession getSessionInfo(){
-     *   return null;
-     * }
-     */
-
 }

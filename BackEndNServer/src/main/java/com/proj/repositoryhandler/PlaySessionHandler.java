@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proj.model.session.PlaySession;
+import com.proj.repositories.PlaySessionRepository;
 import com.proj.exception.PlaySessionNotFoundException;
-import com.proj.function.PlaySessionRepository;
 
 
 @Service

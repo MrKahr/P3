@@ -37,6 +37,8 @@ public class PlaySession {
     @JdbcTypeCode(SqlTypes.JSON)
     private Module module; // TODO: Consider whether we want object or simple string description
 
+    //validation check with DM = create session and check without DM = update session. ?????
+
     // Constructor
     /**
      * Creates a play session for players to attend
