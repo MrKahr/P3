@@ -15,7 +15,8 @@ import com.proj.repositoryhandler.ModuledbHandler;
 import com.proj.repositoryhandler.PlaySessionHandler;
 
 /**
- * PlaySessionManager is responsible for setting the current date, validating the session,
+ * PlaySessionManager is responsible for setting the current date, lookupModuleID, validating the session, lookupPlaySessionID,
+ * addNewPlaySession, updatePlaySession and getSessions.
  */
 public class PlaySessionManager {
 
@@ -40,21 +41,52 @@ public class PlaySessionManager {
 
 
     /**
-     * LookModule is used by validationPlaySession to find the module and see if it exists in the database.
-     * @param moduleID is the id for the playSession that is requested.
-     * @return This will return true or false, true if found and false if not.
+     * addNewPlaySession
+     * @param id
+     * @param title
+     * @param maxNumberOfPlayers
+     * @param date
+     * @param state
+     * @param module
      */
-    public boolean lookupModuleID(int moduleID){
-        boolean result = true;
-        try {
-            moduledbHandler.findById(moduleID);
-        } catch (Exception e) {
-            System.out.println("Module not found " + e.getMessage());
-            result = false;
+    public void addNewPlaySession(String title,int id, int currentNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state, int maxNumberOfPlayers, Module module){
+        PlaySession newPlaySession = new PlaySession(title,id,currentNumberOfPlayers, date, state, maxNumberOfPlayers, module);
+        if (validatePlaySession(newPlaySession, true)){
+            playSessionHandler.save(newPlaySession);
+        } else {
+            throw new FailedValidationException("Session validation error");
         }
-        return result;
     }
-    
+
+
+
+    /**
+     * Updates the playSession in the database by resetting the playSession info.
+     * @param id unique ID of playSession in database
+     * @param title of playSession
+     * @param maxNumberOfPlayers of playSession
+     * @param date of playSession
+     * @param state of playSession
+     * @param module of playSession
+     * @return saved playSession.
+     */
+    public void updatePlaySession(int id, String title, int maxNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state, Module module){
+        PlaySession playSessionUpdate;
+        playSessionUpdate = lookupPlaySessionID(id);
+
+        playSessionUpdate.setTitle(title);
+        playSessionUpdate.setMaxNumberOfPlayers(maxNumberOfPlayers);
+        playSessionUpdate.setDate(date);
+        playSessionUpdate.setState(state);
+        playSessionUpdate.setModule(module);
+        
+        if (validatePlaySession(playSessionUpdate, false)){
+            playSessionHandler.save(playSessionUpdate);
+        } else {
+            throw new FailedValidationException("Session validation error");
+        }
+    }
+
 
 
     /**
@@ -104,7 +136,6 @@ public class PlaySessionManager {
             System.out.println("Session validation error " + e.getMessage());
             return false;//Catch exception returns false if the validation failed.
         }
-
     }
 
 
@@ -128,51 +159,22 @@ public class PlaySessionManager {
 
 
 
-/**
- * addNewPlaySession
- * @param id
- * @param title
- * @param maxNumberOfPlayers
- * @param date
- * @param state
- * @param module
- */
-    public void addNewPlaySession(String title,int id, int currentNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state, int maxNumberOfPlayers, Module module){
-        PlaySession newPlaySession = new PlaySession(title,id,currentNumberOfPlayers, date, state, maxNumberOfPlayers, module);
-        if (validatePlaySession(newPlaySession, true)){
-            playSessionHandler.save(newPlaySession);
-        } else {
-            throw new FailedValidationException("Session validation error");
-        }
-    }
-
     /**
-     * Updates the playSession in the database by resetting the playSession info.
-     * @param id unique ID of playSession in database
-     * @param title of playSession
-     * @param maxNumberOfPlayers of playSession
-     * @param date of playSession
-     * @param state of playSession
-     * @param module of playSession
-     * @return saved playSession.
+     * LookModule is used by validationPlaySession to find the module and see if it exists in the database.
+     * @param moduleID is the id for the playSession that is requested.
+     * @return This will return true or false, true if found and false if not.
      */
-    public void updatePlaySession(int id, String title, int maxNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state, Module module){
-        PlaySession playSessionUpdate;
-        playSessionUpdate = lookupPlaySessionID(id);
-
-        playSessionUpdate.setTitle(title);
-        playSessionUpdate.setMaxNumberOfPlayers(maxNumberOfPlayers);
-        playSessionUpdate.setDate(date);
-        playSessionUpdate.setState(state);
-        playSessionUpdate.setModule(module);
-        
-        if (validatePlaySession(playSessionUpdate, false)){
-            playSessionHandler.save(playSessionUpdate);
-        } else {
-            throw new FailedValidationException("Session validation error");
+    public boolean lookupModuleID(int moduleID){
+        boolean result = true;
+        try {
+            moduledbHandler.findById(moduleID);
+        } catch (Exception e) {
+            System.out.println("Module not found " + e.getMessage());
+            result = false;
         }
+        return result;
     }
-
+    
 
 
     /**
@@ -186,7 +188,6 @@ public class PlaySessionManager {
         Iterable<PlaySession> playSessions = playSessionHandler.findByDateBetween(startDate, endDate);
         List<PlaySession> playSessionPeriod = new ArrayList<>();
         playSessions.forEach(playSessionPeriod::add);
-
         return playSessionPeriod;
     }
 }
