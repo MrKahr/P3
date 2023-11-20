@@ -173,4 +173,9 @@ public class UserManager {
     public void removeAccount(String userName) {
         
     }
+
+    public Object sanitizeDBLookup(Object jsonObject){
+        Object sanitizedObject = new Object();
+        return sanitizedObject;
+    }
 }

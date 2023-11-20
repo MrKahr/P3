@@ -33,6 +33,8 @@ public class User {
     private SuperAdmin superAdminInfo;      //Optional
 
     //Constructor
+    public User(){} // Required by jackson to deserialize object 
+
     public User(BasicUserInfo basicUserInfo){
         this.basicUserInfo = basicUserInfo;
     }

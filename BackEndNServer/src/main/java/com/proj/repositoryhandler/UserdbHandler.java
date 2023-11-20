@@ -1,8 +1,7 @@
 package com.proj.repositoryhandler;
 
-import java.util.NoSuchElementException;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import com.proj.model.users.User;
@@ -24,40 +23,48 @@ public class UserdbHandler extends DbHandler<User> {
 
     // Method
     @Override
-
     public void save(User user) {
         try {
-            System.out.println(user);
             userRepository.save(user);
-        } catch (Exception e) {
-        //TODO: This error is critical. 
-        //The user should be informed in the web UI (Admin+). 
-        //Another exception should propagate this error upwards.
-
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+        } catch (IllegalArgumentException iae) {
+            iae.printStackTrace();
+            // TODO: Add this to a logging function. Display logs to admins on frontend.
+            // Delete the printStackTrace.
+        } catch (OptimisticLockingFailureException olfe) {
+            // TODO: Add this to a logging function. Display logs to admins on frontend.
+            // Delete the printStackTrace.
+            olfe.printStackTrace();
         }
     }
 
     @Override
     public void saveAll(Iterable<User> userIterable) {
-        userRepository.saveAll(userIterable);
+        try {
+            userRepository.saveAll(userIterable);
+        } catch (IllegalArgumentException iae) {
+            iae.printStackTrace();
+            // TODO: Add this to a logging function. Display logs to admins on frontend.
+            // Delete the printStackTrace.
+        } catch (OptimisticLockingFailureException olfe) {
+            // TODO: Add this to a logging function. Display logs to admins on frontend.
+            // Delete the printStackTrace.
+            olfe.printStackTrace();
+        }
     }
 
     @Override
     public User findById(Integer userID) {
-        User user;
-        try {
-            user = userRepository.findById(userID).orElseThrow();
-        } catch (NoSuchElementException nsee) {
-            throw new UserNotFoundException();
-        }
-        return user;
+        return userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(userID));
     }
 
     @Override
     public boolean existsById(Integer userID) {
-        return userRepository.existsById(userID);
+        /*
+         * IllegalArgumentException thrown by existsById when userID = null is handled
+         * by Spring
+         * Try-catch is redundant here.
+         */
+        return userID == null ? false : userRepository.existsById(userID);
     }
 
     @Override
@@ -67,6 +74,15 @@ public class UserdbHandler extends DbHandler<User> {
 
     @Override
     public Iterable<User> findAllById(Iterable<Integer> userIdIterable) {
+        /*
+         * Unsure how findAllByID throws exceptions in cases when multiple null value
+         * ids are present
+         * No try catch is included because documentation is too sparse to address
+         * above-mentioned issue:
+         * See https://docs.spring.io/spring-data/commons/docs/current/api/org/
+         * springframework/data/repository/CrudRepository.html#findAllById(java.lang.
+         * Iterable)
+         */
         return userRepository.findAllById(userIdIterable);
     }
 
@@ -77,16 +93,47 @@ public class UserdbHandler extends DbHandler<User> {
 
     @Override
     public void deleteAllById(Iterable<Integer> userIdIterable) {
+        /*
+         * Unsure how findAllByID throws exceptions in cases when multiple null value
+         * ids are present
+         * No try catch is included because documentation is too sparse to address
+         * above-mentioned issue:
+         * See https://docs.spring.io/spring-data/commons/docs/current/api/org/
+         * springframework/data/repository/CrudRepository.html#findAllById(java.lang.
+         * Iterable)
+         */
+        /* Spring documentation: */
         userRepository.deleteAllById(userIdIterable);
     }
 
     @Override
     public void delete(User user) {
-        userRepository.delete(user);
+        try {
+            userRepository.delete(user);
+        } catch (IllegalArgumentException iae) {
+            iae.printStackTrace();
+            // TODO: Add this to a logging function. Display logs to admins on frontend.
+            // Delete the printStackTrace.
+        } catch (OptimisticLockingFailureException olfe) {
+            // TODO: Add this to a logging function. Display logs to admins on frontend.
+            // Delete the printStackTrace.
+            olfe.printStackTrace();
+        }
     }
 
     @Override
     public void deleteAll(Iterable<User> userIterable) {
-        userRepository.deleteAll(userIterable);
+        try {
+            userRepository.deleteAll(userIterable);
+        } catch (IllegalArgumentException iae) {
+            // TODO: Add this to a logging function. Display logs to admins on frontend.
+            // Delete the printStackTrace.
+            iae.printStackTrace();
+
+        } catch (OptimisticLockingFailureException olfe){
+            // TODO: Add this to a logging function. Display logs to admins on frontend.
+            // Delete the printStackTrace.           
+            olfe.printStackTrace();
+        }
     }
 }

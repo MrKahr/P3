@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,10 +23,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.proj.model.users.*;
-import com.proj.repositoryhandler.UserdbHandler;
 import com.proj.model.session.PlaySession;
-import com.proj.exception.IllegalUserOperationException;
 import com.proj.model.session.Module;
+import com.proj.repositoryhandler.UserdbHandler;
+import com.proj.exception.IllegalUserOperationException;
+import com.proj.function.RoleAssigner;
 
 /**
  * This controller handles sending HTTP requests from frontend to the server for
@@ -35,7 +37,7 @@ import com.proj.model.session.Module;
  */
 
 // Getting a user
-// TODO: Get single user from db - Profilepage + Adminpage
+// TODO: Get single user from db - Profilepages(self + other)
 // TODO: Get multiple users from db - Adminpage
 // TODO: Get all users from db - Adminpage
 
@@ -60,97 +62,80 @@ public class UserController {
   @Autowired
   UserdbHandler userdbHandler;
 
+  // TODO: FOR TESTING PURPOSES!!!!!
+  ArrayList<Integer> ids = new ArrayList<Integer>();
+
+  /**
+   * Generates users for testing - Delete if found after completing UserController
+   * TODO: delete after compleing UserController
+   * 
+   * @param number
+   * @return
+   */
+  @RequestMapping(path = "/user/create/{number}")
+  @ResponseBody
+  Object saveUsers(@PathVariable Integer number) {
+    try {
+      for (int i = 0; i < number; i++) {
+        User user = new User(new BasicUserInfo("name" + i, "password" + i));
+        RoleAssigner.setRole(user, new Guest("Level 1 bard" + i));
+        userdbHandler.save(user);
+        ids.add(user.getId());
+      }
+      return userdbHandler.findAllById(ids);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return "Could not retrieve users. Failed with: " + e.getMessage();
+    }
+  }
+
+  /**
+   * Page showing a specific user's profile. Must check access level (Member+)
+   * TODO: DO NOT PASS STRINGS TO IDENTIFY ACCESS LEVEL. THIS MUST BE HASHED
+   * DO NOT MAP USER ID DIRECTLY TO GET
+   */
+  @GetMapping(path = "/user/{id}")
+  @ResponseBody
+  Object profile(@PathVariable Integer id, @RequestParam Integer accessingUserID) {
+    User accessingUser = userdbHandler.findById(accessingUserID);
+
+    // Finding user themselves
+    if (accessingUserID == id) {
+      User user = userdbHandler.findById(id);
+      // Sanitize/remove sensitive data from database (e.g. password, real name etc)
+    } else {
+      // Sanitize/remove sensitive data from database (e.g. password, real name etc)
+    }
+    return user;
+  } 
+
+
   /**
    * Admin page for managing users. Must check access level. (Admin+)
    * TODO: Check access level
    * TODO: Make function flexible enough to return a couple of users
    */
-  @RequestMapping(path = "/users")
+  @GetMapping(path = "/users")
   @ResponseBody
-  ArrayList<User> getadminPageUsers(String userType, int numberOfUsersToDisplay) {
+  Object getSomeUsers(@PathVariable Integer start, Integer end) {
 
-    if (!userType.equals("Admin")) {
-      throw new IllegalUserOperationException("User is not allowed to access all users");
-    } else {
-      ArrayList<User> allUsers = new ArrayList<User>();
-      try {
-        // allUsers = userdbHandler.findall();
-        User user1 = new User(new BasicUserInfo("bob", "password"));
-        User user2 = new User(new BasicUserInfo("alice", "password"));
-        allUsers.add(user1);
-        allUsers.add(user2);
-        return allUsers;
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      return allUsers;
+    if (start > end) {
+      start = 0;
     }
-
-  }
-
-  /**
-   * Page showing a specific user's profile. Must check access level (Member+)
-   */
-  @GetMapping(path = "/user/{id}")
-  public @ResponseBody Object profile(@PathVariable Integer id) {
-    User user = null;
+    if (end > ids.size()) {
+      end = ids.size();
+    }
     try {
-      user = userdbHandler.findById(id);
-      return user;
+
+      return userdbHandler.findAllById(ids);
     } catch (Exception e) {
-      System.out.println("Finding user failed with: " + e.getMessage());
       e.printStackTrace();
-      return user;
+      return "Could not retrieve users. Failed with: " + e.getMessage();
     }
-  }
 
-  /**
-   * Page showing the "Sign Up" interface. Must check if user is already logged in
-   * (and redirect to frontpage or something)
-   */
-  // @RequestMapping(path = "/signup")
-  // public @ResponseBody
-  // TODO: Consider enums (toString) status strings as response
-
-  /**
-   * Login page requests sent to server.
-   */
-  @GetMapping(path = "/login")
-  public @ResponseBody Object login(String s) {
-    return new User(new BasicUserInfo("Fisk", "Pass"));
-  }
-
-  // @GetMapping(path = "/login")
-  // public @ResponseBody String login(User f){return "User";}
-
-  @PostMapping(path = "/add") // Map ONLY POST Requests
-  public @ResponseBody Object addNewUser(@RequestParam String name, @RequestParam String password) {
-    // @ResponseBody means the returned String is the response, not a view name
-    // @RequestParam means it is a parameter from the GET or POST request
-
-    User user = new User(new BasicUserInfo(name, password));
-    // userdbHandler.save(user);
-
-    return "Director Saved Succesful";
-  }
-
-  @GetMapping(path = "/all")
-  public @ResponseBody Object getAllUsers() {
-    // This returns a JSON or XML with the users
-    return "Fisk";// userdbHandler.findAll();
-  }
-
-  @GetMapping(path = "/publicCalendar")
-  public @ResponseBody PlaySession ShowCalendar() {
-
-    ArrayList<PlaySession> playSessionList = new ArrayList<PlaySession>();
-    LocalDateTime date = LocalDateTime.of(2023, 12, 12, 10, 10, 0);
-    Module module = new Module("Module Name", "Module Description", "2-10");
-    PlaySession playSession = new PlaySession("Name1", "2", 2, date, "Not yet", 6, module);
-    playSessionList.add(playSession);
-    playSession = new PlaySession("Name2", "3", 2, date, "Not yet", 6, module);
-    playSessionList.add(playSession);
-
-    return playSessionList.get(0);
+  @GetMapping(path = "/user/all")
+  @ResponseBody
+  Object getAllUsers() {
+    return userdbHandler.findAll();
   }
 }
