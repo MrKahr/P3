@@ -1,6 +1,13 @@
 package com.proj.function;
 
+import java.util.Iterator;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.proj.model.users.*;
 import com.proj.exception.*;
@@ -16,6 +23,7 @@ public class UserManager {
     // Field
     @Autowired
     UserdbHandler userdbHandler;
+    
     private Integer numberOfUsers;
 
     // Constructor
@@ -171,5 +179,39 @@ public class UserManager {
 
     public void removeAccount(String userName) {
         
+    }
+
+    public Object sanitizeDBLookup(User userObject){
+        User sanitizedUser = new User();
+        try {
+            sanitizedUser = userObject.clone();
+            BasicUserInfo userInfo = sanitizedUser.getBasicUserInfo();
+            Member memberInfo = sanitizedUser.getMemberInfo();
+            DM dminfo = sanitizedUser.getDmInfo();
+            Admin admininfo = sanitizedUser.getAdminInfo();
+            SuperAdmin superadmininfo = sanitizedUser.getSuperAdminInfo();
+            // Remove all identifying information for a user
+
+            if(userInfo != null){
+                userInfo.setPassword("");
+            } 
+            if(memberInfo != null){
+                memberInfo = null;
+            }
+            if(dminfo != null){
+                dminfo = null;
+            }
+            if(admininfo != null){
+                admininfo = null;
+            }
+            if(superadmininfo != null){
+                superadmininfo = null;
+            }
+  
+        } catch (CloneNotSupportedException cnse) {
+            cnse.printStackTrace();
+        }
+
+        return sanitizedUser;
     }
 }

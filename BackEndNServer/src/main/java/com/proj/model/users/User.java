@@ -2,6 +2,7 @@ package com.proj.model.users;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,6 +35,8 @@ public class User {
     private RoleBackups roleBackups;        //Required
 
     //Constructor
+    public User(){} // Required by jackson to deserialize object 
+
     public User(BasicUserInfo basicUserInfo){
         this.basicUserInfo = basicUserInfo;
         this.roleBackups = new RoleBackups(this);
@@ -73,6 +76,10 @@ public class User {
         return this.basicUserInfo;
     }
     
+    public Integer getId(){
+        return this.id;
+    } 
+
     public Guest getGuestInfo(){
         return this.guestInfo;
     }
@@ -92,6 +99,7 @@ public class User {
     public SuperAdmin getSuperAdminInfo(){
         return this.superAdminInfo;
     }
+
 
     public RoleBackups getRoleBackups(){
         return this.roleBackups;
@@ -118,5 +126,16 @@ public class User {
             default:
                 throw new IllegalArgumentException("roleType not recognized!");
         }
+
+    /*Makes a deep copy of a user object that can be sanitized, and sent back to the front end to avoid security risks */
+    @Override
+    public User clone() throws CloneNotSupportedException {
+        User clonedUser = new User(getBasicUserInfo());
+        clonedUser.setGuestInfo(getGuestInfo());
+        clonedUser.setMemberInfo(getMemberInfo());
+        clonedUser.setAdminInfo(getAdminInfo());
+        clonedUser.setSuperAdminInfo(getSuperAdminInfo());
+        clonedUser.setDmInfo(getDmInfo());
+        return clonedUser;
     }
 }
