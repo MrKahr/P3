@@ -2,9 +2,12 @@ package com.proj.model.users;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * A class that represents a user with the access level "DM". 
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DM extends Role {
     // Field
     private ArrayList<String> hostedSessions; // We might prefer another data structure
@@ -22,7 +25,7 @@ public class DM extends Role {
     public DM(){
         this.hostedSessions = new ArrayList<String>();
     }
-
+    
     // Method
     public ArrayList<String> getHostedSessions() {
         return hostedSessions;

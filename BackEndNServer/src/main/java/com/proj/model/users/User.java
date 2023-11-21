@@ -95,4 +95,16 @@ public class User {
     public SuperAdmin getSuperAdminInfo(){
         return this.superAdminInfo;
     }
+
+    /*Makes a deep copy of a user object that can be sanitized, and sent back to the front end to avoid security risks */
+    @Override
+    public User clone() throws CloneNotSupportedException {
+        User clonedUser = new User(getBasicUserInfo());
+        clonedUser.setGuestInfo(getGuestInfo());
+        clonedUser.setMemberInfo(getMemberInfo());
+        clonedUser.setAdminInfo(getAdminInfo());
+        clonedUser.setSuperAdminInfo(getSuperAdminInfo());
+        clonedUser.setDmInfo(getDmInfo());
+        return clonedUser;
+    }
 }
