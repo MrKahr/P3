@@ -1,11 +1,14 @@
 package com.proj.model.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 //The constructor for this method used to use constructor chaining. This link has some info on that
 //https://docs.oracle.com/javase/tutorial/java/IandI/super.html
 
 /**
  * A class that represents a user with the access level "Member". 
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Member extends Role {
     // Field
     private String realName;
@@ -31,6 +34,8 @@ public class Member extends Role {
         this.address = address;
         this.email = email;
     }
+
+    public Member(){}
 
     // Method
     public String getRealName() {

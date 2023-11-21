@@ -28,6 +28,7 @@ import com.proj.model.session.Module;
 import com.proj.repositoryhandler.UserdbHandler;
 import com.proj.exception.IllegalUserOperationException;
 import com.proj.function.RoleAssigner;
+import com.proj.function.UserManager;
 
 /**
  * This controller handles sending HTTP requests from frontend to the server for
@@ -72,20 +73,39 @@ public class UserController {
    * @param number
    * @return
    */
-  @RequestMapping(path = "/user/create/{number}")
+@RequestMapping(path = "/user/create/{number}")
   @ResponseBody
   Object saveUsers(@PathVariable Integer number) {
+    UserManager userManager = new UserManager(0);
+    ArrayList<String> sanitizedUsers = new ArrayList<String>();
     try {
       for (int i = 0; i < number; i++) {
         User user = new User(new BasicUserInfo("name" + i, "password" + i));
+        if(i >= 1){
         RoleAssigner.setRole(user, new Guest("Level 1 bard" + i));
+        }
+        if(i >= 2){
+        RoleAssigner.setRole(user, new Member("Fisk", "Randomstuff", "Table", "Stringwauy", "NoEmail"));
+        }
+        if(i >= 3){
+        RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
+        }
+        if(i >= 4){
+        RoleAssigner.setRole(user, new Admin(new ArrayList<String>(), new ArrayList<String>()));
+        }
+        if(i == 5){
+          RoleAssigner.setRole(user, new SuperAdmin());
+        }
         userdbHandler.save(user);
         ids.add(user.getId());
       }
-      return userdbHandler.findAllById(ids);
+      for(User user : userdbHandler.findAllById(ids)){
+        sanitizedUsers.add(userManager.sanitizeDBLookup(user));
+      }
+      return sanitizedUsers;
     } catch (Exception e) {
       e.printStackTrace();
-      return "Could not retrieve users. Failed with: " + e.getMessage();
+      return sanitizedUsers; 
     }
   }
 
@@ -98,10 +118,10 @@ public class UserController {
   @ResponseBody
   Object profile(@PathVariable Integer id, @RequestParam Integer accessingUserID) {
     User accessingUser = userdbHandler.findById(accessingUserID);
-
+    User user = null;
     // Finding user themselves
     if (accessingUserID == id) {
-      User user = userdbHandler.findById(id);
+      user = userdbHandler.findById(id);
       // Sanitize/remove sensitive data from database (e.g. password, real name etc)
     } else {
       // Sanitize/remove sensitive data from database (e.g. password, real name etc)
@@ -132,7 +152,7 @@ public class UserController {
       e.printStackTrace();
       return "Could not retrieve users. Failed with: " + e.getMessage();
     }
-
+  }
   @GetMapping(path = "/user/all")
   @ResponseBody
   Object getAllUsers() {

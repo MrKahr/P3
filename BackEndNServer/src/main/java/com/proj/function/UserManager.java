@@ -1,8 +1,18 @@
 package com.proj.function;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.proj.model.users.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.proj.exception.*;
 import com.proj.repositoryhandler.UserdbHandler;
 
@@ -174,8 +184,27 @@ public class UserManager {
         
     }
 
-    public Object sanitizeDBLookup(Object jsonObject){
-        Object sanitizedObject = new Object();
-        return sanitizedObject;
+    public String sanitizeDBLookup(User userObject){
+        StringWriter outWriter = null;
+        
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json = objectMapper.writeValueAsString(userObject);
+            
+            
+            Gson gson = new GsonBuilder().create();
+            JsonReader reader = gson.newJsonReader( new StringReader( json ) );
+
+            outWriter = new StringWriter();
+            JsonWriter writer = gson.newJsonWriter( outWriter );
+
+            JsonStreamFilter.streamFilter( reader, writer, Arrays.asList( "memberInfo", "password", "listOfRoleChanges" ) );
+
+            System.out.println("json: "+json+"\n");
+            System.out.println("writerToString: " + outWriter.toString() );            
+        } catch (IOException ioe) {
+            System.out.println("Fish");
+        }
+        return outWriter.toString();
     }
 }

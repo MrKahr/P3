@@ -2,6 +2,7 @@ package com.proj.model.users;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -36,7 +37,7 @@ public class BasicUserInfo {
     public BasicUserInfo(String userName, String password){
         this.userName = userName;
         this.password = password;
-        this.registerDate = LocalDate.now();
+        this.registerDate = LocalDateTime.now();
         this.expiredBans = new ArrayList<Ban>();
     }
 
