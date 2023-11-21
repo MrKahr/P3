@@ -80,36 +80,11 @@ public class RoleAssigner {
         int dependencyNeeded = dependencies.length;
         int dependenciesFound = 0;
         for (RoleType type : dependencies) {
-            Role dependency = getRoleByType(user, type);
+            Role dependency = user.getRoleByType(type);
             if(dependency != null && dependency.isActive()){    //check if the role is present on the user and currently active
                 dependenciesFound++;
             }
         }
         return dependencyNeeded == dependenciesFound;    //comparing the number of dependencies we need with the number of dependencies we found present
     }
-
-    /**
-     * Gets a role object (or null) from a specified user. Remember to expand this method when adding new roles!
-     * @param user The user to get a role from.
-     * @param type The role's type. Should be the same as the return value for the role's getRoleType()-method.
-     * @return A Role-object corresponding to the given type, or null, if no such object is present on the user.
-     * @throws IllegalArgumentException Thrown if the given RoleType has not been accounted for.
-     */
-    private static Role getRoleByType(User user, RoleType type){
-        switch (type) {
-            case GUEST:
-                return user.getGuestInfo();
-            case MEMBER:
-                return user.getMemberInfo();
-            case DM:
-                return user.getDmInfo();
-            case ADMIN:
-                return user.getAdminInfo();
-            case SUPERADMIN:
-                return user.getSuperAdminInfo();
-            default:
-                throw new IllegalArgumentException("roleType not recognized!");
-        }
-    }
-
 }
