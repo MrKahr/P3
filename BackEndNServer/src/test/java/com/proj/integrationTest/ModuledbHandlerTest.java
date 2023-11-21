@@ -1,0 +1,28 @@
+package com.proj.integrationTest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import com.proj.repositoryhandler.ModuledbHandler;
+import com.proj.model.session.Module;
+
+@SpringBootTest
+public class ModuledbHandlerTest {
+
+    @Autowired
+    private ModuledbHandler moduledbHandler;
+
+    @Test
+    public void createAndShowModule() {
+        Module module = new Module("name", "desc", "01-02");
+
+        moduledbHandler.save(module);
+        Module foundModule = moduledbHandler.findById(module.getId());
+        
+        //equals on objects is only true if it is the same object, not if all fields are the same
+        assertEquals(module.getId(), foundModule.getId());
+        moduledbHandler.delete(module);
+    }
+}

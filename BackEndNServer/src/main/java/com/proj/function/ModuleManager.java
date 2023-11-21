@@ -3,20 +3,25 @@ package com.proj.function;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.stereotype.Service;
 
 import com.proj.exception.FailedValidationException;
 import com.proj.exception.InvalidInputException;
 import com.proj.exception.NoModuleFoundException;
 import com.proj.model.session.Module;
-import com.proj.repositories.ModuleRepository;
+import com.proj.repositoryhandler.ModuledbHandler;
 
-public class ModuleManager { // TODO: Integration test to be added later
+@Service
+public class ModuleManager {
     // Field
     @Autowired
-    private ModuleRepository moduleRepository;
+    private ModuledbHandler moduledbHandler;
 
     // Method
+    public ModuledbHandler getModuledbHandler() {
+        return moduledbHandler;
+    }
+    
     /**
      * Creates module and saves it on database
      * 
@@ -25,28 +30,27 @@ public class ModuleManager { // TODO: Integration test to be added later
      * @param levelRange  of module
      * @return The added module
      */
-    public Module createModule(String name, String description, String levelRange)
-            throws IllegalArgumentException, FailedValidationException {
+    public Module createModule(String name, String description, String levelRange) {
         Module module = new Module(name, description, levelRange);
         if (validateModule(module)) {
             // Add module to database
             module.setAddedDate(LocalDateTime.now());
-            return moduleRepository.save(module);
+            moduledbHandler.save(module);
+            return moduledbHandler.findById(module.getId());
         } else {
             throw new FailedValidationException("Validation failed");
         }
     }
 
     /**
-     * Removes module from database
+     * Removes module, by setting a removedDate, but keeps it in the database
      * 
      * @param module to remove
      * @return removed module
      */
-    public Module removeModule(Module module) throws IllegalArgumentException, OptimisticLockingFailureException {
-        // Remove module from database
-        moduleRepository.delete(module); // deleteById(id): Delete an entity by its ID.
+    public Module removeModule(Module module) {
         module.setRemovedDate(LocalDateTime.now());
+        moduledbHandler.save(module);
         return module;
     }
 
@@ -59,9 +63,8 @@ public class ModuleManager { // TODO: Integration test to be added later
      * @param levelRange  of module
      * @return saved module
      */
-    public Module updateModule(Integer id, String name, String description, String levelRange)
-            throws NoModuleFoundException, FailedValidationException, IllegalArgumentException {
-        Object moduleObject = moduleRepository.findById(id);
+    public Module updateModule(Integer id, String name, String description, String levelRange) {
+        Object moduleObject = moduledbHandler.findById(id);
         Module moduleUpdate;
         if (moduleObject instanceof Module) { // If module is found we store it in moduleToUpdate, else we throw
             moduleUpdate = (Module) moduleObject;
@@ -74,7 +77,8 @@ public class ModuleManager { // TODO: Integration test to be added later
         moduleUpdate.setDescription(description);
         moduleUpdate.setLevelRange(levelRange);
         if (validateModule(moduleUpdate)) {
-            return moduleRepository.save(moduleUpdate);
+            moduledbHandler.save(moduleUpdate);
+            return moduledbHandler.findById(moduleUpdate.getId());
         } else {
             throw new FailedValidationException("The validation of module failed");
         }
