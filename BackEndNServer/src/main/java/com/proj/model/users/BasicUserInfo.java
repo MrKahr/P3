@@ -27,6 +27,8 @@ public class BasicUserInfo {
     private Duration banDuration = Duration.ZERO;   //If this field is greater than 0, the user is considered banned!
     private String banReason;                       //Accompanying the banDuration, this field holds the reason for a ban. It could be an ArrayList so we can track previous bans.
     private Boolean hasPaid;        //Indicates whether this user has paid for membership or not.
+    private Ban activeBan;          //If this field is not null, the user should be treated as banned.
+    private ArrayList<Ban> expiredBans; //Old bans are put here so we can keep track of bad behavior.
     
     //Constructor
     public BasicUserInfo(){}; // Required by jackson to deserialize object
@@ -34,7 +36,8 @@ public class BasicUserInfo {
     public BasicUserInfo(String userName, String password){
         this.userName = userName;
         this.password = password;
-        this.registerDate = LocalDateTime.now();
+        this.registerDate = LocalDate.now();
+        this.expiredBans = new ArrayList<Ban>();
     }
 
 
@@ -55,6 +58,14 @@ public class BasicUserInfo {
         return password;
     }
 
+    public Ban getActiveBan(){
+        return activeBan;
+    }
+
+    public ArrayList<Ban> getExpiredBans(){
+        return expiredBans;
+    }
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -67,4 +78,11 @@ public class BasicUserInfo {
         this.deletionDate = deletionDate;
     }
 
+    public void setActiveBan(Ban ban){
+        this.activeBan = ban;
+    }
+
+    public void addExpiredBan(Ban ban){
+        expiredBans.add(ban);
+    }
 }

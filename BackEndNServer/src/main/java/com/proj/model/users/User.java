@@ -39,12 +39,16 @@ public class User {
         this.basicUserInfo = basicUserInfo;
     }
 
+    public User(String userName, String password){
+        this.basicUserInfo = new BasicUserInfo(userName, password);
+    }
+
     // Method
     public void setBasicUserInfo(BasicUserInfo basicUserInfo){    //remove information by passing null to the setter-methods.
         this.basicUserInfo = basicUserInfo;
     }
 
-    public void setGuestInfo(Guest guestInfo){
+    public void setGuestInfo(Guest guestInfo){                    //try to avoid overwriting roles with null, use setActiveState(false) instead!
         this.guestInfo = guestInfo;
     }
     
