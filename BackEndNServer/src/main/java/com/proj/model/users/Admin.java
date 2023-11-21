@@ -2,9 +2,12 @@ package com.proj.model.users;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * A class that represents a user with the access level "Admin".
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Admin extends Role {
     // Field
     private ArrayList<String> listOfRoleChanges; // The ArrayList containing all role change events the user has
@@ -35,6 +38,8 @@ public class Admin extends Role {
             this.listOfBans = new ArrayList<String>();
         }
     }
+
+    public Admin(){}
 
     // Method
     // TODO add method for adding object to array list
