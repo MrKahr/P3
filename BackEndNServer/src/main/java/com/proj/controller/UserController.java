@@ -76,6 +76,8 @@ public class UserController {
   @RequestMapping(path = "/user/create/{number}")
   @ResponseBody
   Object saveUsers(@PathVariable Integer number) {
+    UserManager userManager = new UserManager(0);
+    ArrayList<User> sanitizedUsers = new ArrayList<User>();
     try {
       for (int i = 0; i < number; i++) {
         User user = new User(new BasicUserInfo("name" + i, "password" + i));
@@ -90,9 +92,6 @@ public class UserController {
         }
         if(i >= 4){
         RoleAssigner.setRole(user, new Admin(new ArrayList<String>(), new ArrayList<String>()));
-        
-        UserManager userManager = new UserManager(0);
-        userManager.sanitizeDBLookup(user);
         }
         if(i == 5){
           RoleAssigner.setRole(user, new SuperAdmin());
@@ -100,10 +99,13 @@ public class UserController {
         userdbHandler.save(user);
         ids.add(user.getId());
       }
-      return userdbHandler.findAllById(ids);
+      for(User user : userdbHandler.findAllById(ids)){
+        sanitizedUsers.add(userManager.sanitizeDBLookup(user));
+      }
+      return sanitizedUsers;
     } catch (Exception e) {
       e.printStackTrace();
-      return "Could not retrieve users. Failed with: " + e.getMessage();
+      return sanitizedUsers; 
     }
   }
 

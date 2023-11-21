@@ -14,7 +14,7 @@ import jakarta.persistence.Id;
  * Basic user info is also kept here. It is also an object, for consistency's sake, but could be defined as a few fields of another type.
  */
 @Entity
-public class User {
+public class User implements Cloneable {
     // Field
     @JdbcTypeCode(SqlTypes.JSON)
     private BasicUserInfo basicUserInfo;    //Required
@@ -102,9 +102,9 @@ public class User {
         User clonedUser = new User(getBasicUserInfo());
         clonedUser.setGuestInfo(getGuestInfo());
         clonedUser.setMemberInfo(getMemberInfo());
+        clonedUser.setDmInfo(getDmInfo());
         clonedUser.setAdminInfo(getAdminInfo());
         clonedUser.setSuperAdminInfo(getSuperAdminInfo());
-        clonedUser.setDmInfo(getDmInfo());
         return clonedUser;
     }
 }
