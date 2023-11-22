@@ -191,9 +191,8 @@ public class UserManager {
 
     }
 
-    public User sanitizeDBLookup(User user, RoleType role) {
+    public User sanitizeDBLookup(User user) {
             User sanitizedUser = new User();
-            sanitizedUser.getBasicUserInfo().setUserName(user.getBasicUserInfo().getUserName());
             try {
                 sanitizedUser = user.clone();
                 // Remove all identifying information for a user

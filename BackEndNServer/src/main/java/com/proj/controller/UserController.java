@@ -99,9 +99,10 @@ public class UserController {
         userdbHandler.save(user);
         ids.add(user.getId());
       }
-      for(User user : userdbHandler.findAllById(ids)){
-        sanitizedUsers.add(userManager.sanitizeDBLookup(user));
-      }
+      //for(User user : userdbHandler.findAllById(ids)){
+      //  sanitizedUsers.add(userManager.sanitizeDBLookup(user));
+      //}
+      sanitizedUsers.add(userManager.sanitizeDBLookup(userdbHandler.findById(0)));
       return sanitizedUsers;
     } catch (Exception e) {
       e.printStackTrace();
