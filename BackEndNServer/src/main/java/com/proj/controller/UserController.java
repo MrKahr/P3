@@ -73,26 +73,25 @@ public class UserController {
    * @param number
    * @return
    */
-  @RequestMapping(path = "/user/create/{number}")
-  @ResponseBody
-  Object saveUsers(@PathVariable Integer number) {
+  public @RequestMapping(path = "/user/create/{number}")
+  @ResponseBody Object saveUsers(@PathVariable Integer number) {
     try {
       for (int i = 0; i < number; i++) {
         User user = new User(new BasicUserInfo("name" + i, "password" + i));
         if(i >= 1){
-        RoleAssigner.setRole(user, new Guest("Level 1 bard" + i));
+          RoleAssigner.setRole(user, new Guest("Level 1 bard" + i));
         }
         if(i >= 2){
-        RoleAssigner.setRole(user, new Member("Fisk", "Randomstuff", "Table", "Stringwauy", "NoEmail"));
+          RoleAssigner.setRole(user, new Member("Fisk", "Randomstuff", "Table", "Stringwauy", "NoEmail"));
         }
         if(i >= 3){
-        RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
+          RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
         }
         if(i >= 4){
-        RoleAssigner.setRole(user, new Admin(new ArrayList<String>(), new ArrayList<String>()));
+          RoleAssigner.setRole(user, new Admin(new ArrayList<String>(), new ArrayList<String>()));
         
-        UserManager userManager = new UserManager(0);
-        userManager.sanitizeDBLookup(user);
+          UserManager userManager = new UserManager(0);
+          userManager.sanitizeDBLookup(user);
         }
         if(i == 5){
           RoleAssigner.setRole(user, new SuperAdmin());
@@ -113,8 +112,7 @@ public class UserController {
    * DO NOT MAP USER ID DIRECTLY TO GET
    */
   @GetMapping(path = "/user/{id}")
-  @ResponseBody
-  Object profile(@PathVariable Integer id, @RequestParam Integer accessingUserID) {
+  @ResponseBody Object profile(@PathVariable Integer id, @RequestParam Integer accessingUserID) {
     User accessingUser = userdbHandler.findById(accessingUserID);
     User user = null;
     // Finding user themselves
@@ -134,8 +132,7 @@ public class UserController {
    * TODO: Make function flexible enough to return a couple of users
    */
   @GetMapping(path = "/users")
-  @ResponseBody
-  Object getSomeUsers(@PathVariable Integer start, Integer end) {
+  @ResponseBody Object getSomeUsers(@PathVariable Integer start, Integer end) {
 
     if (start > end) {
       start = 0;
@@ -153,8 +150,7 @@ public class UserController {
   }
 
   @GetMapping(path = "/user/all")
-  @ResponseBody
-  Object getAllUsers() {
+  @ResponseBody Object getAllUsers() {
     return userdbHandler.findAll();
   }
 }
