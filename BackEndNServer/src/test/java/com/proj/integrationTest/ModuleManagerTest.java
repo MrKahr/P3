@@ -17,7 +17,7 @@ public class ModuleManagerTest {
     ModuleManager moduleManager;
 
     @Test
-    public void updateAndShowModule() {
+    public void updateAndRetrieveModule() {
         Module module = moduleManager.createModule("name", "desc", "01-02");
         
         Module foundModule = moduleManager.updateModule(module.getId(), "NewName", "NewDesc", "02-03");

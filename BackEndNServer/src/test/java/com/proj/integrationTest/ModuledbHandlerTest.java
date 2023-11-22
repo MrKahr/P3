@@ -15,7 +15,7 @@ public class ModuledbHandlerTest {
     private ModuledbHandler moduledbHandler;
 
     @Test
-    public void createAndShowModule() {
+    public void createAndRetrieveModule() {
         Module module = new Module("name", "desc", "01-02");
 
         moduledbHandler.save(module);
@@ -23,6 +23,7 @@ public class ModuledbHandlerTest {
         
         //equals on objects is only true if it is the same object, not if all fields are the same
         assertEquals(module.getId(), foundModule.getId());
+        // Test data is deleted from database after the test, to avoid issues in "production"
         moduledbHandler.delete(module);
     }
 }

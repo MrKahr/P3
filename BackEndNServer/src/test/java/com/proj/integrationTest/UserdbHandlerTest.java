@@ -18,7 +18,7 @@ public class UserdbHandlerTest {
     private UserdbHandler userdbHandler;
 
     @Test
-    public void createAndShowUser() {
+    public void createAndRetrieveUser() {
         BasicUserInfo info = new BasicUserInfo("userGuy", "password2");
         User user = new User(info);
 
@@ -30,7 +30,7 @@ public class UserdbHandlerTest {
     }
 
     @Test
-    public void createAndShowMultipleUsers() {
+    public void createAndRetrieveMultipleUsers() {
         ArrayList<User> users = new ArrayList<User>();
         for (int i = 0; i < 5; i++) {
             BasicUserInfo info = new BasicUserInfo("UserWithANumber" + i + 1, "password" + i + 1);
