@@ -30,7 +30,7 @@ public class ModuleManager {
      * @param levelRange  of module
      * @return The added module
      */
-    public Module createModule(String name, String description, String levelRange) {
+    public Module createModule(String name, String description, String levelRange) throws FailedValidationException {
         Module module = new Module(name, description, levelRange);
         if (validateModule(module)) {
             // Add module to database
@@ -63,7 +63,7 @@ public class ModuleManager {
      * @param levelRange  of module
      * @return saved module
      */
-    public Module updateModule(Integer id, String name, String description, String levelRange) {
+    public Module updateModule(Integer id, String name, String description, String levelRange) throws NoModuleFoundException, FailedValidationException {
         Object moduleObject = moduledbHandler.findById(id);
         Module moduleUpdate;
         if (moduleObject instanceof Module) { // If module is found we store it in moduleToUpdate, else we throw
