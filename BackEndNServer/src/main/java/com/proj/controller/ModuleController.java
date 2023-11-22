@@ -11,15 +11,12 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -50,6 +47,7 @@ public class ModuleController {
     @GetMapping(path = "/getAll")
     ArrayList<Module> getModules() {
         Iterable<Module> modules = moduleManager.getModuledbHandler().findAll();
+
         ArrayList<Module> validModules = new ArrayList<Module>();
 
         for (Module module : modules) {
@@ -78,7 +76,6 @@ public class ModuleController {
     Module editModule(@RequestBody Module module) {
         Module editedModule = moduleManager.updateModule(module.getId(), module.getName(), module.getDescription(),
                 module.getLevelRange());
-
         return editedModule;
     }
 }
