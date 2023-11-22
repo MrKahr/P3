@@ -191,31 +191,49 @@ public class UserManager {
 
     }
 
-    public User sanitizeDBLookup(User user) {
-            User sanitizedUser = new User();
-            try {
-                sanitizedUser = user.clone();
-                // Remove all identifying information for a user
-                if (sanitizedUser.getBasicUserInfo() != null) {
+    /**
+     * Removes sensitive information from dp-lookup based on accessingUser privilege   
+     * @param user - user object that is looked up in the data 
+     * @param requestingUser - user requesting access to user object 
+     * @param role - the access level of the requesting user e.g. admin
+     * @return - user object with correct elements removed 
+     * @throws NullPointerException
+     * @pre-con: user element must be defined
+     */
+    public User sanitizeDBLookup(User user, User requestingUser, RoleType role) throws NullPointerException {
+        User sanitizedUser = new User();
+
+        if (user.equals(null)) {
+            throw new NullPointerException("Cannot sanitize null element");
+        }
+
+        // Check whether user accesses their own page, otherwise build payload based
+        if (requestingUser.equals(user)) {
+            sanitizedUser.setBasicUserInfo(user.getBasicUserInfo());
+            sanitizedUser.setGuestInfo(user.getGuestInfo());
+            sanitizedUser.setMemberInfo(user.getMemberInfo());
+            // Remove password before sending back
+            sanitizedUser.getBasicUserInfo().setPassword("");
+
+        } else {
+            // Note the fall-through in the switch case ensures that accessingUser gets information that is allowed for role and all access levels below 
+            switch (role) {
+                case SUPERADMIN:
+                    sanitizedUser.setSuperAdminInfo(user.getSuperAdminInfo());
+                    sanitizedUser.setMemberInfo(user.getMemberInfo());
+                case ADMIN:
+                    sanitizedUser.setAdminInfo(user.getAdminInfo());
+                case DM:
+                    sanitizedUser.setDmInfo(user.getDmInfo());
+                case MEMBER:
+                    sanitizedUser.setGuestInfo(user.getGuestInfo());
+                default:
+                    sanitizedUser.setBasicUserInfo(user.getBasicUserInfo());
+                    // Remove password before sending back
                     sanitizedUser.getBasicUserInfo().setPassword("");
-                }
-                if (sanitizedUser.getMemberInfo() != null) {
-                    sanitizedUser.setMemberInfo(null); 
-                }
-                if (sanitizedUser.getDmInfo() != null) {
-                    sanitizedUser.setDmInfo(null); 
-                }
-                if (sanitizedUser.getAdminInfo() != null) {
-                    sanitizedUser.setAdminInfo(null);
-                }
-                if (sanitizedUser.getSuperAdminInfo() != null) {
-                    sanitizedUser.setSuperAdminInfo(null);
-                }
-
-            } catch (CloneNotSupportedException cnse) {
-                cnse.printStackTrace();
+                    break;
             }
-
+        }
         return sanitizedUser;
     }
 }

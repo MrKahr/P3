@@ -33,6 +33,11 @@ public class RoleBackups {
     public User getUser(){
         return this.user;
     }
+
+    // Need to set the user to null to avoid recursion when serializing json objects
+    public void setUser(User user){
+        this.user = user;
+    }
     /**
      * Backs up a user's role of the give type. Only one role of each type can be stored.
      * This method does not need to be expanded when new roles are added.

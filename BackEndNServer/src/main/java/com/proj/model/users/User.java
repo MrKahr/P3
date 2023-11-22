@@ -145,12 +145,12 @@ public class User implements Cloneable {
     /**
      * Finds and returns all roles associated with a user
      */
-    public RoleType[] getAllRoles(){
+    public RoleType[] getAllRoles(User user){
         int currentNumberOfRoles = RoleType.values().length; // NoType enum should not be included
         RoleType[] roles = new RoleType[currentNumberOfRoles]; // Maximal number of roles
 
         for(int i = 0; i < currentNumberOfRoles; i++){
-
+            
         }
         //List<RoleType> CurrentRoles = Arrays.asList(RoleType.values().remove(RoleType.NOTYPE.ordinal()));
 
