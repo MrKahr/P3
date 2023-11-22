@@ -126,6 +126,7 @@ public class User {
             default:
                 throw new IllegalArgumentException("roleType not recognized!");
         }
+    }
 
     /*Makes a deep copy of a user object that can be sanitized, and sent back to the front end to avoid security risks */
     @Override
