@@ -39,12 +39,12 @@ public class User {
 
     public User(BasicUserInfo basicUserInfo){
         this.basicUserInfo = basicUserInfo;
-        this.roleBackups = new RoleBackups(this);
+        this.roleBackups = new RoleBackups();
     }
 
     public User(String userName, String password){
         this.basicUserInfo = new BasicUserInfo(userName, password);
-        this.roleBackups = new RoleBackups(this);
+        this.roleBackups = new RoleBackups();
     }
 
     // Method
@@ -126,6 +126,7 @@ public class User {
             default:
                 throw new IllegalArgumentException("roleType not recognized!");
         }
+    }
 
     /*Makes a deep copy of a user object that can be sanitized, and sent back to the front end to avoid security risks */
     @Override
