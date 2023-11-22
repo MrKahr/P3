@@ -102,7 +102,7 @@ public class UserController {
       //for(User user : userdbHandler.findAllById(ids)){
       //  sanitizedUsers.add(userManager.sanitizeDBLookup(user));
       //}
-      sanitizedUsers.add(userManager.sanitizeDBLookup(userdbHandler.findById(0),userdbHandler.findById(0), RoleType.ADMIN));
+      sanitizedUsers.add(userManager.sanitizeDBLookup(userdbHandler.findById(1),userdbHandler.findById(1), RoleType.ADMIN));
       return sanitizedUsers;
     } catch (Exception e) {
       e.printStackTrace();
