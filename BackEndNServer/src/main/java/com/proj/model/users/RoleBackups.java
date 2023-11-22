@@ -1,20 +1,21 @@
 package com.proj.model.users;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.proj.model.events.RoleChanged;
+import com.proj.function.RoleAssigner;
 
 public class RoleBackups {
     //Field
     private ArrayList<RoleChanged> history;
-    private Role[] roles; 
-    private User user;
+    private HashMap<RoleType,Role> roles;
+    //there used to be a field for a user here, but that made it impossible to serialize, so we opt for a user parameter where it's needed instead
 
     //Constructor
-    public RoleBackups(User user){
+    public RoleBackups(){
         this.history = new ArrayList<RoleChanged>();
-        this.roles = new Role[RoleType.values().length];  //we use the number of possible role types to set the size of the array
-        this.user = user;
+        this.roles = new HashMap<RoleType, Role>();
     }
 
     //Method
@@ -26,33 +27,53 @@ public class RoleBackups {
         return this.history;
     }
 
-    public Role[] getBackupArray(){
+    public HashMap<RoleType,Role> getBackups(){
         return this.roles;
     }
 
-    public User getUser(){
-        return this.user;
-    }
-
-    // Need to set the user to null to avoid recursion when serializing json objects
-    public void setUser(User user){
-        this.user = user;
-    }
     /**
      * Backs up a user's role of the give type. Only one role of each type can be stored.
      * This method does not need to be expanded when new roles are added.
-     * @param type The type of the role that should be transferred to the backup array.
+     * @param user The user whose role should be backed up.
+     * @param type The type of the role that should be transferred to the backup hashmap.
      */
-    public void setRoleBackup(RoleType type){
-        this.roles[type.ordinal()] = this.user.getRoleByType(type);
+    public void setRoleBackup(User user, RoleType type){
+        this.roles.put(type, user.getRoleByType(type));
     }
 
     /**
-     * Retrieves a role from a user's backup array and returns it.
+     * Retrieves a role from a user's backup hashmap and returns it.
      * @param type The type of role that should be returned.
-     * @return The role stored in the backup array.
+     * @return The role stored in the backup hashmap.
      */
     public Role getBackupByType(RoleType type){
-        return this.roles[type.ordinal()];
+        return (Role) this.roles.get(type); //casting to role to avoid compilation error
+    }
+
+    /**
+     * Checks if there exists a backup of a specific role on the object it is called on.
+     * @param type The type of role to check for.
+     * @return True if there is a backup, false if not.
+     */
+    private boolean hasBackup(RoleType type){
+        return this.roles.get(type) != null;
+    }
+
+    /**
+     * Moves the role of the given type to the corresponding field in the associated user object.
+     * If a role already exists in that field, it swaps places with the new role.
+     * @param user The user whose backup should be restored.
+     * @param type The type of role to restore.
+     */
+    public void restoreBackup(User user, RoleType type){
+        if(!hasBackup(type)){
+            throw new IllegalArgumentException("No backup of type " + type + " found!");
+        }
+        Role newRole = getBackupByType(type); 
+        if(user.getRoleByType(type) != null){   //if the field is currently occupied, move it that role the backup array
+            setRoleBackup(user, type);
+        }
+        RoleAssigner.setRole(user, newRole);
     }
 }
+

@@ -68,7 +68,9 @@ public class RoleAssigner {
             default:
                 throw new IllegalArgumentException("newRoleObject returns unknown role type");
         }
-        return new RoleChanged(userObject, newRoleObject, previousRoleObject);  //Return an event object to put in the database
+        RoleChanged event = new RoleChanged(userObject, newRoleObject, previousRoleObject);
+        userObject.getRoleBackups().addToHistory(event);  //Add an event object to the user's rolechange history
+        return event;
     }
 
     /**
