@@ -9,14 +9,13 @@ import com.proj.function.RoleAssigner;
 public class RoleBackups {
     //Field
     private ArrayList<RoleChanged> history;
-    private HashMap<RoleType,Role> roles; 
-    private User user;
+    private HashMap<RoleType,Role> roles;
+    //there used to be a field for a user here, but that made it impossible to serialize, so we opt for a user parameter where it's needed instead
 
     //Constructor
-    public RoleBackups(User user){
+    public RoleBackups(){
         this.history = new ArrayList<RoleChanged>();
         this.roles = new HashMap<RoleType, Role>();
-        this.user = user;
     }
 
     //Method
@@ -32,16 +31,14 @@ public class RoleBackups {
         return this.roles;
     }
 
-    public User getUser(){
-        return this.user;
-    }
     /**
      * Backs up a user's role of the give type. Only one role of each type can be stored.
      * This method does not need to be expanded when new roles are added.
-     * @param type The type of the role that should be transferred to the backup array.
+     * @param user The user whose role should be backed up.
+     * @param type The type of the role that should be transferred to the backup hashmap.
      */
-    public void setRoleBackup(RoleType type){
-        this.roles.put(type, this.user.getRoleByType(type));
+    public void setRoleBackup(User user, RoleType type){
+        this.roles.put(type, user.getRoleByType(type));
     }
 
     /**
@@ -65,15 +62,16 @@ public class RoleBackups {
     /**
      * Moves the role of the given type to the corresponding field in the associated user object.
      * If a role already exists in that field, it swaps places with the new role.
+     * @param user The user whose backup should be restored.
      * @param type The type of role to restore.
      */
-    public void restoreBackup(RoleType type){
+    public void restoreBackup(User user, RoleType type){
         if(!hasBackup(type)){
             throw new IllegalArgumentException("No backup of type " + type + " found!");
         }
         Role newRole = getBackupByType(type); 
         if(user.getRoleByType(type) != null){   //if the field is currently occupied, move it that role the backup array
-            setRoleBackup(type);
+            setRoleBackup(user, type);
         }
         RoleAssigner.setRole(user, newRole);
     }

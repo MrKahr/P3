@@ -15,11 +15,9 @@ public class roleBackupTests{
     public void constructingBackupsClass(){
         User user1 = new User("Person", "OneMillion");
         assertNotNull(user1.getRoleBackups());
-        assertTrue(user1.getRoleBackups().getUser() == user1);
 
         User user2 = new User(new BasicUserInfo("Human", "Real"));
-        assertNotNull(user1.getRoleBackups());
-        assertTrue(user2.getRoleBackups().getUser() == user2);
+        assertNotNull(user2.getRoleBackups());
     }
 
     @Test
@@ -37,7 +35,7 @@ public class roleBackupTests{
         Guest role = new Guest("");
         user.setGuestInfo(role);
         RoleType type = role.getRoleType();
-        user.getRoleBackups().setRoleBackup(type);    //store the role we just created in the backup array
+        user.getRoleBackups().setRoleBackup(user, type);    //store the role we just created in the backup array
         assertTrue(user.getRoleBackups().getBackupByType(type) == role);
     }
 
@@ -47,19 +45,19 @@ public class roleBackupTests{
         Guest guest = new Guest("A string");
         RoleType type = guest.getRoleType();
         user.setGuestInfo(guest);   //placing the guest role on the user
-        user.getRoleBackups().setRoleBackup(type);    //making the backup
+        user.getRoleBackups().setRoleBackup(user, type);    //making the backup
         user.setGuestInfo(null);    //removing the role again
-        user.getRoleBackups().restoreBackup(type);  //restore the backed up role
+        user.getRoleBackups().restoreBackup(user, type);  //restore the backed up role
         assertTrue(user.getGuestInfo() == guest); //it should be there again
         assertTrue(user.getRoleBackups().getBackupByType(type) == guest);   //we replaced nothing, so the role should still be backed up
 
         Guest newGuest = new Guest("Not the same string as before");
         user.setGuestInfo(newGuest);    //overwriting with a new role
-        user.getRoleBackups().restoreBackup(type);  //restoring the backup again
+        user.getRoleBackups().restoreBackup(user, type);  //restoring the backup again
         assertTrue(user.getGuestInfo() == guest); //old guest should be there again
         assertTrue(user.getRoleBackups().getBackupByType(type) == newGuest);    //we replaced newGuest, so it should be backed up
 
-        Executable e = () -> {user.getRoleBackups().restoreBackup(RoleType.NOTYPE);};   //trying to restore something we don't have a backup for
+        Executable e = () -> {user.getRoleBackups().restoreBackup(user, RoleType.NOTYPE);};   //trying to restore something we don't have a backup for
         Throwable thrown = assertThrows(IllegalArgumentException.class, e, "Expected setRole() to throw, but it didn't");
         assertTrue(thrown.getMessage().contains("No backup of type " + RoleType.NOTYPE + " found!"));
     }
