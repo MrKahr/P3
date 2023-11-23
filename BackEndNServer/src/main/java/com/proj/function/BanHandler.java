@@ -93,6 +93,7 @@ public class BanHandler {
             Ban ban = new Ban(reason, duration);                //if the user is not banned, we want to add a new active ban
             user.getBasicUserInfo().setActiveBan(ban);
         }
+        
     }
 
     /**

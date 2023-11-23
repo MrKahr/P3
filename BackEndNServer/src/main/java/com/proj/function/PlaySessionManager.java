@@ -5,12 +5,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.proj.model.session.PlaySession;
-import com.proj.model.session.PlaySessionStateEnum;
-import com.proj.model.events.ModuleSet;
-import com.proj.model.session.Module;
 import com.proj.exception.FailedValidationException;
 import com.proj.exception.PlaySessionNotFoundException;
+import com.proj.model.session.Module;
+import com.proj.model.session.PlaySession;
+import com.proj.model.session.PlaySessionStateEnum;
 import com.proj.repositoryhandler.ModuledbHandler;
 import com.proj.repositoryhandler.PlaySessionHandler;
 
@@ -20,7 +19,7 @@ import com.proj.repositoryhandler.PlaySessionHandler;
  */
 public class PlaySessionManager {
 
-    @Autowired
+/*     @Autowired */
     PlaySessionHandler playSessionHandler;
     ModuledbHandler moduledbHandler;
 
@@ -54,7 +53,7 @@ public class PlaySessionManager {
         if (validatePlaySession(newPlaySession, true)){
             playSessionHandler.save(newPlaySession);
         } else {
-            throw new FailedValidationException("Session validation error");
+            throw new FailedValidationException("Session add error");
         }
     }
 
@@ -83,7 +82,7 @@ public class PlaySessionManager {
         if (validatePlaySession(playSessionUpdate, false)){
             playSessionHandler.save(playSessionUpdate);
         } else {
-            throw new FailedValidationException("Session validation error");
+            throw new FailedValidationException("Session update error");
         }
     }
 
@@ -92,7 +91,8 @@ public class PlaySessionManager {
     /**
      * Validates the playSession with If statement.
      * @param playSession object to validate.
-     * @return True or false, true if the validation passed and false if it failed to validate.
+     * @return True or false, true if the validation passed and false if it failed to validate. 
+     * throws ValidationFailedException with specific error messages if validation fails
      */
     public Boolean validatePlaySession(PlaySession playSession, Boolean isNewSession){
         //Static Max values
@@ -103,39 +103,63 @@ public class PlaySessionManager {
         int maxNumberOfPlayers = playSession.getMaxNumberOfPlayers();
         int currentNumberOfPlayers = playSession.getCurrentNumberOfPlayers();
         PlaySessionStateEnum state = playSession.getState();
-        Module module = playSession.getModule();
-        int moduleID = module.getId();
-        
+        //Module module = playSession.getModule();
+        //int moduleID = module.getId();//this line is the problem - NullPointerException - kommer stadig ikke ned til notnull7 for some reason
+        // tests kører ikke breakpoints iirc, så skal finde ud af hvor nullpointerexceptionen kommer fra
         //Validation Logic - If statment that searches for errors in the playSession info.
-        try {// Session ID found in database - TBD
-            if (!isNewSession) {
-                lookupPlaySessionID(id);
-            }
-             //throws exception if not found
+        if(title.length() > maxTitleLength || title.length() <= 0){
+            throw new FailedValidationException("title exceeds maximum lenght");
+        }//local max number of players within global max limit - Done
+        else if(maxNumberOfPlayers > globalMaxNumberOfPlayers){
+            throw new FailedValidationException("Maximum players exceeds global maximum");
+        }//Current number of players - not higher than maxNumberOfPlayers - Done
+        else if(currentNumberOfPlayers > maxNumberOfPlayers){
+            throw new FailedValidationException("current number of players exceeds session max");
+        }//state - Valid State, kan enten laves om til ENUM, state tal indenfor range - WIP
+        //Evt kan vi også tjekke om specifikke state conditions er opfyldt her.
+        else if(state != PlaySessionStateEnum.PLANNED && state != PlaySessionStateEnum.CANCELLED && state != PlaySessionStateEnum.CONCLUDED && state != PlaySessionStateEnum.REWARDSRELEASED){
+            throw new FailedValidationException("Session state invalid");
+        }else if (!isNewSession) {
+            lookupPlaySessionID(id); //throws exception if not found
             playSession.getDate(); //throws exception if not found
+            return false;
+        }//module - Module ID found in database - Done
+        //else if(lookupModuleID(moduleID) == false){
+        //    return false;
+        //} 
+        else{
+            return true;//If validation is passed it will return true.
+        }
+        //Same code but with try catch, this interferes with testing for now as exceptions are caught before test can recognize assertthrows
+        /* try {// Session ID found in database - TBD
             //Title - Title length within maxTitleLength size - Done
             if(title.length() > maxTitleLength || title.length() <= 0){
-                return false;
+                throw new FailedValidationException("title exceeds maximum lenght");
             }//local max number of players within global max limit - Done
             else if(maxNumberOfPlayers > globalMaxNumberOfPlayers){
-                return false;
+                throw new FailedValidationException("Maximum players exceeds global maximum");
             }//Current number of players - not higher than maxNumberOfPlayers - Done
             else if(currentNumberOfPlayers > maxNumberOfPlayers){
-                return false;
+                throw new FailedValidationException("current number of players exceeds session max");
             }//state - Valid State, kan enten laves om til ENUM, state tal indenfor range - WIP
             //Evt kan vi også tjekke om specifikke state conditions er opfyldt her.
             else if(state != PlaySessionStateEnum.PLANNED && state != PlaySessionStateEnum.CANCELLED && state != PlaySessionStateEnum.CONCLUDED && state != PlaySessionStateEnum.REWARDSRELEASED){
+                throw new FailedValidationException("Session state invalid");
+            }else if (!isNewSession) {
+                lookupPlaySessionID(id); //throws exception if not found
+                playSession.getDate(); //throws exception if not found
                 return false;
             }//module - Module ID found in database - Done
-            else if(lookupModuleID(moduleID) == false){
-                return false;
-            } else{
+            //else if(lookupModuleID(moduleID) == false){
+            //    return false;
+            //} 
+            else{
                 return true;//If validation is passed it will return true.
             }
         } catch(Exception e){
             System.out.println("Session validation error " + e.getMessage());
             return false;//Catch exception returns false if the validation failed.
-        }
+        } */
     }
 
 
