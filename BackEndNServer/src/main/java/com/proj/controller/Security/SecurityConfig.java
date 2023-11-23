@@ -17,6 +17,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+
 // Security Filter Chain:
 	// https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-securityfilterchain
 
@@ -33,16 +34,19 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 // Based off of https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/index.html
 public class SecurityConfig {
 
+	// See: 
+		// https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/configuration/EnableWebSecurity.html
+		// https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/builders/HttpSecurity.html
+
 	@Bean
 	// The Security Filter Chain filters all incoming requests based on applied filters, e.g. Cross Site Request Forgery (CSRF)
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.csrf(Customizer.withDefaults())
 			.authorizeHttpRequests((authorize) -> authorize
-				.requestMatchers("/login").permitAll()
+				.requestMatchers("/login", "/").permitAll()
 				.anyRequest().authenticated()
 			)
-			.httpBasic(Customizer.withDefaults())
 			.formLogin(Customizer.withDefaults());
 
 		return http.build();

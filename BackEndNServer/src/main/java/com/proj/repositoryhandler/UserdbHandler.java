@@ -1,5 +1,9 @@
 package com.proj.repositoryhandler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -50,6 +54,15 @@ public class UserdbHandler extends DbHandler<User> {
             // Delete the printStackTrace.
             olfe.printStackTrace();
         }
+    }
+
+    public User findByUsername(String username){
+        for (User user : findAll()) {
+            if(username.equals(user.getBasicUserInfo().getUserName())){
+                return user;
+            }
+        }
+        throw new UserNotFoundException();
     }
 
     @Override

@@ -46,6 +46,7 @@ public class LoginController {
 		Authentication authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
 		
 		return ResponseEntity.ok(authenticationResponse);
+		//return "redirect:/login";
 	}
 
 	public record LoginRequest(String username, String password) {
