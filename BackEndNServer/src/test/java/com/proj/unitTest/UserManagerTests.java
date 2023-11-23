@@ -43,5 +43,21 @@ public class UserManagerTests {
     public void LookupAccountFoundUser(){
         //Executable e = () -> {accountManager.accountExists("");};
     }
+    @Test
+    public void sanitizeLookupSuperAdmin(){
+        User user;
+        User accessingUser = new User();
+    }
+    @Test 
+    void SanitizeLookupAdmin(){}
+
+    @Test
+    void SanitizeLookupDM(){}
+
+    @Test 
+    void SanitizeLookMember(){}
+
+    @Test 
+    void SanitizeLookupGuest(){}
 }
 
