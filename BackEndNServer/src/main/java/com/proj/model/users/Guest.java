@@ -1,8 +1,11 @@
 package com.proj.model.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /** 
  * A class that represents a user with the access level "Guest". 
  */
+@JsonIgnoreProperties(ignoreUnknown = true) // Ignores GUEST and RoleDependences attir
 public class Guest extends Role {
     // Field
     private String characterInfo;

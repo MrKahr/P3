@@ -55,6 +55,8 @@ public class Module {
         this.levelRange = levelRange;
     }
 
+    public Module() {}
+
     // Method
     public Integer getId() {
         return id;
