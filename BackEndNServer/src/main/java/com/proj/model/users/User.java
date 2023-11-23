@@ -1,5 +1,6 @@
 package com.proj.model.users;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -150,9 +151,9 @@ public class User implements Cloneable {
         int currentNumberOfRoles = RoleType.values().length; // NoType enum should not be included
         RoleType[] roles = new RoleType[currentNumberOfRoles]; // Maximal number of roles
 
-        for(int i = 0; i < currentNumberOfRoles; i++){
-            
-        }
+        //for(Field field : user.getClass().getDeclaredFields()){
+        //    if(field.isActive())
+        //}
         //List<RoleType> CurrentRoles = Arrays.asList(RoleType.values().remove(RoleType.NOTYPE.ordinal()));
 
         return roles;

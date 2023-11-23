@@ -2,12 +2,14 @@ package com.proj.model.events;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.proj.model.users.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RoleChanged {
     // Field
     //Could need a field for the user's ID here.
@@ -19,6 +21,7 @@ public class RoleChanged {
     private Role previousRoleObject;
 
     // Constructor
+    public RoleChanged(){} // Required for jackson serialization/deserialization
     /**
      * Creates an object of class RoleChanged and sets its date-attribute using localdate.now().
      * @param user The user affected by the role change.
