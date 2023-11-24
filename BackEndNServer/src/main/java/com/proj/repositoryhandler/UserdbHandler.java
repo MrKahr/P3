@@ -56,6 +56,10 @@ public class UserdbHandler extends DbHandler<User> {
         }
     }
 
+    // public User findByUsername(String username){
+    //     return userRepository.findByUsername(username);
+    // }
+
     public User findByUsername(String username){
         for (User user : findAll()) {
             if(username.equals(user.getBasicUserInfo().getUserName())){

@@ -25,7 +25,8 @@ public class UserDAO {
     public BasicUserInfo getUserInfo(String username){
     	String sql = "SELECT u.username name, u.password pass, a.authority role FROM "+
     			     "comp_users u INNER JOIN comp_authorities a on u.username=a.username WHERE "+
-    			     "u.enabled =1 and u.username = ?";
+    			     "u.enabled =1 and u.username = ?"; // Replace this with userdbHandler findbyUsername
+					 									// User getters on returned user object.
     	BasicUserInfo userInfo = (BasicUserInfo)jdbcTemplate.queryForObject(sql, new Object[]{username},
     		new RowMapper<BasicUserInfo>() {
 	            public BasicUserInfo mapRow(ResultSet rs, int rowNum) throws SQLException {

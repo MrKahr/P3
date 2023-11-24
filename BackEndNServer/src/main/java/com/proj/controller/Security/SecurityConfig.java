@@ -35,12 +35,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 // Based off of https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/index.html
 public class SecurityConfig {
 
-
-
-
-
-
-
 	// See: 
 		// https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/configuration/EnableWebSecurity.html
 		// https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/builders/HttpSecurity.html
@@ -51,7 +45,7 @@ public class SecurityConfig {
 		http
 			.csrf(Customizer.withDefaults())
 			.authorizeHttpRequests((authorize) -> authorize
-				.requestMatchers("/login", "/").permitAll()
+				.requestMatchers("/login", "/", "/user/**").permitAll()
 				.anyRequest().authenticated()
 			)
 			.formLogin(Customizer.withDefaults());
