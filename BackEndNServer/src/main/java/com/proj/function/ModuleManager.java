@@ -1,5 +1,4 @@
 package com.proj.function;
-
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ public class ModuleManager {
     
     /**
      * Creates module and saves it on database
-     * 
+     *
      * @param name        of module
      * @param description of module
      * @param levelRange  of module
