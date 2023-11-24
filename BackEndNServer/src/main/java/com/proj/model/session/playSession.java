@@ -2,6 +2,11 @@ package com.proj.model.session;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.proj.model.events.ModuleSet;
 
 import jakarta.persistence.Entity;
@@ -29,6 +34,8 @@ public class PlaySession {
     @JdbcTypeCode(SqlTypes.JSON)
     private Integer currentNumberOfPlayers;
     @JdbcTypeCode(SqlTypes.JSON)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime date;
     @JdbcTypeCode(SqlTypes.JSON)
     private PlaySessionStateEnum state;
