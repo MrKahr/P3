@@ -2,20 +2,23 @@ package com.proj.model.users;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.proj.model.events.RoleChanged;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RoleBackups {
     //Field
     private ArrayList<RoleChanged> history;
     private Role[] roles; 
-    private User user;
 
     //Constructor
     public RoleBackups(User user){
         this.history = new ArrayList<RoleChanged>();
         this.roles = new Role[RoleType.values().length];  //we use the number of possible role types to set the size of the array
-        this.user = user;
+        //this.user = user;
     }
+
+    public RoleBackups(){}
 
     //Method
     public void addToHistory(RoleChanged roleChange){
@@ -30,16 +33,16 @@ public class RoleBackups {
         return this.roles;
     }
 
-    public User getUser(){
-        return this.user;
-    }
+    //public User getUser(){
+        //return this.user;
+    //}
     /**
      * Backs up a user's role of the give type. Only one role of each type can be stored.
      * This method does not need to be expanded when new roles are added.
      * @param type The type of the role that should be transferred to the backup array.
      */
     public void setRoleBackup(RoleType type){
-        this.roles[type.ordinal()] = this.user.getRoleByType(type);
+        //this.roles[type.ordinal()] = this.user.getRoleByType(type);
     }
 
     /**
