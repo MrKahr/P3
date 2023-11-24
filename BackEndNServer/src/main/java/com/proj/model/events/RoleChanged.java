@@ -8,7 +8,6 @@ public class RoleChanged {
     // Field
     //Could need a field for the user's ID here.
     private LocalDateTime date;
-    private User affectedUser;
     private Role newRoleObject;
     private Role previousRoleObject;
 
@@ -21,7 +20,6 @@ public class RoleChanged {
      */
     public RoleChanged(User user, Role newRoleObject, Role previousRoleObject) {
         this.date = LocalDateTime.now();
-        this.affectedUser = user;
         this.newRoleObject = newRoleObject;
         this.previousRoleObject = previousRoleObject;
     }

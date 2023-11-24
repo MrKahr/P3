@@ -46,12 +46,12 @@ public class roleAssignmentTest {
 
             @Override
             public RoleType getRoleType() {
-                return RoleType.NOTYPE;
+                return RoleType.BADTYPE;
             }
 
             @Override
             public RoleType[] getRoleDependencies() {
-                RoleType[] types = {RoleType.NOTYPE};   //this type is no accounted for in getRoleByType
+                RoleType[] types = {RoleType.BADTYPE};   //this type is no accounted for in getRoleByType
                 return types;
             }
         }
@@ -105,7 +105,7 @@ public class roleAssignmentTest {
 
             @Override
             public RoleType getRoleType() {
-                return RoleType.NOTYPE;    //type returned is not accounted for in setRole
+                return RoleType.BADTYPE;    //type returned is not accounted for in setRole
             }
 
             @Override

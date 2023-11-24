@@ -7,19 +7,8 @@ package com.proj.model.users;
 */
 
 public abstract class Role {
-    //Field
-    private boolean isActive = true; //roles are active by default.
-                                     //We want to deactivate them instead of deleting them so we don't lose information.
     //Method
     public abstract RoleType getRoleType();
 
     public abstract RoleType[] getRoleDependencies();
-
-    public void setActivation(boolean state){
-        this.isActive = state;
-    };
-
-    public boolean isActive(){
-        return isActive;
-    };
 }
