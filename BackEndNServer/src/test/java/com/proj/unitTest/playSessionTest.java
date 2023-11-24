@@ -1,17 +1,13 @@
 package com.proj.unitTest;
 
 import java.time.LocalDateTime;
-import com.proj.model.events.ModuleSet;
-import com.proj.model.events.ModuleEdited;
 import com.proj.model.session.PlaySession;
 import com.proj.model.session.PlaySessionStateEnum;
 import com.proj.model.session.Module;
 import java.util.Objects;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

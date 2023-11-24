@@ -2,9 +2,8 @@ package com.proj.repositoryhandler;
 
 import java.util.NoSuchElementException;
 import java.time.LocalDateTime;
-
-import org.hibernate.mapping.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import com.proj.model.session.PlaySession;

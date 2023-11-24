@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.proj.exception.FailedValidationException;
 import com.proj.exception.PlaySessionNotFoundException;
 import com.proj.model.session.Module;
 import com.proj.model.session.PlaySession;
 import com.proj.model.session.PlaySessionStateEnum;
+import com.proj.repositories.PlaySessionRepository;
 import com.proj.repositoryhandler.ModuledbHandler;
 import com.proj.repositoryhandler.PlaySessionHandler;
 
@@ -17,24 +19,21 @@ import com.proj.repositoryhandler.PlaySessionHandler;
  * PlaySessionManager is responsible for setting the current date, lookupModuleID, validating the session, lookupPlaySessionID,
  * addNewPlaySession, updatePlaySession and getSessions.
  */
+@Component
 public class PlaySessionManager {
 
-/*     @Autowired */
+    @Autowired
     PlaySessionHandler playSessionHandler;
     ModuledbHandler moduledbHandler;
+    PlaySessionRepository playSessionRepository;
 
     // Field
-    private LocalDateTime currentDate;
+   
 
     // Constructor
-    public PlaySessionManager(LocalDateTime currentDate){
-        this.currentDate = currentDate;
-    }
+    @Autowired
+    public PlaySessionManager(){
 
-
-    // Method
-    public void setCurrentDate(){
-        this.currentDate = LocalDateTime.now();
     }
 
 

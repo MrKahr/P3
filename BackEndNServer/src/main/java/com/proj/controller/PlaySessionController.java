@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+
 
 import com.proj.model.session.*;
 
@@ -25,8 +25,9 @@ import com.proj.model.session.*;
 @RequestMapping(path = "/P3")
 public class PlaySessionController {
   
+  @Autowired
   PlaySessionHandler playSessionHandler;
-  PlaySessionManager playSessionManager = new PlaySessionManager(LocalDateTime.now());
+  PlaySessionManager playSessionManager = new PlaySessionManager();
 
   @PostMapping(path = "/NewPlaySession")
   public @ResponseBody String addNewPlaySessionResponse(@RequestParam String title, @RequestParam Integer id, @RequestParam Integer currentNumberOfPlayers, @RequestParam LocalDateTime date, @RequestParam PlaySessionStateEnum state, @RequestParam Integer maxNumberOfPlayers, @RequestParam Module module){

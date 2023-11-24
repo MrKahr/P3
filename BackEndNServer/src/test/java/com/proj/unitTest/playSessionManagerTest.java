@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.ComponentScan;
 
 import com.proj.exception.FailedValidationException;
 import com.proj.exception.PlaySessionNotFoundException;
@@ -23,6 +23,7 @@ import com.proj.repositoryhandler.ModuledbHandler;
 import com.proj.repositoryhandler.PlaySessionHandler;
 
 @SpringBootTest
+@ComponentScan
 public class playSessionManagerTest {
     //lookupPlaySessionID - param int id - need DB connection
     
@@ -32,7 +33,7 @@ public class playSessionManagerTest {
         //test if title length is capped by maxlength, assert throws
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
         PlaySession testPlaySession = new PlaySession("012345678901234567890123456789012345678911111111111111", 0, 0, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED, 7, testModule);
-        PlaySessionManager testPlaySessionManager = new PlaySessionManager(LocalDateTime.now());
+        PlaySessionManager testPlaySessionManager = new PlaySessionManager();
         Executable e = () -> {testPlaySessionManager.validatePlaySession(testPlaySession, true);};
         Throwable thrown = assertThrows(FailedValidationException.class, e, "title exceeds maximum lenght");
         assertTrue(thrown.getMessage().contains("title exceeds maximum lenght"));
@@ -43,7 +44,7 @@ public class playSessionManagerTest {
         //test if maxNumber is capped by global max, assert throws
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
         PlaySession testPlaySession = new PlaySession("testtitle", 0, 0, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED, 20, testModule);
-        PlaySessionManager testPlaySessionManager = new PlaySessionManager(LocalDateTime.now());
+        PlaySessionManager testPlaySessionManager = new PlaySessionManager();
         Executable e = () -> {testPlaySessionManager.validatePlaySession(testPlaySession, true);};
         Throwable thrown = assertThrows(FailedValidationException.class, e, "Maximum players exceeds global maximum");
         assertTrue(thrown.getMessage().contains("Maximum players exceeds global maximum"));
@@ -54,7 +55,7 @@ public class playSessionManagerTest {
         //test if current number is capped by max, assert throws
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
         PlaySession testPlaySession = new PlaySession("testtitle", 0, 8, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED, 7, testModule);
-        PlaySessionManager testPlaySessionManager = new PlaySessionManager(LocalDateTime.now());
+        PlaySessionManager testPlaySessionManager = new PlaySessionManager();
         Executable e = () -> {testPlaySessionManager.validatePlaySession(testPlaySession, true);};
         Throwable thrown = assertThrows(FailedValidationException.class, e, "current number of players exceeds session max");
         assertTrue(thrown.getMessage().contains("current number of players exceeds session max"));
@@ -65,7 +66,7 @@ public class playSessionManagerTest {
         //test assert true
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
         PlaySession testPlaySession = new PlaySession("testtitle", 0, 5, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED, 7, testModule);
-        PlaySessionManager testPlaySessionManager = new PlaySessionManager(LocalDateTime.now());
+        PlaySessionManager testPlaySessionManager = new PlaySessionManager();
         assertTrue(testPlaySessionManager.validatePlaySession(testPlaySession, true));
     }
 
@@ -73,9 +74,8 @@ public class playSessionManagerTest {
     @Test
     public void addInvalidPlaySession(){
         //example invalid currentMax
-        
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySessionManager testPlaySessionManager = new PlaySessionManager(LocalDateTime.now());
+        PlaySessionManager testPlaySessionManager = new PlaySessionManager();
         Executable e = () -> {testPlaySessionManager.addNewPlaySession("testtitle", 0, 0, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED, 7, testModule);};
         Throwable thrown = assertThrows(FailedValidationException.class, e, "Session add error");
         assertTrue(thrown.getMessage().contains("Session add error"));
@@ -85,7 +85,7 @@ public class playSessionManagerTest {
     public void addValidPlaySession(){
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
         PlaySession testPlaySession = new PlaySession("testtitle", 0, 5, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED, 7, testModule);
-        PlaySessionManager testPlaySessionManager = new PlaySessionManager(LocalDateTime.now());
+        PlaySessionManager testPlaySessionManager = new PlaySessionManager();
         testPlaySessionManager.addNewPlaySession("testtitle", 0, 0, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED, 7, testModule);
         PlaySessionHandler testPlaySessionHandler = new PlaySessionHandler();
         assertEquals(testPlaySession, testPlaySessionHandler.findById(0));
@@ -95,7 +95,7 @@ public class playSessionManagerTest {
     @Test // Same test as addNewPlaySession
     public void invalidPlaySessionUpdate(){
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySessionManager testPlaySessionManager = new PlaySessionManager(LocalDateTime.now());
+        PlaySessionManager testPlaySessionManager = new PlaySessionManager();
         Executable e = () -> {testPlaySessionManager.addNewPlaySession("testtitle2", 0, 0, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED, 7, testModule);};
         Throwable thrown = assertThrows(FailedValidationException.class, e, "Session update error");
         assertTrue(thrown.getMessage().contains("Session update error"));
@@ -104,7 +104,7 @@ public class playSessionManagerTest {
     public void validPlaySessionUpdate(){
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
         PlaySession testPlaySession = new PlaySession("testtitle2", 0, 5, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED, 7, testModule);
-        PlaySessionManager testPlaySessionManager = new PlaySessionManager(LocalDateTime.now());
+        PlaySessionManager testPlaySessionManager = new PlaySessionManager();
         testPlaySessionManager.updatePlaySession(0, "testtitle2", 7, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED, testModule);
         PlaySessionHandler testPlaySessionHandler = new PlaySessionHandler();
         assertEquals(testPlaySession.getTitle(), testPlaySessionHandler.findById(0).getTitle());
