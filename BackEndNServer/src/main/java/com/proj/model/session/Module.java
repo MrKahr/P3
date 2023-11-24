@@ -5,6 +5,11 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 /* jakarta persistence (JPA) is a application programming interface that provides specification to describe
  * the handling of relational data in java. JPA provides a number of annotations for mapping of java objects to database*/
 import jakarta.persistence.Entity;
@@ -31,15 +36,14 @@ public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @JdbcTypeCode(SqlTypes.JSON)
     private String name;
-    @JdbcTypeCode(SqlTypes.JSON)
     private String description;
-    @JdbcTypeCode(SqlTypes.JSON)
     private String levelRange; // Consider range start/range end
-    @JdbcTypeCode(SqlTypes.JSON)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime addedDate;
-    @JdbcTypeCode(SqlTypes.JSON)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime removedDate;
 
     // Constructor
