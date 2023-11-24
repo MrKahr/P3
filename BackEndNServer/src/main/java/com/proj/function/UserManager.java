@@ -1,6 +1,6 @@
 package com.proj.function;
 
-import java.util.Iterator;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -192,19 +192,22 @@ public class UserManager {
     }
 
     /**
-     * Removes sensitive information from dp-lookup based on accessingUser privilege   
-     * @param user - user object that is looked up in the data 
-     * @param requestingUser - user requesting access to user object 
-     * @param role - the access level of the requesting user e.g. admin
-     * @return - user object with correct elements removed 
+     * Removes sensitive information from dp-lookup based on accessingUser privilege
+     * 
+     * @param user           - user object that is looked up in the data
+     * @param requestingUser - user requesting access to user object
+     * @param role           - the access level of the requesting user e.g. admin
+     * @return - user object with correct elements removed
      * @throws NullPointerException
      * @pre-con: user element must be defined
      */
-    public User sanitizeDBLookup(User user, User requestingUser, RoleType role) throws NullPointerException {
+    public User sanitizeDBLookup(User user, User requestingUser) throws NullPointerException {
         User sanitizedUser = new User();
 
         if (user.equals(null)) {
             throw new NullPointerException("Cannot sanitize null element");
+        } else if (requestingUser.equals(null)){
+            throw new NullPointerException("Cannot access level of access for user submitting request");
         }
 
         // Check whether user accesses their own page, otherwise build payload based
@@ -214,25 +217,30 @@ public class UserManager {
             sanitizedUser.setMemberInfo(user.getMemberInfo());
             // Remove password before sending back
             sanitizedUser.getBasicUserInfo().setPassword("");
-
         } else {
-            // Note the fall-through in the switch case ensures that accessingUser gets information that is allowed for role and all access levels below 
-            switch (role) {
-                case SUPERADMIN:
-                    sanitizedUser.setSuperAdminInfo(user.getSuperAdminInfo());
-                    sanitizedUser.setMemberInfo(user.getMemberInfo());
-                case ADMIN:
-                    sanitizedUser.setAdminInfo(user.getAdminInfo());
-                case DM:
-                    sanitizedUser.setDmInfo(user.getDmInfo());
-                case MEMBER:
-                    sanitizedUser.setGuestInfo(user.getGuestInfo());
-                default:
-                    sanitizedUser.setBasicUserInfo(user.getBasicUserInfo());
-                    // Remove password before sending back
-                    sanitizedUser.getBasicUserInfo().setPassword("");
-                    break;
+            HashMap<RoleType, Role> requestingUserRoles = requestingUser.getAllRoles();
+
+            // Build payload based on user permissions - cannot be a switch since roles are not ordered
+            if (requestingUserRoles.containsKey(RoleType.SUPERADMIN)) {
+                sanitizedUser.setSuperAdminInfo(user.getSuperAdminInfo());
+                sanitizedUser.setMemberInfo(user.getMemberInfo());
             }
+
+            if (requestingUserRoles.containsKey(RoleType.ADMIN)) {
+                sanitizedUser.setAdminInfo(user.getAdminInfo());
+            }
+
+            if (requestingUserRoles.containsKey(RoleType.DM)) {
+                sanitizedUser.setDmInfo(user.getDmInfo());
+            }
+            if (requestingUserRoles.containsKey(RoleType.MEMBER)) {
+                sanitizedUser.setGuestInfo(user.getGuestInfo());
+            }
+
+            sanitizedUser.setBasicUserInfo(user.getBasicUserInfo());
+            // Remove password before sending back
+            sanitizedUser.getBasicUserInfo().setPassword("");
+
         }
         return sanitizedUser;
     }

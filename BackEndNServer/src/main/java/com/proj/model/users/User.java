@@ -1,8 +1,6 @@
 package com.proj.model.users;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -155,24 +153,25 @@ public class User implements Cloneable {
         return clonedUser;
     }
 
-    /**
-     * Finds and returns all roles associated with a user
-     */
-    public RoleType[] getAllRoles(){
-        int currentNumberOfRoles = RoleType.values().length; // NoType enum should not be included
-        RoleType[] roles = new RoleType[currentNumberOfRoles]; // Maximal number of roles
+  /**
+   * Finds all non-null roles and maps a role and a roletype in a key value pair - for hashmap documentation see https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html
+   * @return a hashmap with the key value pair K:RoleType, V:currentRole
+   */
+    public HashMap<RoleType, Role> getAllRoles(){
+        HashMap<RoleType,Role> roleMap = new HashMap<RoleType,Role>();
+        // Check for all possible roles, including NoType.
         for(RoleType roletype : RoleType.values()){
             // Find all roles and set them in array if they are defined for user
             try{
             Role currentRole = getRoleByType(roletype);
             if(currentRole != null){
-                roles[roletype.ordinal()] = currentRole.getRoleType();
+                roleMap.put(currentRole.getRoleType(),currentRole);
             }
             } catch(IllegalArgumentException iae) {
                 continue; // We iterate over a notype
             }
 
         }
-        return roles;
+        return roleMap;
     }
 }

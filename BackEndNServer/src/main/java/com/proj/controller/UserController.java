@@ -100,7 +100,7 @@ public class UserController {
         ids.add(user.getId());
       }
       for(User user : userdbHandler.findAllById(ids)){
-        sanitizedUsers.add(userManager.sanitizeDBLookup(user, user,RoleType.ADMIN));
+        sanitizedUsers.add(userManager.sanitizeDBLookup(user, user));
       }
       
       return sanitizedUsers;
