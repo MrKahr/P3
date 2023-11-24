@@ -2,6 +2,11 @@ package com.proj.model.session;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 /* jakarta persistence (JPA) is a application programming interface that provides specification to describe
  * the handling of relational data in java. JPA provides a number of annotations for mapping of java objects to database*/
 import jakarta.persistence.Entity;
@@ -31,7 +36,11 @@ public class Module {
     private String name;
     private String description;
     private String levelRange; // Consider range start/range end
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime addedDate;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime removedDate;
 
     // Constructor
