@@ -2,11 +2,17 @@ package com.proj.model.events;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.proj.model.users.*;
 
 public class RoleChanged {
     // Field
     //Could need a field for the user's ID here.
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime date;
     private User affectedUser;
     private Role newRoleObject;
@@ -25,6 +31,8 @@ public class RoleChanged {
         this.newRoleObject = newRoleObject;
         this.previousRoleObject = previousRoleObject;
     }
+
+    public RoleChanged(){}
 
     // Method -  No setters since we model instantenous events as object instanstiations.
     public LocalDateTime getDate() {

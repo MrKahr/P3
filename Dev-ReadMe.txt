@@ -1,0 +1,27 @@
+This file lists known problems we have encountered and fixes for them:
+
+(1)
+Issue:
+    Java 8 date/time ('LocalDate' og 'LocalDateTime') -> com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Java 8 date/time type `java.time.LocalDateTime` not supported by default
+Fix:
+    Annotate Java 8 date/time fields with:
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    LocalDateTime ...
+
+(2)
+Issue:
+    No default constructor for database object -> com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Cannot construct instance of 'Object'
+Fix:
+    Add default constructor with no arguments.
+
+
+(3)
+Issue:
+    Jackson cannot serialize: Unknown property -> jackson.error.showing.faulty.class
+Fix:
+    Annotate "faulty" class with:
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public class ...
+

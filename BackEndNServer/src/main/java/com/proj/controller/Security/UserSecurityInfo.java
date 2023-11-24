@@ -1,6 +1,6 @@
 package com.proj.controller.Security;
 
-public class userSecurityInfo {
+public class UserSecurityInfo {
     // Field
 
     String username;

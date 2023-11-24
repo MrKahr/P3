@@ -39,12 +39,12 @@ public class User {
 
     public User(BasicUserInfo basicUserInfo){
         this.basicUserInfo = basicUserInfo;
-        this.roleBackups = new RoleBackups(this);
+        this.roleBackups = new RoleBackups();
     }
 
     public User(String userName, String password){
         this.basicUserInfo = new BasicUserInfo(userName, password);
-        this.roleBackups = new RoleBackups(this);
+        this.roleBackups = new RoleBackups();
     }
 
     // Method
