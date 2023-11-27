@@ -2,20 +2,49 @@ package com.proj.model.session;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.proj.model.events.ModuleSet;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.util.Objects;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 //TODO: Consider renaming ModuleSetEvent for added readability
+@Entity
 public class PlaySession {
     // Field
-    private String id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+    @JdbcTypeCode(SqlTypes.JSON)
     private String title;
+    @JdbcTypeCode(SqlTypes.JSON)
     private Integer maxNumberOfPlayers;
+    @JdbcTypeCode(SqlTypes.JSON)
     private Integer currentNumberOfPlayers;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime date;
-    private String state;
+    @JdbcTypeCode(SqlTypes.JSON)
+    private PlaySessionStateEnum state;
+    @JdbcTypeCode(SqlTypes.JSON)
     private ArrayList<ModuleSet> moduleSetEvents;
+    @JdbcTypeCode(SqlTypes.JSON)
     private Module module; // TODO: Consider whether we want object or simple string description
+
+    //validation check with DM = create session and check without DM = update session. ?????
 
     // Constructor
     /**
@@ -31,7 +60,7 @@ public class PlaySession {
      * @param maxNumberOfPlayers     - current maximal number of players allowed in
      *                               a session
      */
-    public PlaySession(String title, String id, Integer currentNumberOfPlayers, LocalDateTime date, String state,
+    public PlaySession(String title, Integer id, Integer currentNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state,
             Integer maxNumberOfPlayers, Module module) {
         this.title = title;
         this.id = id;
@@ -48,7 +77,7 @@ public class PlaySession {
         return title;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -64,7 +93,7 @@ public class PlaySession {
         return date;
     }
 
-    public String getState() {
+    public PlaySessionStateEnum getState() {
         return state;
     }
 
@@ -80,8 +109,8 @@ public class PlaySession {
         this.title = title;
     }
 
-    public void setId(String title) {
-        this.id = title;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setMaxNumberOfPlayers(Integer maxNumberOfPlayers) {
@@ -94,6 +123,10 @@ public class PlaySession {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    public void setState(PlaySessionStateEnum state) {
+        this.state = state;
     }
 
     /**
