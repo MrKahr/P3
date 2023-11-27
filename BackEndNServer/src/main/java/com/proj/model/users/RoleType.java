@@ -7,5 +7,5 @@ public enum RoleType {
   DM,
   ADMIN,
   SUPERADMIN,
-  NOTYPE      //this one exists to make errors when testing. It is deliberately not accounted for by any code that handles roles.
+  BADTYPE;      //this one exists to make errors when testing. It is deliberately not accounted for by any code that handles roles.
 }

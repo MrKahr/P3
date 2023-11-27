@@ -26,12 +26,30 @@ import com.proj.function.RoleAssigner;
 
 //@EnableJpaRepositories(basePackages={"com.proj.function.UserRepository"})
 public class UserManagerUnitTests {
-    // @Autowired
-    // private UserRepository testRepository;
+    private User user;
+    private User requestingUser;
+    private UserManager userManager;
 
-    // UserManager userManager = new UserManager(0);
-    // User user1 = new Guest("Fisk", "FiskPassword");
-    // User user2 = new Guest("Aborre", "AborrePassword");
+    @BeforeEach
+    void init() {
+        // Set all users so that they have all possible info to see if filter works correctly
+        user = new User(new BasicUserInfo("user1", "1234"));
+        user.setId(1);
+
+        RoleAssigner.setRole(user, new Guest("Bard Level 1"));
+        RoleAssigner.setRole(user,
+                new Member("John Adventureman", "123-339933", "9000", "Villavej 123", "John@Adventureman.dk"));
+        RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
+        RoleAssigner.setRole(user, new Admin(new ArrayList<String>(), new ArrayList<String>()));
+        RoleAssigner.setRole(user, new SuperAdmin());
+
+        // Requesting user is always different from user unless specified by test
+        requestingUser = new User(new BasicUserInfo("user2", "4321"));
+        requestingUser.setId(2);
+        
+        // userDB handler sanitizes input
+        userManager = new UserManager(2);
+    }
 
     // @Test
     public void dbSaveUser() {
@@ -52,19 +70,7 @@ public class UserManagerUnitTests {
 
     @Test
     public void sanitizeSelf() {
-        // User has all possible info to see if filter works correctly
-        User user = new User(new BasicUserInfo("user1", "1234"));
-        user.setId(1);
-
-        RoleAssigner.setRole(user, new Guest("Bard Level 1"));
-        RoleAssigner.setRole(user,
-                new Member("John Adventureman", "123-339933", "9000", "Villavej 123", "John@Adventureman.dk"));
-        RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
-        RoleAssigner.setRole(user, new Admin(new ArrayList<String>(), new ArrayList<String>()));
-        RoleAssigner.setRole(user, new SuperAdmin());
-
         // Requesting user has same user id as user being requested
-        User requestingUser = new User();
         try {
             requestingUser = user.clone();
 
@@ -72,9 +78,6 @@ public class UserManagerUnitTests {
             requestingUser.setBasicUserInfo(user.getBasicUserInfo());
             requestingUser.setId(user.getId());
         }
-
-        // userDB handler sanitizes input
-        UserManager userManager = new UserManager(2);
 
         // Sanitized user
         // TODO: consider equals for all roles
@@ -89,29 +92,12 @@ public class UserManagerUnitTests {
 
     @Test
     public void sanitizeLookupSuperAdmin() {
-
-        // User has all possible info to see if filter works correctly
-        User user = new User(new BasicUserInfo("user1", "1234"));
-        user.setId(1);
-
-        RoleAssigner.setRole(user, new Guest("Bard Level 1"));
-        RoleAssigner.setRole(user,
-                new Member("John Adventureman", "123-339933", "9000", "Villavej 123", "John@Adventureman.dk"));
-        RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
-        RoleAssigner.setRole(user, new Admin(new ArrayList<String>(), new ArrayList<String>()));
-        RoleAssigner.setRole(user, new SuperAdmin());
-
         // New super admin accesses user
-        User requestingUser = new User(new BasicUserInfo("user2", "4321"));
         RoleAssigner.setRole(requestingUser, new Guest("Barbarian Level 1"));
         RoleAssigner.setRole(requestingUser,
                 new Member("Bob DungeonMan", "123-339933", "9000", "Villavej 123", "John@Adventureman.dk"));
         RoleAssigner.setRole(requestingUser, new Admin());
         RoleAssigner.setRole(requestingUser, new SuperAdmin());
-        requestingUser.setId(2);
-
-        // userDB handler sanitizes input
-        UserManager userManager = new UserManager(2);
 
         // Sanitized user
         User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
@@ -123,27 +109,11 @@ public class UserManagerUnitTests {
     @Test
     void SanitizeLookupAdmin() {
 
-        // User has all possible info to see if filter works correctly
-        User user = new User(new BasicUserInfo("user1", "1234"));
-        user.setId(1);
-
-        RoleAssigner.setRole(user, new Guest("Bard Level 1"));
-        RoleAssigner.setRole(user,
-                new Member("John Adventureman", "123-339933", "9000", "Villavej 123", "John@Adventureman.dk"));
-        RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
-        RoleAssigner.setRole(user, new Admin(new ArrayList<String>(), new ArrayList<String>()));
-        RoleAssigner.setRole(user, new SuperAdmin());
-
         // New admin accesses user
-        User requestingUser = new User(new BasicUserInfo("user2", "4321"));
-        requestingUser.setId(2);
         RoleAssigner.setRole(requestingUser, new Guest("Barbarian Level 1"));
         RoleAssigner.setRole(requestingUser,
                 new Member("Bob DungeonMan", "123-339933", "9000", "Villavej 123", "John@Adventureman.dk"));
         RoleAssigner.setRole(requestingUser, new Admin());
-
-        // userDB handler sanitizes input
-        UserManager userManager = new UserManager(2);
 
         // Sanitized user
         User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
@@ -156,27 +126,11 @@ public class UserManagerUnitTests {
 
     @Test
     void SanitizeLookupDM() {
-        // User has all possible info to see if filter works correctly
-        User user = new User(new BasicUserInfo("user1", "1234"));
-        user.setId(1);
-
-        RoleAssigner.setRole(user, new Guest("Bard Level 1"));
-        RoleAssigner.setRole(user,
-                new Member("John Adventureman", "123-339933", "9000", "Villavej 123", "John@Adventureman.dk"));
-        RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
-        RoleAssigner.setRole(user, new Admin(new ArrayList<String>(), new ArrayList<String>()));
-        RoleAssigner.setRole(user, new SuperAdmin());
-
         // New DM accesses user
-        User requestingUser = new User(new BasicUserInfo("user2", "4321"));
-        requestingUser.setId(2);
         RoleAssigner.setRole(requestingUser, new Guest("Barbarian Level 1"));
         RoleAssigner.setRole(requestingUser,
                 new Member("Bob DungeonMan", "123-339933", "9000", "Villavej 123", "John@Adventureman.dk"));
         RoleAssigner.setRole(requestingUser, new DM(new ArrayList<String>()));
-
-        // userDB handler sanitizes input
-        UserManager userManager = new UserManager(2);
 
         // Sanitized user
         User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
@@ -189,26 +143,9 @@ public class UserManagerUnitTests {
 
     @Test
     void SanitizeLookMember() {
-        // User has all possible info to see if filter works correctly
-        User user = new User(new BasicUserInfo("user1", "1234"));
-        user.setId(1);
-
-        RoleAssigner.setRole(user, new Guest("Bard Level 1"));
-        RoleAssigner.setRole(user,
-                new Member("John Adventureman", "123-339933", "9000", "Villavej 123", "John@Adventureman.dk"));
-        RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
-        RoleAssigner.setRole(user, new Admin(new ArrayList<String>(), new ArrayList<String>()));
-        RoleAssigner.setRole(user, new SuperAdmin());
-
-        // New member accesses user
-        User requestingUser = new User(new BasicUserInfo("user2", "4321"));
-        requestingUser.setId(2);
         RoleAssigner.setRole(requestingUser, new Guest("Barbarian Level 1"));
         RoleAssigner.setRole(requestingUser,
                 new Member("Bob DungeonMan", "123-339933", "9000", "Villavej 123", "John@Adventureman.dk"));
-
-        // userDB handler sanitizes input
-        UserManager userManager = new UserManager(2);
 
         // Sanitized user
         User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
@@ -222,24 +159,8 @@ public class UserManagerUnitTests {
 
     @Test
     void SanitizeLookupGuest() {
-               // User has all possible info to see if filter works correctly
-        User user = new User(new BasicUserInfo("user1", "1234"));
-        user.setId(1);
-
-        RoleAssigner.setRole(user, new Guest("Bard Level 1"));
-        RoleAssigner.setRole(user,
-                new Member("John Adventureman", "123-339933", "9000", "Villavej 123", "John@Adventureman.dk"));
-        RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
-        RoleAssigner.setRole(user, new Admin(new ArrayList<String>(), new ArrayList<String>()));
-        RoleAssigner.setRole(user, new SuperAdmin());
-
         // New guest accesses user
-        User requestingUser = new User(new BasicUserInfo("user2", "4321"));
-        requestingUser.setId(2);
         RoleAssigner.setRole(requestingUser, new Guest("Barbarian Level 1"));
-
-        // userDB handler sanitizes input
-        UserManager userManager = new UserManager(2);
 
         User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
         assertTrue(sanitizedUser.getBasicUserInfo().getPassword().equals(""));
@@ -253,10 +174,6 @@ public class UserManagerUnitTests {
     @Test
     void userIsNull() {
         User user = null;
-
-        User requestingUser = new User();
-        requestingUser.setGuestInfo(new Guest("Barbarian Level 1"));
-        UserManager userManager = new UserManager(1);
         Executable e = () -> {
             userManager.sanitizeDBLookup(user, requestingUser);
         };
@@ -265,9 +182,7 @@ public class UserManagerUnitTests {
 
     @Test
     void requestingUserIsNull() {
-        User user = new User();
         User requestingUser = null;
-        UserManager userManager = new UserManager(1);
 
         Executable e = () -> {
             userManager.sanitizeDBLookup(user, requestingUser);
