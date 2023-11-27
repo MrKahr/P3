@@ -8,17 +8,17 @@ import com.proj.repositoryhandler.UserdbHandler;
  * A class that represents a request for a membership. Should be assigned to a user or deleted at some point.
  * Only one is stored in the database per user.
  */
-public class MemberRequest {
+public class RoleRequest {
     @Autowired
     private UserdbHandler userdbHandler;
     //Field
     private int requestingId;       //the ID of the requesting user
-    private Member memberObject;    //the information that user has entered
+    private Role roleObject;    //the information that user has entered
 
     //Constructor
-    public MemberRequest(int requestingId, Member memberObject){
+    public RoleRequest(int requestingId, Role roleObject){
         this.requestingId = requestingId;
-        this.memberObject = memberObject;
+        this.roleObject = roleObject;
     }
 
     //Method
@@ -26,16 +26,23 @@ public class MemberRequest {
         return requestingId;
     }
 
-    public Member getMemberInfo(){
-        return memberObject;
+    public Role getRoleInfo(){
+        return roleObject;
     };
+
+    /**
+     * @return The type of the requested role.
+     */
+    public RoleType getRequestType(){
+        return roleObject.getRoleType();
+    }
 
     /**
      * Fulfills the membership request by getting the requesting user from the database and assigning to role
      */
     public void fulfillRequest(){
         User user = userdbHandler.findById(this.requestingId);
-        RoleAssigner.setRole(user, memberObject);
+        RoleAssigner.setRole(user, roleObject);
         userdbHandler.save(user);
     }
 }
