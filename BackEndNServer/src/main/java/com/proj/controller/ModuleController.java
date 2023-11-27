@@ -30,7 +30,7 @@ import com.proj.model.session.Module;
 @RequestMapping(path = "/module") // TODO: User validation for any requests to "/module"
 public class ModuleController {
     @Autowired
-    ModuleManager moduleManager;
+    private ModuleManager moduleManager;
 
     // https://stackoverflow.com/questions/630453/what-is-the-difference-between-post-and-put-in-http
     @PutMapping(path = "/add")

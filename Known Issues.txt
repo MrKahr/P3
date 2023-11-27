@@ -1,5 +1,9 @@
 This file lists known problems we have encountered and fixes for them:
 
+
+###############
+### Jackson ###
+###############
 (1)
 Issue:
     Java 8 date/time ('LocalDate' og 'LocalDateTime') -> com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Java 8 date/time type `java.time.LocalDateTime` not supported by default
@@ -19,9 +23,17 @@ Fix:
 
 (3)
 Issue:
-    Jackson cannot serialize: Unknown property -> jackson.error.showing.faulty.class
+    Jackson cannot deserialize -> com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field (class.path.here)
 Fix:
-    Annotate "faulty" class with:
+    Annotate class in class.path.here with:
     @JsonIgnoreProperties(ignoreUnknown = true)
     public class ...
 
+################
+### Database ###
+################
+(1)
+Issue:
+    Null values are handled differently in the database.
+Fix:
+    Avoid null values if possible.

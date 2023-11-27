@@ -1,11 +1,8 @@
 package com.proj.repositoryhandler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.proj.model.users.User;
@@ -25,9 +22,18 @@ public class UserdbHandler extends DbHandler<User> {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     // Method
     @Override
     public void save(User user) {
+        
+        // Encode password before storing user in database
+        user.getBasicUserInfo().setPassword(
+            passwordEncoder.encode(
+                user.getBasicUserInfo().getPassword()));
+
         try {
             userRepository.save(user);
         } catch (IllegalArgumentException iae) {
@@ -56,12 +62,10 @@ public class UserdbHandler extends DbHandler<User> {
         }
     }
 
-    // public User findByUsername(String username){
-    //     return userRepository.findByUsername(username);
-    // }
-
+    // TODO: Runtime O(n). This is not ideal for a login lookup!
     public User findByUsername(String username){
-        for (User user : findAll()) {
+        Iterable<User> allUsers = userRepository.findAll();
+        for (User user : allUsers) {
             if(username.equals(user.getBasicUserInfo().getUserName())){
                 return user;
             }

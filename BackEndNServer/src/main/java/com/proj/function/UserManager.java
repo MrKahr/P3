@@ -1,13 +1,6 @@
 package com.proj.function;
 
-import java.util.Iterator;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.proj.model.users.*;
 import com.proj.exception.*;
