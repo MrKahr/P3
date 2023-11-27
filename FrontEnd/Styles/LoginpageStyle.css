@@ -1,0 +1,14 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url("");
+    background-color: red;
+    background-size: auto;
+}
+div {
+    border: 2px solid black;
+    background-color: white;
+    text-align: center;
+    width: 350px;
+    height: 400px;
+}
