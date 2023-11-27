@@ -206,17 +206,18 @@ public class UserManager {
 
         if (user.equals(null)) {
             throw new NullPointerException("Cannot sanitize null element");
-        } else if (requestingUser.equals(null)){
-            throw new NullPointerException("Cannot access level of access for user submitting request");
         }
 
         // Check whether user accesses their own page, otherwise build payload based
         if (requestingUser.equals(user)) {
-            sanitizedUser.setBasicUserInfo(user.getBasicUserInfo());
-            sanitizedUser.setGuestInfo(user.getGuestInfo());
-            sanitizedUser.setMemberInfo(user.getMemberInfo());
-            // Remove password before sending back
-            sanitizedUser.getBasicUserInfo().setPassword("");
+            try{
+                sanitizedUser = user.clone();
+                // Remove password before sending back
+                sanitizedUser.getBasicUserInfo().setPassword("");
+            } catch(CloneNotSupportedException cnse){
+                throw new FailedSanitizationException("Sanitization of users failed due to" + cnse.getMessage());
+            }
+       
         } else {
             HashMap<RoleType, Role> requestingUserRoles = requestingUser.getAllRoles();
 

@@ -53,6 +53,11 @@ public class User implements Cloneable {
     }
 
     // Method
+    // NOTE: ONLY for testing purposes since equality between users is based on Id.
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public void setBasicUserInfo(BasicUserInfo basicUserInfo) { // remove information by passing null to the
                                                                 // setter-methods.
         this.basicUserInfo = basicUserInfo;
@@ -138,6 +143,23 @@ public class User implements Cloneable {
         }
     }
 
+    /**
+     * Checks whether two users are equal based on their id.
+     * 
+     * @param obj - object to compare to user
+     * @throws NullPointerException if obj is null
+     * @return true if they have identical ids and false if they do not
+     */
+    @Override
+    public boolean equals(Object obj) throws NullPointerException {
+        if (obj == null) {
+            return false;
+        } else {
+            return this.getId() == ((User) obj).getId();
+        }
+
+    }
+
     /*
      * Makes a deep copy of a user object that can be sanitized, and sent back to
      * the front end to avoid security risks
@@ -150,24 +172,28 @@ public class User implements Cloneable {
         clonedUser.setDmInfo(getDmInfo());
         clonedUser.setAdminInfo(getAdminInfo());
         clonedUser.setSuperAdminInfo(getSuperAdminInfo());
+        clonedUser.setId(getId());
         return clonedUser;
     }
 
-  /**
-   * Finds all non-null roles and maps a role and a roletype in a key value pair - for hashmap documentation see https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html
-   * @return a hashmap with the key value pair K:RoleType, V:currentRole
-   */
-    public HashMap<RoleType, Role> getAllRoles(){
-        HashMap<RoleType,Role> roleMap = new HashMap<RoleType,Role>();
+    /**
+     * Finds all non-null roles and maps a role and a roletype in a key value pair -
+     * for hashmap documentation see
+     * https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html
+     * 
+     * @return a hashmap with the key value pair K:RoleType, V:currentRole
+     */
+    public HashMap<RoleType, Role> getAllRoles() {
+        HashMap<RoleType, Role> roleMap = new HashMap<RoleType, Role>();
         // Check for all possible roles, including NoType.
-        for(RoleType roletype : RoleType.values()){
+        for (RoleType roletype : RoleType.values()) {
             // Find all roles and set them in array if they are defined for user
-            try{
-            Role currentRole = getRoleByType(roletype);
-            if(currentRole != null){
-                roleMap.put(currentRole.getRoleType(),currentRole);
-            }
-            } catch(IllegalArgumentException iae) {
+            try {
+                Role currentRole = getRoleByType(roletype);
+                if (currentRole != null) {
+                    roleMap.put(currentRole.getRoleType(), currentRole);
+                }
+            } catch (IllegalArgumentException iae) {
                 continue; // We iterate over a notype
             }
 
