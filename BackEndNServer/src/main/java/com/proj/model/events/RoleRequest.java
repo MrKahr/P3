@@ -1,31 +1,30 @@
-package com.proj.model.users;
+package com.proj.model.events;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.proj.function.RoleAssigner;
-import com.proj.repositoryhandler.UserdbHandler;
+import com.proj.model.users.Role;
+import com.proj.model.users.RoleType;
+import com.proj.model.users.User;
+import com.proj.repositoryhandler.RequestdbHandler;
 /**
  * A class that represents a request for a membership. Should be assigned to a user or deleted at some point.
  * Only one is stored in the database per user.
  */
-public class RoleRequest {
+public class RoleRequest extends Request{
     @Autowired
-    private UserdbHandler userdbHandler;
+    private RequestdbHandler requestdbHandler;
     //Field
-    private int requestingId;       //the ID of the requesting user
     private Role roleObject;    //the information that user has entered
 
     //Constructor
     public RoleRequest(int requestingId, Role roleObject){
         this.requestingId = requestingId;
         this.roleObject = roleObject;
+        this.requestType = RequestType.ROLE;
     }
 
     //Method
-    public int getId(){
-        return requestingId;
-    }
-
     public Role getRoleInfo(){
         return roleObject;
     };
@@ -33,16 +32,7 @@ public class RoleRequest {
     /**
      * @return The type of the requested role.
      */
-    public RoleType getRequestType(){
+    public RoleType getRoleType(){
         return roleObject.getRoleType();
-    }
-
-    /**
-     * Fulfills the membership request by getting the requesting user from the database and assigning to role
-     */
-    public void fulfillRequest(){
-        User user = userdbHandler.findById(this.requestingId);
-        RoleAssigner.setRole(user, roleObject);
-        userdbHandler.save(user);
     }
 }

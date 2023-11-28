@@ -8,9 +8,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import com.proj.model.events.Request;
+import com.proj.model.events.RequestType;
+import com.proj.model.events.RoleRequest;
 import com.proj.model.users.*;
 import com.proj.exception.*;
+import com.proj.repositoryhandler.RequestdbHandler;
 import com.proj.repositoryhandler.UserdbHandler;
 
 // This class is broken/dummy code. NEEDS FULL REWRITE OF METHODS!!!!!
@@ -23,6 +26,8 @@ public class UserManager {
     // Field
     @Autowired
     UserdbHandler userdbHandler;
+    @Autowired
+    RequestdbHandler requestdbHandler;
 
     private Integer numberOfUsers;
 
@@ -244,5 +249,45 @@ public class UserManager {
 
         }
         return sanitizedUser;
+    }
+
+    /**
+     * Fulfills a role request by getting the requesting user from the database and assigning to role
+     */
+    public void fulfillRoleRequest(int requestingId, RoleType type){
+        Iterable<Request> requests = requestdbHandler.findAllByRequestType(RequestType.ROLE);
+        //TODO: Make sure to only work on requests with the correct ID!
+        RoleRequest roleRequest = null;
+        for (Request r : requests) {
+            roleRequest = (RoleRequest) r;
+            if(roleRequest.getRoleType() == type){
+                break;
+            }
+        }
+        if(roleRequest == null){
+            throw new IllegalArgumentException("No request of the given type exists for user with ID " + requestingId);
+        }
+        User user = userdbHandler.findById(requestingId);
+        RoleAssigner.setRole(user, roleRequest.getRoleInfo());
+        userdbHandler.save(user);
+    }
+
+    public void createRoleRequest(int requestingId, Role role){
+        RoleRequest newRequest = new RoleRequest(requestingId, role);
+        Iterable<Request> requests = requestdbHandler.findAllByRequestType(RequestType.ROLE);
+        //TODO: Make sure to only work on requests with the correct ID!
+        RoleRequest oldRequest = null;
+        for (Request r : requests) {
+            oldRequest = (RoleRequest) r;
+            if(oldRequest.getRoleType() == role.getRoleType()){
+                break;
+            }
+        }
+        if(oldRequest == null){
+            requestdbHandler.save(newRequest);
+        } else {
+            requestdbHandler.delete(oldRequest);
+            requestdbHandler.save(newRequest);
+        }
     }
 }
