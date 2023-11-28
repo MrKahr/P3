@@ -22,7 +22,7 @@ body {
     background-color: white;
     text-align: center;
     width: 350px;
-    height: 450px;
+    height: auto;
     margin: auto;
 }
 
@@ -37,5 +37,12 @@ body {
     clear: both;
 }
 
-/* body.container {
-} */
+.PasswordConditions input{
+    width: 9px;
+    height: 9px;
+}
+
+.PasswordConditions label{
+    font-size: 9px;
+}
+
