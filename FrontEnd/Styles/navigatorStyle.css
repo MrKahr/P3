@@ -18,7 +18,7 @@ header {
     border: 1px solid black;
   }
   
-  .topnav a {
+  .topnav a:nth-child(n+2) {
     float: left;
     color: black;
     text-align: center;
