@@ -1,6 +1,8 @@
 header {
-    margin: 0;
     font-family: Arial, Helvetica, sans-serif;
+    position: relative;
+    width: 100%;
+    top: 0;
   }
 
   .logo {
@@ -28,6 +30,12 @@ header {
   }
 
   .topnav a.split {
+    float: right;
+    background-color: white;
+    color: black;
+  }
+
+  .topnav div.split {
     float: right;
     background-color: white;
     color: black;
