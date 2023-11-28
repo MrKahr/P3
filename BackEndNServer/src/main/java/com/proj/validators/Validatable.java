@@ -1,7 +1,6 @@
 package com.proj.validators;
 
-
- interface Validatable {
-   public abstract void HandleElement(Object element);
+ public interface Validatable {
+   public abstract boolean HandleString(String element);
    public abstract void nextValidator(Validatable validator);
 }
