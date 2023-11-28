@@ -1,5 +1,6 @@
 package com.proj.function;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -255,8 +256,12 @@ public class UserManager {
      * Fulfills a role request by getting the requesting user from the database and assigning to role
      */
     public void fulfillRoleRequest(int requestingId, RoleType type){
-        Iterable<Request> requests = requestdbHandler.findAllByRequestType(RequestType.ROLE);
-        //TODO: Make sure to only work on requests with the correct ID!
+        ArrayList<Request> requests = new ArrayList<Request>();
+        for (Request r : requestdbHandler.findAllByRequestType(RequestType.ROLE)) {
+            if(r.getId() == requestingId){
+                requests.add(r);
+            }
+        }
         RoleRequest roleRequest = null;
         for (Request r : requests) {
             roleRequest = (RoleRequest) r;
@@ -274,8 +279,12 @@ public class UserManager {
 
     public void createRoleRequest(int requestingId, Role role){
         RoleRequest newRequest = new RoleRequest(requestingId, role);
-        Iterable<Request> requests = requestdbHandler.findAllByRequestType(RequestType.ROLE);
-        //TODO: Make sure to only work on requests with the correct ID!
+        ArrayList<Request> requests = new ArrayList<Request>();
+        for (Request r : requestdbHandler.findAllByRequestType(RequestType.ROLE)) {
+            if(r.getId() == requestingId){
+                requests.add(r);
+            }
+        }
         RoleRequest oldRequest = null;
         for (Request r : requests) {
             oldRequest = (RoleRequest) r;
@@ -286,7 +295,7 @@ public class UserManager {
         if(oldRequest == null){
             requestdbHandler.save(newRequest);
         } else {
-            requestdbHandler.delete(oldRequest);
+            requestdbHandler.delete(oldRequest);    //make sure there's only one request of a given type and id
             requestdbHandler.save(newRequest);
         }
     }
