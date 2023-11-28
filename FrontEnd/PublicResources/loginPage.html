@@ -4,39 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log In</title>
-    <link rel="stylesheet" href="../Styles/navigatorStyle.css">
+    <link rel="stylesheet" href="../Styles/LoginpageStyle.css">
 </head>
 
-<body>
+<header>
+    <link rel="stylesheet" href="../Styles/navigatorStyle.css">
     <nav class="topnav">
-        <img class="logo" alt="AalborgTableTop logo" src="/FrontEnd/Images/AalborgTableTop_Logo.png">
+        <img class="logo" alt="AalborgTableTop logo" src="../Images/AalborgTableTop_Logo.png">
         <a href="#calendar">Calendar</a>
         <a href="#CONMAR">CONMAR</a>
         <a href="#AboutAT">About AT</a>
         <a href="#Contact">Contact</a>
-        <a href="#LoginPage" class="split">Log In</a>
         <a href="#SignUp" class="split">Sign Up</a>
     </nav>
-</body>
+</header>
 
 <body>
-    <link rel="stylesheet" href="../Styles/LoginpageStyle.css">
-    <div>
-        <img src="/FrontEnd/Images/AalborgTableTop_Logo.png" alt="AalborgTableTop logo">
+    <div id="LoginBox" class="LoginBox">
+        <img src="../Images/AalborgTableTop_Logo.png" alt="AalborgTableTop logo" width="100" height="100">
         <h2>Log In</h2>
 
         <form>
             <label for="Username">Username:</label><br>
             <input type="text" id="Username" name="Username"><br>
             <label for="Password">Password:</label><br>
-            <input type="text" id="Password" name="Password"><br>
+            <input type="password" id="Password" name="Password"><br><br>
             <input type="submit" value="Log In">
-          </form>
+        </form>
 
-          <p>Don't have an account?</p>
-          <p><a href="#SignUp">Sign Up</a></p>
-          <p><a href="ForgotPassword">Forgot Password</a></p>
-        </div>
-
+        <p>Don't have an account?</p>
+        <p><a href="#SignUp">Sign Up</a></p>
+        <p><a href="ForgotPassword">Forgot Password</a></p>
+    </div>
 </body>
 </html>
