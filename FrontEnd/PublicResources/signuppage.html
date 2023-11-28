@@ -33,7 +33,17 @@
             </div>
             <div class="column">
                 <label for="Password">Password:</label><br>
-                <input type="password" id="Password" name="Password"><br>
+                <input type="password" id="Password" name="Password"><br><!-- A dropdown has to be made -->
+                <div id="PasswordConditions" style="display: none;">
+                    <input type="checkbox" id="number" name="number">
+                    <label for="number">Number</label><br>
+                    <input type="checkbox" id="upperCase" name="upperCase">
+                    <label for="upperCase">Upper Case</label><br>
+                    <input type="checkbox" id="lowerCase" name="lowerCase">
+                    <label for="lowerCase">Lower Case</label><br>
+                    <input type="checkbox" id="characters" name="characters">
+                    <label for="characters">12 Characters</label><br>
+                </div>
                 <label for="Confirm Password">Confirm Password:</label><br>
                 <input type="password" id="Confirm Password" name="Confirm Password"><br><br>
             </div>
@@ -49,8 +59,15 @@
         <p><a href="#LoginPage">Log In</a></p>
     </div>
 
-    <div class="popup" onclick="signupExpand()">Click me!
-        <span class="popuptext" id="myPopup">Popup text...</span>
-    </div>
+    <script>
+        document.getElementById('Password').addEventListener('focus', function() {
+            let passwordConditions = document.getElementById("PasswordConditions");
+            if(passwordConditions.style.display == "none") {
+                passwordConditions.style.display = "block";
+            } else {
+                passwordConditions.style.display = "none";
+            }
+        })
+    </script>
 </body>
 </html>
