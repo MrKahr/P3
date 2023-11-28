@@ -1,12 +1,10 @@
 package com.proj.validators;
 
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-// See -  https://stackoverflow.com/questions/3533408/regex-i-want-this-and-that-and-that-in-any-order
-// ^(?=.{8,50}$)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=\S).*$
+import java.util.regex.Pattern;
 
 public class UsernameValidator implements Validatable {
-    // Field
+    // Field 
     private Validatable nextValidator;
     // https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html
     // Make pattern to match and initialize variable to get matcher.
@@ -15,7 +13,7 @@ public class UsernameValidator implements Validatable {
 
     // Constructor
     public UsernameValidator(){};
-
+    
     // Method
     @Override
     public boolean HandleString(String username) {
@@ -31,7 +29,6 @@ public class UsernameValidator implements Validatable {
         }
         return isValid;
     }
-
     @Override 
     public void nextValidator(Validatable validator){
         this.nextValidator = validator;

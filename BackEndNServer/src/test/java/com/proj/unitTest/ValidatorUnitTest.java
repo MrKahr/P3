@@ -1,5 +1,7 @@
 package com.proj.unitTest;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +21,7 @@ import com.proj.validators.PasswordValidator;
 
 public class ValidatorUnitTest {
     User user;
-    //Validatable usernameValidator = new UsernameValidator();
+    Validatable usernameValidator = new UsernameValidator();
     Validatable passwordValidator = new PasswordValidator();
 
     // Provide a user to test before each test with all possible roles fulfilled
@@ -40,7 +42,11 @@ public class ValidatorUnitTest {
 
     @Test
     public void userNameTooShort() {
-        user.getBasicUserInfo().setUserName("");
+        user.getBasicUserInfo().setUserName("hello123");
+        Validatable rootValidatable = passwordValidator;
+        rootValidatable.nextValidator(usernameValidator);
+
+        assertFalse(rootValidatable.HandleString(user.getBasicUserInfo().getUserName()));
 
     }
 }
