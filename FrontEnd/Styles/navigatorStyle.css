@@ -40,3 +40,29 @@ header {
     background-color: white;
     color: black;
   }
+
+  .ProfileMenu {
+    margin-top: 0;
+    float: right;
+    width: 15%;
+    overflow: hidden;
+    background-color: white;
+    border: 1px solid black;
+    /* height: 300px; */
+  }
+
+  .ProfileMenu ul {
+    list-style-type: none;
+    text-align: center;
+    line-height: 1.8;
+    padding: 30px 16px;
+    font-size: 12px;
+  }
+
+  .MenuSpace {
+    margin-top: 150px;
+  }
+  .ProfileMenu a.MenuLine {
+    padding: 30px 16px;
+    border-top-style: solid;
+  }
