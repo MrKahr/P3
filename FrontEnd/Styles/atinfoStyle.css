@@ -2,7 +2,6 @@ body {
     margin: 0;
     font-family: Arial, sans-serif;
 }
-
 .background {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -11,25 +10,25 @@ body {
     background-position: center;
     background-size: cover;
     background-color: red;
-    padding: 100px;
+    padding: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-    width: 100%;
-    border: 1px solid #ddd;
+.NotFoundBox {
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    width: 350px;
+    height: auto;
 }
 
-th,
-td {
-    text-align: left;
-    padding: 8px;
+h2 {
+    font-size: 50px;
 }
 
-tr:nth-child(even) {
-    background-color: #f2f2f2
+h3 {
+    font-size: 30px;
 }

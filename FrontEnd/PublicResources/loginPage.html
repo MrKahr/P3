@@ -4,37 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log In</title>
-    <link rel="stylesheet" href="../Styles/LoginpageStyle.css">
+    <link rel="stylesheet" href="../Styles/loginpageStyle.css">
 </head>
 
-<header>
-    <link rel="stylesheet" href="../Styles/navigatorStyle.css">
-    <nav class="topnav">
-        <a href="../PublicResources/index.html"><img class="logo" alt="AalborgTableTop logo" src="../Images/AalborgTableTop_Logo.png"></a>
-        <a href="../PublicResources/monthCalendar.html">Calendar</a>
-        <a href="#CONMAR">CONMAR</a>
-        <a href="#AboutAT">About AT</a>
-        <a href="#Contact">Contact</a>
-        <a href="../PublicResources/signuppage.html" class="split">Sign Up</a>
-    </nav>
-</header>
-
 <body>
-    <div id="LoginBox" class="LoginBox">
-        <img src="../Images/AalborgTableTop_Logo.png" alt="AalborgTableTop logo" width="100" height="100">
-        <h2>Log In</h2>
+    <header>
+        <link rel="stylesheet" href="../Styles/navigatorStyle.css">
+        <nav class="topnav">
+            <a href="../PublicResources/index.html"><img class="logo" alt="AalborgTableTop logo" src="../Images/AalborgTableTop_Logo.png"></a>
+            <a href="../PublicResources/monthCalendar.html">Calendar</a>
+            <a href="../PublicResources/notfoundpage.html">CONMAR</a>
+            <a href="../PublicResources/notfoundpage.html">About AT</a>
+            <a href="../PublicResources/notfoundpage.html">Contact</a>
+            <a href="../PublicResources/signuppage.html" class="split">Sign Up</a>
+        </nav>
+    </header>
+    
+    <div class="background">
+        <div id="LoginBox" class="LoginBox">
+            <img src="../Images/AalborgTableTop_Logo.png" alt="AalborgTableTop logo" width="100" height="100">
+            <h2>Log In</h2>
 
-        <form>
-            <label for="Username">Username:</label><br>
-            <input type="text" id="Username" name="Username"><br>
-            <label for="Password">Password:</label><br>
-            <input type="password" id="Password" name="Password"><br><br>
-            <input type="submit" value="Log In">
-        </form>
+            <form>
+                <label for="Username">Username:</label><br>
+                <input type="text" id="Username" name="Username" required><br>
+                <label for="Password">Password:</label><br>
+                <input type="password" id="Password" name="Password" required><br><br>
+                <input type="submit" value="Log In">
+            </form>
 
-        <p>Don't have an account?</p>
-        <p><a href="../PublicResources/signuppage.html">Sign Up</a></p>
-        <p><a href="#ForgotPassword">Forgot Password</a></p>
+            <p>Don't have an account?</p>
+            <p><a href="../PublicResources/signuppage.html">Sign Up</a></p>
+            <p><a href="../PublicResources/notfoundpage.html">Forgot Password</a></p>
+        </div>
     </div>
 </body>
 </html>
