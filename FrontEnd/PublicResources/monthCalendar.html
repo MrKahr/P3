@@ -9,27 +9,13 @@
 </head>
 
 <body>
-    <header>
-        <link rel="stylesheet" href="../Styles/navigatorStyle.css">
-        <nav class="topnav">
-            <a href="../PublicResources/index.html"><img class="logo" alt="AalborgTableTop logo" src="../Images/AalborgTableTop_Logo.png"></a>
-            <a href="../PublicResources/monthCalendar.html">Calendar</a>
-            <a href="../PublicResources/notfoundpage.html">CONMAR</a>
-            <a href="../PublicResources/notfoundpage.html">About AT</a>
-            <a href="../PublicResources/notfoundpage.html">Contact</a>
-            <a href="../PublicResources/loginpage.html" class="split">Log In</a>
-            <a href="../PublicResources/signuppage.html" class="split">Sign Up</a>
-        </nav>
-    </header>
-    <div class="background">
-        <div id="calendar-header" class="calendar-header">
-            <button id="prev-month">Previous Month</button>
-            <span id="current-month-year"></span>
-            <button id="next-month">Next Month</button>
-        </div>
-        <br>
-        <div id="calendar"></div>
+    <div id="calendar-header" class="calendar-header">
+        <button id="prev-month">Previous Month</button>
+        <span id="current-month-year"></span>
+        <button id="next-month">Next Month</button>
     </div>
+    <br>
+    <div id="calendar"></div>
 
     <script src="../Scripts/calendarRequests.js"></script>
 

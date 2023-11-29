@@ -1,22 +1,10 @@
 body {
-    margin: 0;
     font-family: Arial, sans-serif;
-}
-
-.background {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-image: url("../Images/AT_background.jpg");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    background-color: red;
 }
 
 .calendar-table {
     border-collapse: collapse;
     table-layout: fixed;
-    background-color: white;
     width: 100%;
 }
 
@@ -50,10 +38,6 @@ body {
     overflow: hidden;
     word-wrap: break-word;
     cursor: pointer;
-}
-
-h1 {
-    text-align: center;
 }
 
 .calendar-header {
