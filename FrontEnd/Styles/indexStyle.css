@@ -80,7 +80,6 @@
     flex-grow: 1;
 }
 .footer-navbox{
-    background-color: white;
     width: fit-content;
     display: flex;
     flex-direction: column;
@@ -102,7 +101,6 @@
     margin: 5px;
 }
 .disclaimer{
-    background-color: white;
     max-width: 20%;
     max-height: 270px;
     overflow-y: scroll;

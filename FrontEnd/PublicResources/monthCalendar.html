@@ -9,66 +9,13 @@
 </head>
 
 <body>
-    <header>
-        <link rel="stylesheet" href="../Styles/navigatorStyle.css">
-        <nav class="topnav">
-            <a href="../PublicResources/index.html"><img class="logo" alt="AalborgTableTop logo" src="../Images/AalborgTableTop_Logo.png"></a>
-            <a href="../PublicResources/monthCalendar.html">Calendar</a>
-            <a href="../PublicResources/notfoundpage.html">CONMAR</a>
-            <a href="../PublicResources/notfoundpage.html">About AT</a>
-            <a href="../PublicResources/notfoundpage.html">Contact</a>
-            <a href="../PublicResources/loginpage.html" class="split">Log In</a><!-- if logged in change with eventList -->
-            <a href="../PublicResources/signuppage.html" class="split">Sign Up</a>
-        </nav>
-    </header>
-
-    <div class="background">
-        <div>
-            <link rel="stylesheet" href="../Styles/navigatorStyle.css">
-            <aside class="ProfileMenu" id="ProfileMenu" style="display: none;">
-                <ul>
-                    <li><a href="../PublicResources/monthCalendar.html">My Events</a></li>
-                    <li><a href="../PublicResources/notfoundpage.html">DM Menu</a></li>
-                    <li><a href="../PublicResources/notfoundpage.html">Characters</a></li>
-                    <li><div class="MenuSpace"></div></li>
-                    <li><a href="../PublicResources/adminpage.html" class="MenuLine">Admin Menu</a></li>
-                    <li><a href="../PublicResources/profilePage/profilesettingspage.html">Profile Settings</a></li>
-                    <li><a href="../PublicResources/notfoundpage.html">Settings</a></li>
-                </ul>
-            </aside>
-        </div>
-
-        <h1>Calendar</h1>
-        <div id="calendar-header" class="calendar-header">
-            <button id="prev-month">Previous Month</button>
-            <span id="current-month-year"></span>
-            <button id="next-month">Next Month</button>
-        </div>
-        <br>
-        <div id="calendar"></div>
-        <!-- footer fucks with the calendar style (events become long) -->
-        <div class="footer">
-            <link rel="stylesheet" type="text/css" href="../Styles/indexStyle.css">
-            <div class="footer-navbox">
-                <img class="footer-logo" alt="AalborgTableTop logo" src="../Images/AalborgTableTop_Logo.png">
-                <!--Mangler links-->
-                <div class="footer-links">
-                    <div class="footer-item">Hvad er AL?</div>
-                    <div class="footer-item">Facebook</div>
-                    <div class="footer-item">Discord</div>
-                    <div class="footer-item">Kontakt</div>
-                    <div class="footer-item">Om AT</div>
-                </div>
-            </div>
-            <div class="footer-content"></div>
-            <div class="disclaimer">Disclaimer
-                This website is not affiliated with, endorsed,
-                sponsored, or specifically approved by Wizards of the Coast LLC. This website may use the trademarks and other intellectual property of
-                Wizards of the Coast LLC, which is permitted under Wizards’ Fan Site Policy. For example, Dungeons & Dragons® is a
-                trademark[s] of Wizards of the Coast. For more information about Wizards of the Coast or any of Wizards
-                trademarks or other intellectual property, please visit their website at (www.wizards.com)</div>
-        </div>
+    <div id="calendar-header" class="calendar-header">
+        <button id="prev-month">Previous Month</button>
+        <span id="current-month-year"></span>
+        <button id="next-month">Next Month</button>
     </div>
+    <br>
+    <div id="calendar"></div>
 
     <script src="../Scripts/calendarRequests.js"></script>
 

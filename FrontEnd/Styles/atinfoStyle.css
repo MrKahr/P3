@@ -1,19 +1,11 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-}
-.background {
-    margin: 0;
-    font-family: Arial, sans-serif;
     background-image: url("../Images/AT_background.jpg");
     background-repeat: no-repeat;
-    background-position: center;
+    background-position:initial;
     background-size: cover;
     background-color: red;
-    padding: 150px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .NotFoundBox {
@@ -23,6 +15,11 @@ body {
     text-align: center;
     width: 350px;
     height: auto;
+    position: absolute;/* https://blog.hubspot.com/website/center-div-css centering of div */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
 }
 
 h2 {
