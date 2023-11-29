@@ -1,7 +1,7 @@
-package com.proj.controller.Security;
+package com.proj.controller.security;
 
 /**
- * A special class to store info necessary for authentication.
+ * A special class to store user info necessary for authentication.
  */
 public class UserSecurityInfo {
     // Field

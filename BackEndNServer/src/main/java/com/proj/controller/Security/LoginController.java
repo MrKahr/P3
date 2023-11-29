@@ -1,13 +1,15 @@
-package com.proj.controller.Security;
+package com.proj.controller.security;
 
+// Authentication
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+
+// Controller
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class LoginController {
@@ -23,29 +25,26 @@ public class LoginController {
 	 * @return
 	 */
 	@GetMapping("/login")
-	public @ResponseBody String showLoginPage(){
-		// This String maps to loginPage.html in "/FrontEnd/**" as defined in ressources/application.properties.
-		// Note: This will not work with @RestController
-		return "loginPage"; 
+	public String showLoginPage(){
+		return "authentication/loginPage"; 
 	} 
 
 	/**
-	 * Authenticates a user with the supplied user info in a POST request to the login page.
+	 * Invokes AuthenticationManager with the supplied user info received in a POST request to the login page.
 	 * @param loginRequest The supplied user info from the frontend
 	 * @return If login succesful, redirect to the page that was initially requested.
 	 */
 	@PostMapping("/login")
-	public @ResponseBody String login(@RequestBody LoginRequest loginRequest) {
+	public String login(@RequestBody LoginRequest loginRequest) {
 		Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
 		Authentication authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
 		
 		// TODO: Handle all types of login falied.
 		
 		//return ResponseEntity.ok(authenticationResponse);
-		return "redirect:/login"; // 
+		return "redirect:/login";
 	}
 
 	public record LoginRequest(String username, String password) {
 	}
-
 }

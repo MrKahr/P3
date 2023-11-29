@@ -1,8 +1,9 @@
-package com.proj.controller.Security;
+package com.proj.controller.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.proj.model.users.RoleType;
 import com.proj.model.users.User;
 import com.proj.repositoryhandler.UserdbHandler;
 
@@ -32,7 +33,7 @@ public class UserDAO {
 		UserSecurityInfo userInfo = new UserSecurityInfo(
 			user.getBasicUserInfo().getUserName(),
 			user.getBasicUserInfo().getPassword(),
-			"GUEST");
+			RoleType.GUEST.toString()); // Change UserSecInfo to include role dependecies.
     	return userInfo;
     }
 } 

@@ -1,17 +1,20 @@
-package com.proj.controller.Security;
+package com.proj.controller.security;
 
 import java.util.HashMap;
 
 // Spring Application Context
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
 // Web Security (Intercept incoming request)
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.savedrequest.NullRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 // Authentication
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,40 +28,100 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-// TODO: Apply important filters to the Security Filter Chain.
-	// Important filters (more should be added):
-		// CSRF:  https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#servlet-csrf
+// Jakarta
+import jakarta.servlet.DispatcherType;
+
+// Our classes
+import com.proj.model.users.RoleType;
 
 
+
+
+/**
+ * Configuration/implementation of filters in Spring Security Filter Chain.
+ * <p>
+ * The Security Filter Chain is a chain of filters that intercepts all incoming requests which are then processed through the filters.
+ * <p>
+ * The applied filters determine what action should be taken with the incoming request, e.g. denied or require authentication (login).
+ * @see https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-securityfilterchain
+ */
 @Configuration
-@EnableWebMvc
-// Based off of https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/index.html
 public class SecurityConfig {
 
-	// For difference between EnableWebSecurity and HttpSecurity, see: 
-		// https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/configuration/EnableWebSecurity.html
-		// https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/builders/HttpSecurity.html
-
-		
-	/**
-	 * The Security Filter Chain is a chain of filters that intercepts all incoming requests which are then processed through the filters.
-	 * <p>
-	 * The applied filters determine what action should be taken with the incoming request, e.g. denied or require authentication (login).	
-	 * @param http An http request
-	 * @return The action which must be performed with this request. (TODO: Verify this)
-	 * @throws Exception TODO: Explain this
-	 * @see https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-securityfilterchain
-	 */
 	@Bean
-	 public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	@Order(1)
+	 public SecurityFilterChain testFilter(HttpSecurity http) throws Exception {
 		http
 			.csrf(Customizer.withDefaults())
 			.authorizeHttpRequests((authorize) -> authorize
-				.requestMatchers("/login", "/", "/user/**").permitAll()
-				.requestMatchers("/fisk").hasAuthority("GUEST")
+				.anyRequest().permitAll()
+			);
+		return http.build();
+	}
+
+
+
+
+	/**
+	 * The basic security filter is a default/fallback authentication filter which requires authentication for all requests
+	 * which are not specified in the requestMatcher methods. This is a basic security measure to prevent unathorized access in case someone
+	 * forgot to define a special SecurityFilter for a URL (e.g. /admin). 
+	 * <p>
+	 * All URLs defined in requestMatchers.permitAll do not require any role to access.
+	 * The actual authentication of users is handled by the AuthenticationManager (roughly speaking).
+	 * @param http
+	 * @return
+	 * @throws Exception
+	 */
+	@Bean
+	//@Order(1)
+	 public SecurityFilterChain basicFilter(HttpSecurity http) throws Exception {
+		http
+			.csrf(Customizer.withDefaults())
+			.authorizeHttpRequests((authorize) -> authorize
+				.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR, DispatcherType.INCLUDE).permitAll()
+				.requestMatchers("/login", "/", "/user/**", "FrontEnd/**", "/public/**").permitAll()
+				.requestMatchers("/fisk").hasRole(RoleType.GUEST.toString())
 				.anyRequest().authenticated()
 			)
 			.formLogin(Customizer.withDefaults());
+			// .formLogin(form -> form
+			// 	.loginPage("/login")
+			// 	.failureUrl("/login?error=true")
+			// 	.permitAll())
+			// .logout(logout -> logout
+			// 	.logoutUrl("/logout")
+			// 	.logoutSuccessUrl("/home")
+			// 	.permitAll());
+
+		return http.build();
+	}
+
+	/**
+	 * Requires all requests to URLs specified in securityMatcher to require a role of admin+.
+	 * TODO: Implement role dependencies.
+	 * <p>
+	 * The actual authentication of users is handled by the AuthenticationManager (roughly speaking).
+	 * @param http
+	 * @return
+	 * @throws Exception
+	 */
+	@Bean
+	@Order(2) // The order in which to invoke this filter. No order defaults to last.
+	 public SecurityFilterChain adminFilter(HttpSecurity http) throws Exception {
+		RequestCache nullRequestCache = new NullRequestCache(); // Do not save the original request, if authentication is required.
+		
+		http
+			.securityMatcher("/admin/**")
+			.authorizeHttpRequests((authorize) -> authorize
+				//.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()	
+				.requestMatchers("/admin/**").hasAnyRole(RoleType.ADMIN.toString(), RoleType.SUPERADMIN.toString())
+				.anyRequest().denyAll()
+			)
+			.formLogin(Customizer.withDefaults())
+			.requestCache((cache) -> cache
+				.requestCache(nullRequestCache)
+			);
 
 		return http.build();
 	}
@@ -70,8 +133,8 @@ public class SecurityConfig {
 	 * the user is authorized to proceed to the requested page.
 	 * <p>
 	 * TODO: Implement access restriction based on roles.
-	 * @param userDetailsService
-	 * @param passwordEncoder
+	 * @param userDetailsService // The Service managing userDetails from the frontend (e.g. password).
+	 * @param passwordEncoder The password encoder to hash the password from the frontend. Should be identical to the encoder used on the database.
 	 * @return
 	 * @see https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/index.html
 	 */
@@ -108,5 +171,5 @@ public class SecurityConfig {
 		PasswordEncoder passwordEncoder = new DelegatingPasswordEncoder(idForEncode, encoders);
 
 		return passwordEncoder;
-	}
+	} 
 }

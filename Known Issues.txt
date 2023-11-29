@@ -34,6 +34,6 @@ Fix:
 ################
 (1)
 Issue:
-    Null values are handled differently in the database.
+    Null values are handled differently in the database. Maybe this will cause issues?
 Fix:
     Avoid null values if possible.
