@@ -3,6 +3,8 @@ package com.proj.validators;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.proj.model.users.User;
+
 public class UsernameValidator implements Validatable {
     // Field 
     private Validatable nextValidator;
@@ -16,16 +18,16 @@ public class UsernameValidator implements Validatable {
     
     // Method
     @Override
-    public boolean HandleString(String username) {
+    public boolean ValidateStringField(User user) {
         boolean isValid;
         // Check whether string matches
-        m = p.matcher(username);
+        m = p.matcher(user.getBasicUserInfo().getUserName());
         isValid = m.matches();
 
         if (!isValid) {
             return isValid;
         } else if (nextValidator != null) {
-            nextValidator.HandleString(username);
+            nextValidator.ValidateStringField(user);
         }
         return isValid;
     }

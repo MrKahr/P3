@@ -17,12 +17,14 @@ import com.proj.model.users.Admin;
 import com.proj.model.users.SuperAdmin;
 import com.proj.validators.Validatable;
 import com.proj.validators.UsernameValidator;
+import com.proj.validators.EmailValidator;
 import com.proj.validators.PasswordValidator;
 
 public class ValidatorUnitTest {
     User user;
     Validatable usernameValidator = new UsernameValidator();
     Validatable passwordValidator = new PasswordValidator();
+    Validatable emailValidator = new EmailValidator();
 
     // Provide a user to test before each test with all possible roles fulfilled
     @BeforeEach
@@ -42,11 +44,12 @@ public class ValidatorUnitTest {
 
     @Test
     public void userNameTooShort() {
-        user.getBasicUserInfo().setUserName("hello123");
+        user.getBasicUserInfo().setUserName("");
         Validatable rootValidatable = passwordValidator;
         rootValidatable.nextValidator(usernameValidator);
-
-        assertFalse(rootValidatable.HandleString(user.getBasicUserInfo().getUserName()));
+        usernameValidator.nextValidator(emailValidator);
+        
+        assertFalse(rootValidatable.ValidateStringField(user));
 
     }
 }
