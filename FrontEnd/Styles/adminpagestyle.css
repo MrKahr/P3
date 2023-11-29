@@ -11,10 +11,6 @@ body {
     background-position: center;
     background-size: cover;
     background-color: red;
-    padding: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 table {
