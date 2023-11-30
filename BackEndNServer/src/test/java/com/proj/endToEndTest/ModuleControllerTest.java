@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 // https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/SpringBootTest.WebEnvironment.html
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc // MockMvc allows us to mock HTTP requests to our REST controllers
 public class ModuleControllerTest {
 
     @Autowired
@@ -36,7 +36,8 @@ public class ModuleControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void requestAddModule() { // Add module through mocked PUT request
+    // Add module through mocked PUT request to test controller
+    public void requestAddModule() {
         try {
             String name = "The Circle of Life";
             String description = "I am going to change.";
@@ -45,17 +46,13 @@ public class ModuleControllerTest {
                     .perform(put("/module/add?name=" + name + "&description=" + description + "&levelRange=" + levelRange));
 
             response.andExpect(status().isOk());
-
-            Module module = new Module(name, description, levelRange);
-            module.setId(1);
-
-            moduleManager.getModuledbHandler().delete(module);
         } catch (Exception e) {
             fail("Unexpected exception thrown requestAddModule: " + e.getMessage()); // https://www.baeldung.com/junit-fail
         }
     }
 
     @Test
+    // Edit module through mocked PUT request to test controller
     public void requestEditModule() { // Database persists from the last test, but not in the third
         try {
             moduleManager.createModule("null", "null", "01-02");
@@ -65,7 +62,7 @@ public class ModuleControllerTest {
             
             assertTrue(moduleManager.getModuledbHandler().existsById(2));
 
-            ResultActions response = mockMvc.perform(put("/module/editByID")
+            ResultActions response = mockMvc.perform(put("/module/editByID") // Compare fields of response to expected values
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(updateModule)));
 
             response.andExpect(status().isOk())
@@ -81,6 +78,7 @@ public class ModuleControllerTest {
     }
     
     @Test
+    // Delete module through mocked PUT request to test controller
     public void requestRemoveModule() {
         try {
             Module moduleToEdit = moduleManager.createModule("I live to die", "My fear is palpable", "20-20");
