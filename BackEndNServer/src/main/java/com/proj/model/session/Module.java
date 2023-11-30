@@ -1,6 +1,7 @@
 package com.proj.model.session;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.proj.model.events.ModuleEdited;
 
 /* jakarta persistence (JPA) is a application programming interface that provides specification to describe
  * the handling of relational data in java. JPA provides a number of annotations for mapping of java objects to database*/
@@ -45,6 +47,8 @@ public class Module {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime removedDate;
+    @JdbcTypeCode(SqlTypes.JSON)
+    private ModuleEdited moduleEdited;
 
     // Constructor
     /**
@@ -57,6 +61,7 @@ public class Module {
         this.name = name;
         this.description = description;
         this.levelRange = levelRange;
+        this.moduleEdited = new ModuleEdited();
     }
 
     public Module() {}
@@ -84,6 +89,10 @@ public class Module {
 
     public LocalDateTime getRemovedDate() {
         return removedDate;
+    }
+
+    public ModuleEdited getModuleEdited() {
+        return moduleEdited;
     }
 
     public void setId(Integer id) {
