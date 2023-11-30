@@ -22,6 +22,7 @@ public class ModuleManagerTest {
         
         Module foundModule = moduleManager.updateModule(module.getId(), "NewName", "NewDesc", "02-03");
         assertEquals(foundModule.getName(), "NewName");
+        assertEquals(foundModule.getModuleEdited().getChanges().get(0), "name changed to NewName");
         moduleManager.getModuledbHandler().delete(foundModule);
     }
 
