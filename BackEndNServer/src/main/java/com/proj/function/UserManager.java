@@ -4,17 +4,18 @@ import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import com.proj.model.users.*;
 import com.proj.exception.*;
 import com.proj.repositoryhandler.UserdbHandler;
+import com.proj.validators.UserValidator;
 
 // This class is broken/dummy code. NEEDS FULL REWRITE OF METHODS!!!!!
-// Check import statements
+
+/*TODO:  
+ * TEST USER MANAGER METHODS 
+ * TEST USER BUILDER
+ * Create new equals for user 
+ */
 
 /**
  * Class responsible for handling all user management except assigning roles
@@ -31,7 +32,7 @@ public class UserManager {
         this.numberOfUsers = numberOfUsers;
     }
 
-    public UserManager(){
+    public UserManager() {
         this.numberOfUsers = 0;
     }
 
@@ -52,21 +53,43 @@ public class UserManager {
      *                              membership button on the frontend.
      * @return A new guest object with requested attributes.
      */
-    public void createAccount(String userName, String password, boolean isMembershipRequested) {
-        try {
-            // UserRepositoryManager userRepoMan = new UserRepositoryManager();
+    public String createAccount(String userName, String password)
+    // TODO: consider whether we can get an array instead of single params 
+            throws NullPointerException {
+        if (userName == null || password == null) {
+            throw new NullPointerException("Cannot create user with username or password null");
+        } else {
+            try {
+                if (userExistsInDatabase(userName)) {
+                    throw new UsernameAlreadyUsedException("Cannot create user because user is already in database");
+                }
+                // Create user object
+                BasicUserInfo basicUserInfo = new BasicUserInfo(userName, password);
+                User user = new User(basicUserInfo);
+                // Validate user fields
+                UserValidator userValidator = new UserValidator(user);
+                userValidator.ValidateUserName().ValidatePassword();
+                // Check whether user is already in db - only by username
 
-            validateCreation(userName);
+                // Something with hashing of passwords before being saved to database.
 
-            if (isMembershipRequested) {
-                requestMembership(userName);
+                // Save user to db
+                userdbHandler.save(user);
+
+                // Increment number of users currently saved in db
+                this.numberOfUsers++;
+                return "User creation successful";
+
+            } catch (UsernameAlreadyUsedException uaue) {
+                return "Cannot create user because: " + uaue.getMessage();
+            } catch (FailedValidationException ife) {
+                return "Cannot create user because: " + ife.getMessage();
             }
-            this.numberOfUsers++; // Increment number of accounts since we just created one.
-
-        } catch (UsernameAlreadyUsedException invlle) {
-            // TODO: Send message to frontend: the username is already taken.
-
         }
+
+    }
+
+    public String upgradeToMember() {
     }
 
     /**
@@ -99,15 +122,39 @@ public class UserManager {
      * @throws IllegalArgumentException userID is null.
      */
     public User lookupAccount(Integer userID) throws UserNotFoundException, IllegalArgumentException {
-        String Dummy = "0"; // Dummy quick fix
-
         User user = null;
-        if (userExists(userID)) {
-            // user = userRepository.findById(userID).get();
+        try{
+                user = userdbHandler.findById(userID);
+        } 
+
+        if (userExistsInDatabase(userID)) {
+
         } else {
             throw new UserNotFoundException("User with userID '" + userID + "' does not exist in the database.");
         }
         return user;
+    }
+
+    /**
+     * Makes a request to the database for a given username.
+     * 
+     * @param quiriedName The name of the user to search for.
+     * @return True if username is found, false otherwise.
+     * @throws IllegalArgumentException UserID is null.
+     */
+    public boolean userExistsInDatabase(String queriedUsername) throws NullPointerException {
+        if (queriedUsername.equals(null)) {
+            throw new NullPointerException("Cannot determine whether " + queriedUsername + " exists in database");
+        }
+
+        boolean isUserInDB = false;
+        Iterable<User> users = userdbHandler.findAll();
+        for (User user : users) {
+            if (user.getBasicUserInfo().getUserName().equals(queriedUsername)) {
+                isUserInDB = true;
+            }
+        }
+        return isUserInDB;
     }
 
     /**
@@ -117,16 +164,15 @@ public class UserManager {
      * @return True if userID is found, false otherwise.
      * @throws IllegalArgumentException UserID is null.
      */
-    public boolean userExists(Integer userID) throws IllegalArgumentException {
-        String dummy = "0"; // Dummy quick fix
+    public boolean userExistsInDatabase(int UserID) {
+        boolean isUserInDB = false;
+        // TODO: Find type of exception thrown here
+        User user = userdbHandler.findById(UserID);
+        if (user instanceof User) {
+            isUserInDB = true;
+        }
+        return isUserInDB;
 
-        // Optional dataBaseObject = userRepository.findById(userID);
-        boolean isFoundInDB = false;
-        // This check exists because we don't consider empty accounts account
-        // if(userRepository.existsById(userID) && !(dataBaseObject.isEmpty())){
-        // isFoundInDB = true;
-        // }
-        return isFoundInDB;
     }
 
     /**
@@ -142,31 +188,6 @@ public class UserManager {
         // Check return type of database. if singular, wrap all users in a list or
         // something
         // return all_users;
-    }
-
-    /**
-     * Checks login requests to ensure that the captcha and credentials of the user
-     * requesting login exist and are correct.
-     * 
-     * @param userName Display name of user.
-     * @param password Password of user.
-     * @return True if login request is legitimate (valid credentials and captcha).
-     * @throws InvalidLoginException When the login request either had wrong
-     *                               username or password.
-     */
-    public boolean validateLogin(String userName, String password)
-            throws InvalidLoginException {
-        boolean isvalid = false;
-
-        Integer userID = 0; // Dummy quick fix
-
-        try {
-            userExists(userID);
-        } catch (UserNotFoundException usrnfe) {
-            throw new InvalidLoginException(String.format("Login failed with: %s", usrnfe.getMessage()), usrnfe);
-        }
-        isvalid = true;
-        return isvalid;
     }
 
     public void requestMembership(String userName) {
@@ -188,10 +209,10 @@ public class UserManager {
         return false;
     }
 
-    public void deactivateAccount(String userName) {
+    public void deactivateAccount(int UserID) {
     }
 
-    public void removeAccount(String userName) {
+    public void removeAccount(int userID) {
 
     }
 
@@ -214,18 +235,19 @@ public class UserManager {
 
         // Check whether user accesses their own page, otherwise build payload based
         if (requestingUser.equals(user)) {
-            try{
+            try {
                 sanitizedUser = user.clone();
                 // Remove password before sending back
                 sanitizedUser.getBasicUserInfo().setPassword("");
-            } catch(CloneNotSupportedException cnse){
+            } catch (CloneNotSupportedException cnse) {
                 throw new FailedSanitizationException("Sanitization of users failed due to" + cnse.getMessage());
             }
-       
+
         } else {
             HashMap<RoleType, Role> requestingUserRoles = requestingUser.getAllRoles();
 
-            // Build payload based on user permissions - cannot be a switch since roles are not ordered
+            // Build payload based on user permissions - cannot be a switch since roles are
+            // not ordered
             if (requestingUserRoles.containsKey(RoleType.SUPERADMIN)) {
                 sanitizedUser.setSuperAdminInfo(user.getSuperAdminInfo());
                 sanitizedUser.setMemberInfo(user.getMemberInfo());
