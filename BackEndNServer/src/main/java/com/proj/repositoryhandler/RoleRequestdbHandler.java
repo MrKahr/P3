@@ -4,10 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
-import com.proj.repositories.RequestRepository;
+import com.proj.repositories.RoleRequestRepository;
 import com.proj.exception.UserNotFoundException;
-import com.proj.model.events.Request;
-import com.proj.model.events.RequestType;
+import com.proj.model.events.RoleRequest;
 
 /**
  * Handles interaction with the requst repository that stores user requests in the
@@ -17,14 +16,14 @@ import com.proj.model.events.RequestType;
  * For more details and justification, see DbHandler.java
  */
 @Service
-public class RequestdbHandler extends DbHandler<Request> {
+public class RoleRequestdbHandler extends DbHandler<RoleRequest> {
     // Field
     @Autowired
-    private RequestRepository requestRepository;
+    private RoleRequestRepository requestRepository;
 
     // Method
     @Override
-    public void save(Request request) {
+    public void save(RoleRequest request) {
         try {
             requestRepository.save(request);
         } catch (IllegalArgumentException iae) {
@@ -39,7 +38,7 @@ public class RequestdbHandler extends DbHandler<Request> {
     }
 
     @Override
-    public void saveAll(Iterable<Request> requestIterable) {
+    public void saveAll(Iterable<RoleRequest> requestIterable) {
         try {
             requestRepository.saveAll(requestIterable);
         } catch (IllegalArgumentException iae) {
@@ -54,27 +53,27 @@ public class RequestdbHandler extends DbHandler<Request> {
     }
 
     @Override
-    public Request findById(Integer userID) {
-        return requestRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(userID));
+    public RoleRequest findById(Integer id) {
+        return requestRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @Override
-    public boolean existsById(Integer userID) {
+    public boolean existsById(Integer id) {
         /*
          * IllegalArgumentException thrown by existsById when userID = null is handled
          * by Spring
          * Try-catch is redundant here.
          */
-        return userID == null ? false : requestRepository.existsById(userID);
+        return id == null ? false : requestRepository.existsById(id);
     }
 
     @Override
-    public Iterable<Request> findAll() {
+    public Iterable<RoleRequest> findAll() {
         return requestRepository.findAll();
     }
 
     @Override
-    public Iterable<Request> findAllById(Iterable<Integer> userIdIterable) {
+    public Iterable<RoleRequest> findAllById(Iterable<Integer> userIdIterable) {
         /*
          * Unsure how findAllByID throws exceptions in cases when multiple null value
          * ids are present
@@ -108,7 +107,7 @@ public class RequestdbHandler extends DbHandler<Request> {
     }
 
     @Override
-    public void delete(Request request) {
+    public void delete(RoleRequest request) {
         try {
             requestRepository.delete(request);
         } catch (IllegalArgumentException iae) {
@@ -123,7 +122,7 @@ public class RequestdbHandler extends DbHandler<Request> {
     }
 
     @Override
-    public void deleteAll(Iterable<Request> requestIterable) {
+    public void deleteAll(Iterable<RoleRequest> requestIterable) {
         try {
             requestRepository.deleteAll(requestIterable);
         } catch (IllegalArgumentException iae) {
@@ -138,11 +137,7 @@ public class RequestdbHandler extends DbHandler<Request> {
         }
     }
 
-    public Iterable<Request> findAllByUserId(int requestingId){
+    public Iterable<RoleRequest> findAllByUserId(int requestingId){
         return requestRepository.findAllByUserId(requestingId);
-    }
-
-    public Iterable<Request> findAllByRequestType(RequestType requestType){
-        return requestRepository.findAllByRequestType(requestType);
     }
 }

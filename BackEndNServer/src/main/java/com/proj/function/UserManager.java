@@ -14,7 +14,7 @@ import com.proj.model.events.RequestType;
 import com.proj.model.events.RoleRequest;
 import com.proj.model.users.*;
 import com.proj.exception.*;
-import com.proj.repositoryhandler.RequestdbHandler;
+import com.proj.repositoryhandler.RoleRequestdbHandler;
 import com.proj.repositoryhandler.UserdbHandler;
 
 // This class is broken/dummy code. NEEDS FULL REWRITE OF METHODS!!!!!
@@ -28,7 +28,7 @@ public class UserManager {
     @Autowired
     UserdbHandler userdbHandler;
     @Autowired
-    RequestdbHandler requestdbHandler;
+    RoleRequestdbHandler requestdbHandler;
 
     private Integer numberOfUsers;
 
@@ -257,8 +257,8 @@ public class UserManager {
      */
     public void fulfillRoleRequest(int requestingId, RoleType type){
         ArrayList<Request> requests = new ArrayList<Request>();
-        for (Request r : requestdbHandler.findAllByRequestType(RequestType.ROLE)) {
-            if(r.getId() == requestingId){
+        for (Request r : requestdbHandler.findAllByUserId(requestingId)) {
+            if(r.getRequestType() == RequestType.ROLE){
                 requests.add(r);
             }
         }
@@ -280,8 +280,8 @@ public class UserManager {
     public void createRoleRequest(int requestingId, Role role){
         RoleRequest newRequest = new RoleRequest(requestingId, role);
         ArrayList<Request> requests = new ArrayList<Request>();
-        for (Request r : requestdbHandler.findAllByRequestType(RequestType.ROLE)) {
-            if(r.getId() == requestingId){
+        for (Request r : requestdbHandler.findAllByUserId(requestingId)) {
+            if(r.getRequestType() == RequestType.ROLE){
                 requests.add(r);
             }
         }
@@ -297,6 +297,27 @@ public class UserManager {
         } else {
             requestdbHandler.delete(oldRequest);    //make sure there's only one request of a given type and id
             requestdbHandler.save(newRequest);
+        }
+    }
+
+    public void rejectRoleRequest(int requestingId, RoleType type){
+        ArrayList<Request> requests = new ArrayList<Request>();
+        for (Request r : requestdbHandler.findAllByUserId(requestingId)) {
+            if(r.getRequestType() == RequestType.ROLE){
+                requests.add(r);
+            }
+        }
+        RoleRequest roleRequest = null;
+        for (Request r : requests) {
+            roleRequest = (RoleRequest) r;
+            if(roleRequest.getRoleType() == type){
+                break;
+            }
+        }
+        if(roleRequest == null){
+            throw new IllegalArgumentException("No request of the given type exists for user with ID " + requestingId);
+        } else {
+            requestdbHandler.delete(roleRequest);
         }
     }
 }
