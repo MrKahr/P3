@@ -1,0 +1,50 @@
+.footer{
+    font-family: Arial, sans-serif;
+    width:100%;
+    height: fit-content;
+    outline:black solid 1px;
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+}
+.footer-navbox{
+    background-color: white;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    margin-right: auto;
+    outline: black solid 1px;
+}
+.footer-links{
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    outline: black solid 1px;
+}
+.footer-logo{
+    height: 90px;
+    width: 90px;
+}
+.footer-item{
+    margin: 5px;
+}
+.disclaimer{
+    background-color: white;
+    max-width: 20%;
+    max-height: 270px;
+    overflow-y: scroll;
+}
+.footer-content{
+    background-image: url("../Images/AT_background.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-color: red;
+    outline: black solid 1px;
+    width: 100%;
+    height:auto;
+    max-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
