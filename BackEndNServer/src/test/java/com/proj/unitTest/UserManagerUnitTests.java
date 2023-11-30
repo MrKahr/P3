@@ -22,7 +22,6 @@ import com.proj.repositories.UserRepository;
 import com.proj.repositoryhandler.UserdbHandler;
 import com.proj.function.RoleAssigner;
 
-// THIS IS NOT FOR USE - ONLY REFERENCE
 
 //@EnableJpaRepositories(basePackages={"com.proj.function.UserRepository"})
 public class UserManagerUnitTests {

@@ -31,6 +31,10 @@ public class UserManager {
         this.numberOfUsers = numberOfUsers;
     }
 
+    public UserManager(){
+        this.numberOfUsers = 0;
+    }
+
     // Method
     public Integer getNumberOfUsers() {
         return this.numberOfUsers;
