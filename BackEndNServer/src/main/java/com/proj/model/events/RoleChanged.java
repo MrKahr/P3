@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-
 import com.proj.model.users.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -22,6 +21,7 @@ public class RoleChanged {
     private Role previousRoleObject;
 
     // Constructor
+    public RoleChanged(){} // Required for jackson serialization/deserialization
     /**
      * Creates an object of class RoleChanged and sets its date-attribute using localdate.now().
      * @param user The user affected by the role change.
@@ -34,8 +34,6 @@ public class RoleChanged {
         this.newRoleObject = newRoleObject;
         this.previousRoleObject = previousRoleObject;
     }
-
-    public RoleChanged(){}
 
     // Method -  No setters since we model instantenous events as object instanstiations.
     public LocalDateTime getDate() {
