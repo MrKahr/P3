@@ -20,37 +20,106 @@
         </nav>
     </header>
 
-    <div class="background"></div>
+    <div class="background">
         <div>
             <link rel="stylesheet" href="../Styles/navigatorStyle.css">
             <aside class="ProfileMenu" id="ProfileMenu" style="display: block;">
                 <ul>
                     <li><a href="../PublicResources/monthCalendar.html">My Events</a></li>
-                    <li><a href="../PublicResources/notfoundpage.html">DM Menu</a></li>
-                    <li><a href="../PublicResources/notfoundpage.html">Characters</a></li>
+                    <li><a href="../PublicResources/notfoundpage.html">Profile Settings</a></li>
                     <li><div class="MenuSpace"></div></li>
                     <li><a href="../PublicResources/adminpage.html" class="MenuLine">Admin Menu</a></li>
-                    <li><a href="../PublicResources/profilePage/profilesettingspage.html">Profile Settings</a></li>
-                    <li><a href="../PublicResources/notfoundpage.html">Settings</a></li>
                 </ul>
             </aside>
         </div>
 
-        <div style="overflow-x:auto;">
-            <table>
-                <tr>
-                    <th>Username</th>
-                    <th>Role</th>
-                    <th>Has paid</th>
-                </tr>
-                <tr>
-                </tr>
-                <tr>
-                </tr>
-            </table>
+        <div class="tab">
+            <button class="tablinks" onclick="showTab(event, 'manageUsers')">Manage Users</button>
+            <button class="tablinks" onclick="showTab(event, 'manageEvents')">Manage Events</button>
+            <button class="tablinks" onclick="showTab(event, 'blogPosts')">Blog Posts</button>
+            <button class="tablinks" onclick="showTab(event, 'manageModules')">Manage Modules</button>
+        </div>
+        
+        <div class="tabcontent" id="manageUsers" style="display: none;">
+            <div style="overflow-x:auto;">
+                <table>
+                    <tr>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Has paid?</th>
+                    </tr>
+                    <tr>
+                    </tr>
+                    <tr>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="tabcontent" id="manageEvents" style="display: none;">
+            <div style="overflow-x:auto;">
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Location</th>
+                        <th>DM</th>
+                        <th>Players</th>
+                        <th>State</th>
+                    </tr>
+                    <tr>
+                    </tr>
+                    <tr>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="tabcontent" id="blogPosts" style="display: none;">
+            <div style="overflow-x:auto;">
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Title</th>
+                    </tr>
+                    <tr>
+                    </tr>
+                    <tr>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="tabcontent" id="manageModules" style="display: none;">
+            <div style="overflow-x:auto;">
+                <table>
+                    <tr>
+                        <th>Title</th>
+                    </tr>
+                    <tr>
+                    </tr>
+                    <tr>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 
-    <script></script>
+    <script>
+        function showTab(event, manageTab) {
+            let tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            document.getElementById('manageUsers').style.display = "none";
+            document.getElementById('manageEvents').style.display = "none";
+            document.getElementById('blogPosts').style.display = "none";
+            document.getElementById('manageModules').style.display = "none";
+
+            document.getElementById(manageTab).style.display = "block";
+            event.currentTarget.className += " active";
+        }
+    </script>
 </body>
 </html>

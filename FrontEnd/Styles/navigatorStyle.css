@@ -42,6 +42,7 @@ header {
   }
 
   .ProfileMenu {
+    margin: 0;
     margin-top: 0;
     float: right;
     width: 15%;
@@ -60,9 +61,37 @@ header {
   }
 
   .MenuSpace {
-    margin-top: 150px;
+    margin-top: 50%;
   }
   .ProfileMenu a.MenuLine {
+    padding: 30px 16px;
+    border-top-style: solid;
+  }
+
+  .userProfileMenu {
+    top: 0;
+    right: 0;
+    position: absolute;
+    float: right;
+    width: 15%;
+    overflow: hidden;
+    background-color: white;
+    border: 1px solid black;
+    /* height: 300px; */
+  }
+
+  .userProfileMenu ul {
+    list-style-type: none;
+    text-align: center;
+    line-height: 1.8;
+    padding: 30px 16px;
+    font-size: 12px;
+  }
+
+  .userMenuSpace {
+    margin-top: 150px;
+  }
+  .userProfileMenu a.MenuLine {
     padding: 30px 16px;
     border-top-style: solid;
   }
