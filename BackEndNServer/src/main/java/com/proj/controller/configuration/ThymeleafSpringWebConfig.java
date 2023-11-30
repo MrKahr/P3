@@ -60,6 +60,8 @@ public class ThymeleafSpringWebConfig implements WebMvcConfigurer {
         return templateResolver;
     }
 
+    
+
     /**
      * The template engine used to render documents.
      * <p>
@@ -110,9 +112,14 @@ public class ThymeleafSpringWebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/images/**").addResourceLocations("classpath:/FrontEnd/public/images");
-        registry.addResourceHandler("/js/**").addResourceLocations("classpath:/FrontEnd/public/js");
-        registry.addResourceHandler("/css/**").addResourceLocations("classpath:/FrontEnd/public/css");
+        // 'addResourceHandler' is the pattern to match when receiving a GET request on a resource.
+        // E.g. if a CSS file in HTML is specified as: "/css/genericStyle.css" then a pattern of "css/**" will match that.
+        // 'addResourceLocations' specifies the path to look for a resource if the pattern matches.
+
+        registry.addResourceHandler("images/**").addResourceLocations("classpath:/FrontEnd/public/images/");
+        registry.addResourceHandler("js/**").addResourceLocations("classpath:/FrontEnd/public/js/");
+        registry.addResourceHandler("css/**").addResourceLocations("classpath:/FrontEnd/public/css/");
+        //registry.addResourceHandler("favicon.ico").addResourceLocations("classpath:/FrontEnd/public/");
     }
 }
 

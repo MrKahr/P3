@@ -27,7 +27,7 @@ public class AuthenticationService implements UserDetailsService {
 			throws UsernameNotFoundException {
 		UserSecurityInfo userSecurityInfo = userDAO.getUserInfo(username);
 		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userSecurityInfo.getRole()); // call getAuthorities here
-		UserDetails userDetails = (UserDetails)new User(userSecurityInfo.getUsername(), userSecurityInfo.getPassword(), Arrays.asList(authority)); // change to conform to getAuthorities return type
+		UserDetails userDetails = (UserDetails) new User(userSecurityInfo.getUsername(), userSecurityInfo.getPassword(), Arrays.asList(authority)); // change to conform to getAuthorities return type
 
 		// Example:
 		//

@@ -11,10 +11,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 // Authentication
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,8 +31,6 @@ import jakarta.servlet.DispatcherType;
 
 // Our classes
 import com.proj.model.users.RoleType;
-
-
 
 
 /**
@@ -67,8 +63,8 @@ public class SecurityConfig {
 	 * which are not specified in the requestMatcher methods. This is a basic security measure to prevent unathorized access in case someone
 	 * forgot to define a special SecurityFilter for a URL (e.g. /admin). 
 	 * <p>
-	 * All URLs defined in requestMatchers.permitAll do not require any role to access.
-	 * The actual authentication of users is handled by the AuthenticationManager (roughly speaking).
+	 * All URLs defined in requestMatchers.permitAll are always allowed.
+	 * The actual authentication of users is handled by AuthenticationManager (roughly speaking).
 	 * @param http
 	 * @return
 	 * @throws Exception

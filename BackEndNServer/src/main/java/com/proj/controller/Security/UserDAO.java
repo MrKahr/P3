@@ -10,7 +10,7 @@ import com.proj.repositoryhandler.UserdbHandler;
 /**
  * The DAO (Data Access Object) was by Spring originally intended to access the database directly.
  * <p>
- * However, that is not the case in this implementation, where database access abstracted to userdbHandler.
+ * However, that is not the case in this implementation, where database access is abstracted to userdbHandler.
  * @see https://docs.spring.io/spring-framework/reference/data-access/dao.html
  */
 @Service
