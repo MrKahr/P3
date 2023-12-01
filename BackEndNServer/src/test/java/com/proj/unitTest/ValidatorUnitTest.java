@@ -30,7 +30,7 @@ public class ValidatorUnitTest {
     void init() {
         // Set all users so that they have all possible info to see if filter works
         // correctly
-        user = new User(new BasicUserInfo("user1", "1234"));
+        user = new User(new BasicUserInfo("user1", "233Gel+"));
         user.setId(1);
 
         RoleAssigner.setRole(user, new Guest("Bard Level 1"));
@@ -141,4 +141,6 @@ public class ValidatorUnitTest {
             assertTrue(errormsg.equals("Email is not valid"));
         }
     }
+
+    //TODO: Check valid password/email/username
 }

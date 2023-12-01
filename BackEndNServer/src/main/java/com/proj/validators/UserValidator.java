@@ -80,7 +80,7 @@ public class UserValidator implements Validatable {
         } else {
             boolean isValidPassword;
             // Check whether password matches the regex pattern
-            m = userNamePattern.matcher(getUser().getBasicUserInfo().getPassword());
+            m = passwordPattern.matcher(getUser().getBasicUserInfo().getPassword());
             isValidPassword = m.matches();
 
             if (isValidPassword) {
@@ -101,7 +101,7 @@ public class UserValidator implements Validatable {
         } else {
             boolean isValidEmail;
             // Check whether password matches the regex pattern
-            m = userNamePattern.matcher(getUser().getMemberInfo().getEmail());
+            m = emailPattern.matcher(getUser().getMemberInfo().getEmail());
             isValidEmail = m.matches();
 
             if (isValidEmail) {

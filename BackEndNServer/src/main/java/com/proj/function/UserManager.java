@@ -3,6 +3,7 @@ package com.proj.function;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.proj.model.users.*;
 import com.proj.exception.*;
@@ -20,6 +21,7 @@ import com.proj.validators.UserValidator;
 /**
  * Class responsible for handling all user management except assigning roles
  */
+@Service
 public class UserManager {
     // Field
     @Autowired
@@ -45,6 +47,10 @@ public class UserManager {
         this.numberOfUsers = numberOfUsers;
     }
 
+    public UserdbHandler getUserdbHandler() {
+        return this.userdbHandler;
+    }
+
     /**
      * 
      * @param userName              Display name of user.
@@ -54,24 +60,21 @@ public class UserManager {
      * @return A new guest object with requested attributes.
      */
     public String createAccount(String userName, String password)
-    // TODO: consider whether we can get an array instead of single params 
             throws NullPointerException {
         if (userName == null || password == null) {
             throw new NullPointerException("Cannot create user with username or password null");
         } else {
             try {
-                if (userExistsInDatabase(userName)) {
-                    throw new UsernameAlreadyUsedException("Cannot create user because user is already in database");
-                }
+                // Check whether username already exists in database
+                validateUsernameStatusInDB(userName);
+
                 // Create user object
                 BasicUserInfo basicUserInfo = new BasicUserInfo(userName, password);
                 User user = new User(basicUserInfo);
+
                 // Validate user fields
                 UserValidator userValidator = new UserValidator(user);
                 userValidator.ValidateUserName().ValidatePassword();
-                // Check whether user is already in db - only by username
-
-                // Something with hashing of passwords before being saved to database.
 
                 // Save user to db
                 userdbHandler.save(user);
@@ -79,9 +82,6 @@ public class UserManager {
                 // Increment number of users currently saved in db
                 this.numberOfUsers++;
                 return "User creation successful";
-
-            } catch (UsernameAlreadyUsedException uaue) {
-                return "Cannot create user because: " + uaue.getMessage();
             } catch (FailedValidationException ife) {
                 return "Cannot create user because: " + ife.getMessage();
             }
@@ -90,6 +90,7 @@ public class UserManager {
     }
 
     public String upgradeToMember() {
+        return "";
     }
 
     /**
@@ -97,20 +98,19 @@ public class UserManager {
      * already exist.
      * 
      * @param userName Display name of user.
-     * @return True if the username does not exist.
-     * @throws UsernameAlreadyUsedException When the username is already taken by
+     * @throws FailedValidationException When the username is already taken by
      *                                      another user (i.e. exists in the
      *                                      database).
      */
-    public boolean validateCreation(String userName) {
-        // TODO: We could perform user input validation of username here
+    public void validateUsernameStatusInDB(String username) {
         try {
-            // accountExists(userName);
-        } catch (UserNotFoundException usrnfe) { // This error means creation is valid since UserNotFound means this
-                                                 // username is available
-            return true;
+            boolean IsUserInDB = userExistsInDatabase(username);
+            if (IsUserInDB) {
+                throw new FailedValidationException("Username:" + username + " is already in database");
+            }
+        } catch (NullPointerException npe) {
+            System.out.println(npe.getMessage());
         }
-        throw new UsernameAlreadyUsedException(String.format("Username '%s' is already in use", userName));
     }
 
     /**
@@ -123,9 +123,11 @@ public class UserManager {
      */
     public User lookupAccount(Integer userID) throws UserNotFoundException, IllegalArgumentException {
         User user = null;
-        try{
-                user = userdbHandler.findById(userID);
-        } 
+        try {
+            user = userdbHandler.findById(userID);
+        } catch (NullPointerException npe) {
+            System.out.println("Put exception here");
+        }
 
         if (userExistsInDatabase(userID)) {
 
@@ -166,13 +168,16 @@ public class UserManager {
      */
     public boolean userExistsInDatabase(int UserID) {
         boolean isUserInDB = false;
-        // TODO: Find type of exception thrown here
-        User user = userdbHandler.findById(UserID);
-        if (user instanceof User) {
-            isUserInDB = true;
+        try {
+            // TODO: Try seeing what happens when optional is returned
+            User user = userdbHandler.findById(UserID);
+            if (user instanceof User) {
+                isUserInDB = true;
+            }
+        } catch (UserNotFoundException unfe) {
+            System.out.println("Cannot check if user exists due to " + unfe.getMessage());
         }
         return isUserInDB;
-
     }
 
     /**
