@@ -15,7 +15,6 @@ import jakarta.persistence.Id;
  * A class that represents a request for a membership. Should be assigned to a user or deleted at some point.
  * Only one is stored in the database per user.
  */
-
 @Entity
 public class RoleRequest extends Request{
     //Field
@@ -23,14 +22,16 @@ public class RoleRequest extends Request{
     private Role roleObject;    //the information that the user has entered
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
-    private int userId;
+    private Integer id; //this is the ID of the request itself
+    private int userId; //this is the ID of the user that made the request
 
     //Constructor
     public RoleRequest(int userId, Role roleObject){
         this.userId = userId;
         this.roleObject = roleObject;
     }
+
+    public RoleRequest(){}; //empty constructor to help with serializing
 
     //Method
     public Role getRoleInfo(){
