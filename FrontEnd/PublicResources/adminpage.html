@@ -3,6 +3,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="..\Styles\adminpagestyle.css">
+    <link rel="stylesheet" href="..\Styles\dummyStyle.css">
+    <!-- This library imports html icon list-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Adminpage</title>
 </head>
 
@@ -10,144 +13,166 @@
     <header>
         <link rel="stylesheet" href="../Styles/navigatorStyle.css">
         <nav class="topnav">
-            <a href="../PublicResources/index.html"><img class="logo" alt="AalborgTableTop logo" src="../Images/AalborgTableTop_Logo.png"></a>
-            <a href="../PublicResources/monthCalendar.html">Calendar</a>
-            <a href="../PublicResources/notfoundpage.html">CONMAR</a>
-            <a href="../PublicResources/notfoundpage.html">About AT</a>
-            <a href="../PublicResources/notfoundpage.html">Contact</a>
-            <div class="split"><a href="../PublicResources/profilePage/profilepage.html"><img class="logo" alt="AalborgTableTop logo" src="../Images/AalborgTableTop_Logo.png"></a></div>
-            <a href="#LogOut" class="split">Log Out</a>
+            <a href="../PublicResources/userhomepage.html"><img class="logo" alt="AalborgTableTop logo" src="../Images/AalborgTableTop_Logo.png"></a>
+            <a href="../PublicResources/userCalendar.html">Calendar</a>
+            <a href="../PublicResources/usernotfoundpage.html">CONMAR</a>
+            <a href="../PublicResources/usernotfoundpage.html">About AT</a>
+            <a href="../PublicResources/usernotfoundpage.html">Contact</a>
+            <div class="split"><a href="../PublicResources/myProfile/profilepage.html"><img class="logo" alt="AalborgTableTop logo" src="../Images/AalborgTableTop_Logo.png"></a></div>
+            <a href="../PublicResources/publichomepage.html" class="split">Log Out</a>
         </nav>
     </header>
 
-    <div class="background">
-        <div>
+    <div class="content">
+        <div class="content-left">
+            <div class="tab">
+                <button class="tablinks" onclick="showTab(event, 'manageUsers')">Manage Users</button>
+                <button class="tablinks" onclick="showTab(event, 'manageEvents')">Manage Events</button>
+                <button class="tablinks" onclick="showTab(event, 'blogPosts')">Blog Posts</button>
+                <button class="tablinks" onclick="showTab(event, 'manageModules')">Manage Modules</button>
+            </div>
+            
+            <div class="tabcontent" id="manageUsers" style="display: none;">
+                <div style="overflow-x:auto;">
+                    <table>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Has paid?</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                        </tr>
+                    </table>
+                    <div class="manageUsersButtons" id="manageUsersButtons">
+                        <form>
+                            <label for="managerole"></label>
+                            <select id="managerole" name="Role">
+                                <option value="guest">Guest</option>
+                                <option value="member">Member</option>
+                                <option value="dm">DM</option>
+                                <option value="admin">Admin</option>
+                                <option value="superadmin">SuperAdmin</option><!-- I think this one will be removed -->
+                            </select>
+                            <input type="submit" value="Save">
+                            <button>Ban User</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    
+    
+    
+            <div class="tabcontent" id="manageEvents" style="display: none;">
+                <div style="overflow-x:auto;">
+                    <table>
+                        <tr>
+                            <th>Date <i class="fa fa-edit" style="display: none"></i></th>
+                            <th>Time <i class="fa fa-edit"style="display: none"></i></th>
+                            <th>Location <i class="fa fa-edit" style="display: none"></i></th>
+                            <th>DM <i class="fa fa-plus-square-o" style="display: none"></i></th>
+                            <th>Players <i class="fa fa-plus-square-o" style="display: none"></i></th>
+                            <th>State<i class="fa fa-edit" style="display: none"></i></th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                        </tr>
+                    </table>
+                    <div class="manageEventsButtons" id="manageEventsButtons">
+                        <button id="modifyButton">Modify</button>
+                    </div>
+                </div>
+            </div>
+    
+    
+    
+            <div class="tabcontent" id="blogPosts" style="display: none;">
+                <div class="blogmanage" style="overflow-x:auto;">
+                    <div class="createPost">
+                        <form>
+                            <label for="blogTextBox">Create blog post</label><br>
+                            <input type="text" id="postTitle" placeholder="Title goes here" style="width: 314px"><br>
+                            <textarea id="blogTextBox" placeholder="Text here" rows="10" cols="41"></textarea>
+                            <input type="submit" value="Post">
+                        </form>
+                    </div>
+                    <div class="postTable">
+                        <table>
+                            <tr>
+                                <th>Date </th>
+                                <th>Title</th>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="blogPostsButtons" id="blogPostsButtons">
+                        <form>
+                            <button>Edit</button>
+                            <button>Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    
+    
+    
+            <div class="tabcontent" id="manageModules" style="display: none;">
+                <div class="modulemanage" style="overflow-x:auto;">
+                    <div class="createModule">
+                        <form>
+                            <label for="moduleTextBox">Create module</label><br>
+                            <input type="text" id="moduleTitle" placeholder="Title goes here" style="width: 314px"><br>
+                            <textarea id="moduleTextBox" placeholder="Text here" rows="10" cols="41"></textarea>
+                            <input type="submit" value="Add Module">
+                        </form>
+                    </div>
+                    <div class="moduleTable">
+                        <table>
+                            <tr>
+                                <th>Title</th>
+                            </tr>
+                            <tr>
+                                <td></td>
+                            </tr>
+                            <tr>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="manageModulesButtons" id="manageModulesButtons">
+                        <form>
+                            <button>Edit</button>
+                            <button>Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-right">
             <link rel="stylesheet" href="../Styles/navigatorStyle.css">
             <aside class="ProfileMenu" id="ProfileMenu" style="display: block;">
                 <ul>
-                    <li><a href="../PublicResources/monthCalendar.html">My Events</a></li>
-                    <li><a href="../PublicResources/notfoundpage.html">Profile Settings</a></li>
+                    <li><a href="../PublicResources/myEvents/eventlistpage.html">My Events</a></li>
+                    <li><a href="../PublicResources/myProfile/profilesettingspage.html">Profile Settings</a></li>
                     <li><div class="MenuSpace"></div></li>
                     <li><a href="../PublicResources/adminpage.html" class="MenuLine">Admin Menu</a></li>
                 </ul>
             </aside>
-        </div>
-
-        <div class="tab">
-            <button class="tablinks" onclick="showTab(event, 'manageUsers')">Manage Users</button>
-            <button class="tablinks" onclick="showTab(event, 'manageEvents')">Manage Events</button>
-            <button class="tablinks" onclick="showTab(event, 'blogPosts')">Blog Posts</button>
-            <button class="tablinks" onclick="showTab(event, 'manageModules')">Manage Modules</button>
-        </div>
-        
-        <div class="tabcontent" id="manageUsers" style="display: none;">
-            <div style="overflow-x:auto;">
-                <table>
-                    <tr>
-                        <th>Username</th>
-                        <th>Role</th>
-                        <th>Has paid?</th>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                    </tr>
-                </table>
-                <div class="manageUsersButtons" id="manageUsersButtons">
-                    <form>
-                        <label for="managerole"></label>
-                        <select id="managerole" name="Role">
-                            <option value="guest">Guest</option>
-                            <option value="member">Member</option>
-                            <option value="dm">DM</option>
-                            <option value="admin">Admin</option>
-                            <option value="superadmin">SuperAdmin</option><!-- I think this one will be removed -->
-                        </select>
-                        <input type="submit" value="Save">
-                        <button>Ban User</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="tabcontent" id="manageEvents" style="display: none;">
-            <div style="overflow-x:auto;">
-                <table>
-                    <tr>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Location</th>
-                        <th>DM</th>
-                        <th>Players</th>
-                        <th>State</th>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                    </tr>
-                </table>
-                <div class="manageEventsButtons" id="manageEventsButtons">
-
-                    <button>Modify</button>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="tabcontent" id="blogPosts" style="display: none;">
-            <div style="overflow-x:auto;">
-                <table>
-                    <tr>
-                        <th>Date</th>
-                        <th>Title</th>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                    </tr>
-                </table>
-                <div class="blogPostsButtons" id="blogPostsButtons">
-                    <form>
-                        <button>Edit</button>
-                        <button>Delete</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="tabcontent" id="manageModules" style="display: none;">
-            <div style="overflow-x:auto;">
-                <table>
-                    <tr>
-                        <th>Title</th>
-                    </tr>
-                    <tr>
-                        <td></td>
-                    </tr>
-                    <tr>
-                    </tr>
-                </table>
-                <div class="manageModulesButtons" id="manageModulesButtons">
-                        <button>Edit</button>
-                        <button>Delete</button>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -162,7 +187,7 @@
             document.getElementById('manageEvents').style.display = "none";
             document.getElementById('blogPosts').style.display = "none";
             document.getElementById('manageModules').style.display = "none";
-
+            
             document.getElementById(manageTab).style.display = "block";
             event.currentTarget.className += " active";
         }
@@ -195,7 +220,11 @@
                 manageModulesButtons.style.left = buttonLeft + 'px';
                 manageModulesButtons.style.display = "block";
             })
-        });
+        })
+
+        document.getElementById('modifyButton').addEventListener('click', function() {
+            /* COME BACK USE ID ON ALL ICONS NOT MY BEST BUT WORKS*/
+        })
 
     </script>
 </body>
