@@ -39,8 +39,10 @@ public class UserManager {
     public UserManager(int numberOfUsers) {
         this.numberOfUsers = numberOfUsers;
     }
+    public UserManager(){
+        this.numberOfUsers = 0;
+    }
 
-    public UserManager(){};
 
     // Method
     public int getNumberOfUsers() {
