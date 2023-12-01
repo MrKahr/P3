@@ -3,6 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="..\Styles\adminpagestyle.css">
+    <link rel="stylesheet" href="..\Styles\dummyStyle.css">
     <title>Adminpage</title>
 </head>
 
@@ -20,8 +21,124 @@
         </nav>
     </header>
 
-    <div class="background">
-        <div>
+    <div class="content">
+        <div class="content-left">
+            <div class="tab">
+                <button class="tablinks" onclick="showTab(event, 'manageUsers')">Manage Users</button>
+                <button class="tablinks" onclick="showTab(event, 'manageEvents')">Manage Events</button>
+                <button class="tablinks" onclick="showTab(event, 'blogPosts')">Blog Posts</button>
+                <button class="tablinks" onclick="showTab(event, 'manageModules')">Manage Modules</button>
+            </div>
+            
+            <div class="tabcontent" id="manageUsers" style="display: none;">
+                <div style="overflow-x:auto;">
+                    <table>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Has paid?</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                        </tr>
+                    </table>
+                    <div class="manageUsersButtons" id="manageUsersButtons">
+                        <form>
+                            <label for="managerole"></label>
+                            <select id="managerole" name="Role">
+                                <option value="guest">Guest</option>
+                                <option value="member">Member</option>
+                                <option value="dm">DM</option>
+                                <option value="admin">Admin</option>
+                                <option value="superadmin">SuperAdmin</option><!-- I think this one will be removed -->
+                            </select>
+                            <input type="submit" value="Save">
+                            <button>Ban User</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    
+    
+    
+            <div class="tabcontent" id="manageEvents" style="display: none;">
+                <div style="overflow-x:auto;">
+                    <table>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Location</th>
+                            <th>DM</th>
+                            <th>Players</th>
+                            <th>State</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                        </tr>
+                    </table>
+                    <div class="manageEventsButtons" id="manageEventsButtons">
+    
+                        <button>Modify</button>
+                    </div>
+                </div>
+            </div>
+    
+    
+    
+            <div class="tabcontent" id="blogPosts" style="display: none;">
+                <div style="overflow-x:auto;">
+                    <table>
+                        <tr>
+                            <th>Date</th>
+                            <th>Title</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                        </tr>
+                    </table>
+                    <div class="blogPostsButtons" id="blogPostsButtons">
+                        <form>
+                            <button>Edit</button>
+                            <button>Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="tabcontent" id="manageModules" style="display: none;">
+                <div style="overflow-x:auto;">
+                    <table>
+                        <tr>
+                            <th>Title</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                        </tr>
+                    </table>
+                    <div class="manageModulesButtons" id="manageModulesButtons">
+                            <button>Edit</button>
+                            <button>Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-right">
             <link rel="stylesheet" href="../Styles/navigatorStyle.css">
             <aside class="ProfileMenu" id="ProfileMenu" style="display: block;">
                 <ul>
@@ -31,124 +148,7 @@
                     <li><a href="../PublicResources/adminpage.html" class="MenuLine">Admin Menu</a></li>
                 </ul>
             </aside>
-        </div>
-
-        <div class="tab">
-            <button class="tablinks" onclick="showTab(event, 'manageUsers')">Manage Users</button>
-            <button class="tablinks" onclick="showTab(event, 'manageEvents')">Manage Events</button>
-            <button class="tablinks" onclick="showTab(event, 'blogPosts')">Blog Posts</button>
-            <button class="tablinks" onclick="showTab(event, 'manageModules')">Manage Modules</button>
-        </div>
-        
-        <div class="tabcontent" id="manageUsers" style="display: none;">
-            <div style="overflow-x:auto;">
-                <table>
-                    <tr>
-                        <th>Username</th>
-                        <th>Role</th>
-                        <th>Has paid?</th>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                    </tr>
-                </table>
-                <div class="manageUsersButtons" id="manageUsersButtons">
-                    <form>
-                        <label for="managerole"></label>
-                        <select id="managerole" name="Role">
-                            <option value="guest">Guest</option>
-                            <option value="member">Member</option>
-                            <option value="dm">DM</option>
-                            <option value="admin">Admin</option>
-                            <option value="superadmin">SuperAdmin</option><!-- I think this one will be removed -->
-                        </select>
-                        <input type="submit" value="Save">
-                        <button>Ban User</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="tabcontent" id="manageEvents" style="display: none;">
-            <div style="overflow-x:auto;">
-                <table>
-                    <tr>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Location</th>
-                        <th>DM</th>
-                        <th>Players</th>
-                        <th>State</th>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                    </tr>
-                </table>
-                <div class="manageEventsButtons" id="manageEventsButtons">
-
-                    <button>Modify</button>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="tabcontent" id="blogPosts" style="display: none;">
-            <div style="overflow-x:auto;">
-                <table>
-                    <tr>
-                        <th>Date</th>
-                        <th>Title</th>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                    </tr>
-                </table>
-                <div class="blogPostsButtons" id="blogPostsButtons">
-                    <form>
-                        <button>Edit</button>
-                        <button>Delete</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="tabcontent" id="manageModules" style="display: none;">
-            <div style="overflow-x:auto;">
-                <table>
-                    <tr>
-                        <th>Title</th>
-                    </tr>
-                    <tr>
-                        <td></td>
-                    </tr>
-                    <tr>
-                    </tr>
-                </table>
-                <div class="manageModulesButtons" id="manageModulesButtons">
-                        <button>Edit</button>
-                        <button>Delete</button>
-                </div>
-            </div>
-        </div>
+        </div>        
     </div>
 
     <script>
