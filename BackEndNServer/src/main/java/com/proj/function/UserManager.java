@@ -1,12 +1,22 @@
 package com.proj.function;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.proj.model.events.Request;
+import com.proj.model.events.RequestType;
+import com.proj.model.events.RoleRequest;
 import com.proj.model.users.*;
 import com.proj.exception.*;
+import com.proj.repositoryhandler.RoleRequestdbHandler;
 import com.proj.repositoryhandler.UserdbHandler;
 import com.proj.validators.UserValidator;
 
@@ -25,12 +35,14 @@ import com.proj.validators.UserValidator;
 public class UserManager {
     // Field
     @Autowired
-    UserdbHandler userdbHandler;
+    private UserdbHandler userdbHandler;
+    @Autowired
+    private RoleRequestdbHandler roleRequestdbHandler;
 
-    private Integer numberOfUsers;
+    private int numberOfUsers;
 
     // Constructor
-    public UserManager(Integer numberOfUsers) {
+    public UserManager(int numberOfUsers) {
         this.numberOfUsers = numberOfUsers;
     }
 
@@ -39,16 +51,20 @@ public class UserManager {
     }
 
     // Method
-    public Integer getNumberOfUsers() {
+    public int getNumberOfUsers() {
         return this.numberOfUsers;
     }
 
-    public void setNumberOfUsers(Integer numberOfUsers) {
+    public void setNumberOfUsers(int numberOfUsers) {
         this.numberOfUsers = numberOfUsers;
     }
 
     public UserdbHandler getUserdbHandler() {
-        return this.userdbHandler;
+        return userdbHandler;
+    }
+
+    public RoleRequestdbHandler getRoleRequestdbHandler() {
+        return roleRequestdbHandler;
     }
 
     /**
@@ -99,8 +115,8 @@ public class UserManager {
      * 
      * @param userName Display name of user.
      * @throws FailedValidationException When the username is already taken by
-     *                                      another user (i.e. exists in the
-     *                                      database).
+     *                                   another user (i.e. exists in the
+     *                                   database).
      */
     public void validateUsernameStatusInDB(String username) {
         try {
@@ -276,4 +292,101 @@ public class UserManager {
         }
         return sanitizedUser;
     }
+
+    /**
+     * Assigns a role given by a role request to the user that made the request, and
+     * removes the request from the database.
+     * This method assumes that a the requesting user exists in the user database
+     * already.
+     * 
+     * @param requestingId The ID of the user that requested the role.
+     * @param type         The type of role the user has requested and is allowed to
+     *                     have.
+     */
+    public void fulfillRoleRequest(int requestingId, RoleType type) {
+        ArrayList<Request> requests = new ArrayList<Request>();
+        for (Request r : roleRequestdbHandler.findAllByUserId(requestingId)) {
+            if (r.getRequestType() == RequestType.ROLE) {
+                requests.add(r);
+            }
+        }
+        RoleRequest roleRequest = null;
+        for (Request r : requests) {
+            roleRequest = (RoleRequest) r;
+            if (roleRequest.getRoleType() == type) {
+                break;
+            }
+        }
+        if (roleRequest == null) {
+            throw new IllegalArgumentException("No request of the given type exists for user with ID " + requestingId);
+        }
+        User user = userdbHandler.findById(requestingId);
+        RoleAssigner.setRole(user, roleRequest.getRoleInfo());
+        userdbHandler.save(user);
+    }
+
+    /**
+     * Create a request from the user with the given ID for a specific Role-object
+     * and store it in the database.
+     * This method also ensures that there is only one request for any role per user
+     * at any given time.
+     * 
+     * @param requestingId The ID of the user that is requesting the role.
+     * @param role         The Role-object that the user wishes to have assigned to
+     *                     them.
+     * @return A copy of the RoleRequest-object that was saved to the database.
+     */
+    public RoleRequest createRoleRequest(int requestingId, Role role) {
+        RoleRequest newRequest = new RoleRequest(requestingId, role);
+        ArrayList<Request> requests = new ArrayList<Request>();
+        for (Request r : roleRequestdbHandler.findAllByUserId(requestingId)) {
+            if (r.getRequestType() == RequestType.ROLE) {
+                requests.add(r);
+            }
+        }
+        RoleRequest oldRequest = null;
+        for (Request r : requests) {
+            oldRequest = (RoleRequest) r;
+            if (oldRequest.getRoleType() == role.getRoleType()) {
+                break;
+            }
+        }
+        if (oldRequest == null) {
+            roleRequestdbHandler.save(newRequest);
+        } else {
+            roleRequestdbHandler.delete(oldRequest); // make sure there's only one request of a given type and id
+            roleRequestdbHandler.save(newRequest);
+        }
+        return newRequest;
+    }
+
+    /**
+     * Removes a request for a specified type of role from the user with the given
+     * ID.
+     * 
+     * @param requestingId The user whose request should be removed.
+     * @param type         The type of role the user wanted, but is not allowed to
+     *                     have.
+     */
+    public void rejectRoleRequest(int requestingId, RoleType type) {
+        ArrayList<Request> requests = new ArrayList<Request>();
+        for (Request r : roleRequestdbHandler.findAllByUserId(requestingId)) {
+            if (r.getRequestType() == RequestType.ROLE) {
+                requests.add(r);
+            }
+        }
+        RoleRequest roleRequest = null;
+        for (Request r : requests) {
+            roleRequest = (RoleRequest) r;
+            if (roleRequest.getRoleType() == type) {
+                break;
+            }
+        }
+        if (roleRequest == null) {
+            throw new IllegalArgumentException("No request of the given type exists for user with ID " + requestingId);
+        } else {
+            roleRequestdbHandler.delete(roleRequest);
+        }
+    }
+
 }
