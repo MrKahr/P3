@@ -39,17 +39,51 @@ table {
     border-collapse: collapse;
     border-spacing: 0;
     width: 60%;
-    border: 1px solid #ddd;
+    border: 1px solid black;
+    overflow-y: scroll;
 }
 
-th,
-td {
+th {
     text-align: left;
     background-color: lightgray;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding: 8px;
+}
+
+td {
+    text-align: left;
+    background-color: white;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
     padding: 8px;
 }
 
 tr:nth-child(even) {
     width: auto;
     background-color: #f2f2f2
+}
+
+td:last-child {
+    text-align: right;
+}
+
+.manageUsersButtons {
+    position: absolute;
+    display: none;
+}
+
+.manageEventsButtons {
+    position: absolute;
+    display: none;
+}
+
+.blogPostsButtons {
+    position: absolute;
+    display: none;
+}
+
+.manageModulesButtons {
+    position: absolute;
+    display: none;
 }

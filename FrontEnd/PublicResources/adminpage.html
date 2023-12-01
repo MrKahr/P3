@@ -49,12 +49,31 @@
                         <th>Has paid?</th>
                     </tr>
                     <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     <tr>
                     </tr>
                 </table>
+                <div class="manageUsersButtons" id="manageUsersButtons">
+                    <form>
+                        <label for="managerole"></label>
+                        <select id="managerole" name="Role">
+                            <option value="guest">Guest</option>
+                            <option value="member">Member</option>
+                            <option value="dm">DM</option>
+                            <option value="admin">Admin</option>
+                            <option value="superadmin">SuperAdmin</option><!-- I think this one will be removed -->
+                        </select>
+                        <input type="submit" value="Save">
+                        <button>Ban User</button>
+                    </form>
+                </div>
             </div>
         </div>
+
+
 
         <div class="tabcontent" id="manageEvents" style="display: none;">
             <div style="overflow-x:auto;">
@@ -68,12 +87,24 @@
                         <th>State</th>
                     </tr>
                     <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     <tr>
                     </tr>
                 </table>
+                <div class="manageEventsButtons" id="manageEventsButtons">
+
+                    <button>Modify</button>
+                </div>
             </div>
         </div>
+
+
 
         <div class="tabcontent" id="blogPosts" style="display: none;">
             <div style="overflow-x:auto;">
@@ -83,12 +114,22 @@
                         <th>Title</th>
                     </tr>
                     <tr>
+                        <td></td>
+                        <td></td>
                     </tr>
                     <tr>
                     </tr>
                 </table>
+                <div class="blogPostsButtons" id="blogPostsButtons">
+                    <form>
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </form>
+                </div>
             </div>
         </div>
+
+
 
         <div class="tabcontent" id="manageModules" style="display: none;">
             <div style="overflow-x:auto;">
@@ -97,10 +138,15 @@
                         <th>Title</th>
                     </tr>
                     <tr>
+                        <td></td>
                     </tr>
                     <tr>
                     </tr>
                 </table>
+                <div class="manageModulesButtons" id="manageModulesButtons">
+                        <button>Edit</button>
+                        <button>Delete</button>
+                </div>
             </div>
         </div>
     </div>
@@ -120,6 +166,37 @@
             document.getElementById(manageTab).style.display = "block";
             event.currentTarget.className += " active";
         }
+
+        let tablerows = document.querySelectorAll('tr');
+        Array.from(tablerows).forEach((tablerow, index) =>{
+            tablerow.addEventListener('click', () => {
+                let clickedRow = event.currentTarget;
+                let manageUsersButtons = document.getElementById("manageUsersButtons");
+                let manageEventsButtons = document.getElementById("manageEventsButtons");
+                let blogPostsButtons = document.getElementById("blogPostsButtons");
+                let manageModulesButtons = document.getElementById("manageModulesButtons");
+                let positionclickedRow = clickedRow.getBoundingClientRect();
+                let buttonTop = positionclickedRow.top + window.scrollY;
+                let buttonLeft = positionclickedRow.right + window.scrollX + 1;
+
+                manageUsersButtons.style.top = buttonTop + 'px';
+                manageUsersButtons.style.left = buttonLeft + 'px';
+                manageUsersButtons.style.display = "block";
+
+                manageEventsButtons.style.top = buttonTop + 'px';
+                manageEventsButtons.style.left = buttonLeft + 'px';
+                manageEventsButtons.style.display = "block";
+
+                blogPostsButtons.style.top = buttonTop + 'px';
+                blogPostsButtons.style.left = buttonLeft + 'px';
+                blogPostsButtons.style.display = "block";
+
+                manageModulesButtons.style.top = buttonTop + 'px';
+                manageModulesButtons.style.left = buttonLeft + 'px';
+                manageModulesButtons.style.display = "block";
+            })
+        });
+
     </script>
 </body>
 </html>
