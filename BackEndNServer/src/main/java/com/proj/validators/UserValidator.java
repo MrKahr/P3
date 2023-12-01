@@ -90,7 +90,21 @@ public class UserValidator implements Validatable {
             }
         }
     }
+    public UserValidator ValidatePhoneNumber(){
+        //TODO: Insert correct validator code 
+        return this;
+    }
 
+    public UserValidator ValidatePostCode(){
+        //TODO: Insert correct validator code 
+        return this;
+    }
+
+    public UserValidator AddressValidator(){
+        //TODO: Insert correct validator code 
+        return this;
+    }
+ 
     public UserValidator ValidateEmail() {
         if (getUser() == null) {
             throw new NullPointerException("Cannot validate null user");

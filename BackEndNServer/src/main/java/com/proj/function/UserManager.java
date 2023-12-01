@@ -26,6 +26,7 @@ import com.proj.validators.UserValidator;
  * TEST USER MANAGER METHODS 
  * TEST USER BUILDER
  * Create new equals for user 
+ * user.getID() method returns id of user
  */
 
 /**
@@ -68,11 +69,9 @@ public class UserManager {
     }
 
     /**
-     * 
+     * Creates an account
      * @param userName              Display name of user.
      * @param password              Password of user.
-     * @param isMembershipRequested Boolean showing if user checked the request for
-     *                              membership button on the frontend.
      * @return A new guest object with requested attributes.
      */
     public String createAccount(String userName, String password)
@@ -104,11 +103,6 @@ public class UserManager {
         }
 
     }
-
-    public String upgradeToMember() {
-        return "";
-    }
-
     /**
      * Ensures the username of the user account that is to be created does not
      * already exist.
@@ -130,14 +124,14 @@ public class UserManager {
     }
 
     /**
-     * Queries the database for account and gets account if it exists
+     * Queries the database for account and gets account id
      * 
-     * @param userID Display name of the user.
-     * @return User object
+     * @param username Display name of the user.
+     * @return User ID
      * @throws UserNotFoundException    Username is not found in the database.
      * @throws IllegalArgumentException userID is null.
      */
-    public User lookupAccount(Integer userID) throws UserNotFoundException, IllegalArgumentException {
+    public int lookupAccount(String username) throws UserNotFoundException, IllegalArgumentException {
         User user = null;
         try {
             user = userdbHandler.findById(userID);
@@ -154,7 +148,7 @@ public class UserManager {
     }
 
     /**
-     * Makes a request to the database for a given username.
+     * Makes a request to the database to check whether user exists in database
      * 
      * @param quiriedName The name of the user to search for.
      * @return True if username is found, false otherwise.
@@ -211,8 +205,13 @@ public class UserManager {
         // return all_users;
     }
 
-    public void requestMembership(String userName) {
-        // Send message to frontend about it
+    public void requestMembership(String realName, String phoneNumber, String postalCode, String address, String email, String requestingUsername){
+        User requestingUser = null;
+        Member member = new Member(realName, phoneNumber, postalCode, address, email);
+        // Information about who sent the request 
+        // Create role
+        // Make role request 
+        // Notify admins that something has been requested?
     }
 
     /**

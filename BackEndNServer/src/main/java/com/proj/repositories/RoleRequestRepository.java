@@ -8,5 +8,5 @@ import com.proj.model.events.RoleRequest;
 @Repository
 public interface RoleRequestRepository extends CrudRepository<RoleRequest, Integer> {
     // You can define custom query methods here if needed
-    Iterable<RoleRequest> findAllByUserId(int requestingId);
+    Iterable<RoleRequest> findAllByUserId(int userId);
 }
