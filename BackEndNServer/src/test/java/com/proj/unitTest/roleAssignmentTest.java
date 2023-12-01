@@ -96,6 +96,36 @@ public class roleAssignmentTest {
     }
 
     @Test
+    public void setAllRolesAndUpdate() {
+        User user = new User("user", "1234");
+        Guest guest = new Guest("Some information about the user's character");
+        Member member = new Member("John Doe", "12345678", "0000", "City Town Street 1", "RealMail@mailService.com");
+        DM dm = new DM(null);
+        Admin admin = new Admin(null, null);
+        SuperAdmin superAdmin = new SuperAdmin(); // User needs Guest, Member and Admin roles to become SuperAdmin
+
+        // Set user's role to all
+        RoleAssigner.setRole(user, guest);
+        RoleAssigner.setRole(user, member);
+        RoleAssigner.setRole(user, dm);
+        RoleAssigner.setRole(user, admin);
+        RoleAssigner.setRole(user, superAdmin);
+
+        // Update all roles
+        RoleAssigner.setRole(user, guest);
+        RoleAssigner.setRole(user, member);
+        RoleAssigner.setRole(user, dm);
+        RoleAssigner.setRole(user, admin);
+        RoleAssigner.setRole(user, superAdmin);
+
+        assertNotNull(user.getGuestInfo());
+        assertNotNull(user.getMemberInfo());
+        assertNotNull(user.getDmInfo());
+        assertNotNull(user.getAdminInfo());
+        assertNotNull(user.getSuperAdminInfo());
+    }
+
+    @Test
     public void setBadRoleType(){
         BasicUserInfo info = new BasicUserInfo("user1", "1234");
         User user = new User(info);

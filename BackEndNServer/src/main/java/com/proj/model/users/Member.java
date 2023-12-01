@@ -1,6 +1,12 @@
 package com.proj.model.users;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 /**
  * A class that represents a user with the access level "Member". 
@@ -13,7 +19,10 @@ public class Member extends Role {
     private String postalCode;
     private String address;
     private String email;
-
+    
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime lastPaymentDate;
 
     // Constructor 
     /** Creates a Member object with Name, phoneNumber, postalCode, address, and email.
@@ -55,6 +64,10 @@ public class Member extends Role {
         return email;
     }
 
+    public LocalDateTime getLastPaymentDate(){
+        return lastPaymentDate;
+    }
+
     public void setRealName(String realName) {
         this.realName = realName;
     }
@@ -73,6 +86,10 @@ public class Member extends Role {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setLasPaymentDate(LocalDateTime date){
+        this.lastPaymentDate = date;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.proj.model.users;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -25,9 +24,6 @@ public class BasicUserInfo {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime deletionDate; // We might want to store these as strings in the database and have a method to turn it into a date object
    
-    private Duration banDuration = Duration.ZERO;   //If this field is greater than 0, the user is considered banned!
-    private String banReason;                       //Accompanying the banDuration, this field holds the reason for a ban. It could be an ArrayList so we can track previous bans.
-    private Boolean hasPaid;        //Indicates whether this user has paid for membership or not.
     private Ban activeBan;          //If this field is not null, the user should be treated as banned.
     private ArrayList<Ban> expiredBans; //Old bans are put here so we can keep track of bad behavior.
     
