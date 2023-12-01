@@ -37,3 +37,14 @@ Issue:
     Null values are handled differently in the database. Maybe this will cause issues?
 Fix:
     Avoid null values if possible.
+
+################
+### Frontend ###
+################
+(1)
+Issue:
+    HTTP 415: Content-Type 'application/x-www-form-urlencoded;charset=UTF-8' is not supported
+Help:
+    https://stackoverflow.com/a/63722759
+Fix:
+    Multiple: Either get JS to extract form data and send as JSON or see Help to tell Spring how to parse this content type.

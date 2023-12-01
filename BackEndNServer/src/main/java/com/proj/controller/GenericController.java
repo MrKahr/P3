@@ -13,7 +13,7 @@ public class GenericController {
     }
 
     // Role testing
-    @GetMapping("/admin")
+    @GetMapping("/fisk")
     public String showFisk(){
         return "restDemo";
     }

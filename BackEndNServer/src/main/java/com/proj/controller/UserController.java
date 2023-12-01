@@ -74,7 +74,7 @@ public class UserController {
     ArrayList<User> sanitizedUsers = new ArrayList<User>();
     try {
       for (int i = 0; i < number; i++) {
-        User user = new User(new BasicUserInfo("name" + i, "password" + i));
+        User user = new User(new BasicUserInfo("n" + i, "p" + i));
         if(i >= 1){
           RoleAssigner.setRole(user, new Guest("Level 1 bard" + i));
         }

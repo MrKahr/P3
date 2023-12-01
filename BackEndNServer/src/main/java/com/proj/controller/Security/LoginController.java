@@ -1,5 +1,11 @@
 package com.proj.controller.security;
 
+import java.net.URI;
+
+import org.hibernate.engine.transaction.jta.platform.internal.OC4JJtaPlatform;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 // Authentication
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,6 +16,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class LoginController {
@@ -25,8 +35,11 @@ public class LoginController {
 	 * @return
 	 */
 	@GetMapping("/login")
-	public String showLoginPage(){
-		return "authentication/loginPage"; 
+	public ModelAndView showLoginPage(){
+		
+		ModelAndView model = new ModelAndView("authentication/loginPage");
+		model.addObject("Username", "Thymeleaf");
+		return model; 
 	} 
 
 	/**
@@ -35,14 +48,20 @@ public class LoginController {
 	 * @return If login succesful, redirect to the page that was initially requested.
 	 */
 	@PostMapping("/login")
-	public String login(@RequestBody LoginRequest loginRequest) {
+	public ModelAndView login(@RequestBody LoginRequest loginRequest) {
 		Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
 		Authentication authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
 		
 		// TODO: Handle all types of login falied.
+		// See SecurityFilters.java
+
+		ModelAndView model = new ModelAndView();
 		
-		//return ResponseEntity.ok(authenticationResponse);
-		return "redirect:/login";
+
+		if(authenticationResponse.isAuthenticated()){
+			return new ModelAndView("redirect:/");
+		}
+		return new ModelAndView("redirect:/fisk");
 	}
 
 	public record LoginRequest(String username, String password) {

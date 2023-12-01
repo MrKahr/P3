@@ -60,8 +60,6 @@ public class ThymeleafSpringWebConfig implements WebMvcConfigurer {
         return templateResolver;
     }
 
-    
-
     /**
      * The template engine used to render documents.
      * <p>

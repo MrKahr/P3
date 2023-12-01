@@ -1,5 +1,9 @@
 package com.proj.controller.security;
 
+import java.util.HashSet;
+
+import org.springframework.security.core.GrantedAuthority;
+
 /**
  * A special class to store user info necessary for authentication.
  */
@@ -7,31 +11,20 @@ public class UserSecurityInfo {
     // Field
     String username;
     String password;
-    String role;
+    HashSet<GrantedAuthority> authorities;
+    //String[] authorities;
 
     // Constructor
-    public UserSecurityInfo(String username, String password, String role){
+    public UserSecurityInfo(String username, String password, HashSet<GrantedAuthority> authorities){
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.authorities = authorities;
     }
 
     // Provided in case this needs JSON serializing/deserializing
     public UserSecurityInfo(){}
 
     // Method
-    public void setUsername(String username){
-        this.username = username;
-    }
-
-    public void setPassword(String password){
-        this.password = password;
-    }
-
-    public void setRole(String role){
-        this.role = role;
-    }
-
     public String getUsername(){
         return this.username;
     }
@@ -40,8 +33,8 @@ public class UserSecurityInfo {
         return this.password;
     }
 
-    public String getRole(){
-        return this.role;
+    public HashSet<GrantedAuthority> getAuthorities(){
+        return this.authorities;
     }
 
 }

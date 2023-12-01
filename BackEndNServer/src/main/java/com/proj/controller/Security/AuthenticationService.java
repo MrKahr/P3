@@ -1,16 +1,21 @@
 package com.proj.controller.security;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.proj.model.users.Role;
+import com.proj.model.users.RoleType;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 
 @Service
 public class AuthenticationService implements UserDetailsService {
@@ -26,8 +31,9 @@ public class AuthenticationService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
 		UserSecurityInfo userSecurityInfo = userDAO.getUserInfo(username);
-		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userSecurityInfo.getRole()); // call getAuthorities here
-		UserDetails userDetails = (UserDetails) new User(userSecurityInfo.getUsername(), userSecurityInfo.getPassword(), Arrays.asList(authority)); // change to conform to getAuthorities return type
+		//var authority = new SimpleGrantedAuthority(userSecurityInfo.getRole()); // call getAuthorities here
+		//Arrays.asList
+		UserDetails userDetails = (UserDetails) new User(userSecurityInfo.getUsername(), userSecurityInfo.getPassword(), userSecurityInfo.getAuthorities()); // change to conform to getAuthorities return type
 
 		// Example:
 		//
@@ -39,18 +45,6 @@ public class AuthenticationService implements UserDetailsService {
 		
 		return userDetails;
 	}
-
-	// This implementation should provide role dependencies using authority instead of role.
-	//
-    // private String[] getAuthorities(User appUser) {
-    //     var authorities = new HashSet<String>();
-    //     for (var role : appUser.getRoles()) {
-    //         var grantedAuthority = new SimpleGrantedAuthority(role.getRole());
-    //         authorities.add(grantedAuthority.getAuthority());
-    //     }
-    //     System.out.println("User authorities are " + authorities);
-    //     return Arrays.copyOf(authorities.toArray(),authorities.size(), String[].class);
-    // }
 
 
 }
