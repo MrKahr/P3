@@ -69,14 +69,14 @@
     
             <div class="tabcontent" id="manageEvents" style="display: none;">
                 <div style="overflow-x:auto;">
-                    <table>
+                    <table id="manageEventsTable">
                         <tr>
-                            <th>Date <i class="fa fa-edit" style="display: none"></i></th>
-                            <th>Time <i class="fa fa-edit"style="display: none"></i></th>
-                            <th>Location <i class="fa fa-edit" style="display: none"></i></th>
-                            <th>DM <i class="fa fa-plus-square-o" style="display: none"></i></th>
-                            <th>Players <i class="fa fa-plus-square-o" style="display: none"></i></th>
-                            <th>State<i class="fa fa-edit" style="display: none"></i></th>
+                            <th>Date <i class="fa fa-edit" id="editDate" style="display: none"></i></th>
+                            <th>Time <i class="fa fa-edit" id="editTime" style="display: none"></i></th>
+                            <th>Location <i class="fa fa-edit" id="editLocation" style="display: none"></i></th>
+                            <th>DM <i class="fa fa-plus-square-o" id="editDm" style="display: none"></i></th>
+                            <th>Players <i class="fa fa-plus-square-o" id="editPlayers" style="display: none"></i></th>
+                            <th>State<i class="fa fa-edit" id="editState" style="display: none"></i></th>
                         </tr>
                         <tr>
                             <td></td>
@@ -91,6 +91,36 @@
                     </table>
                     <div class="manageEventsButtons" id="manageEventsButtons">
                         <button id="modifyButton">Modify</button>
+                    </div>
+                    <div class="editEventInput" id="editEventInput" style="display: none">
+                        <form>
+                            <table>
+                                <tr>
+                                    <td><input type="date" id="editDateInput" placeholder="Date"></td>
+                                    <td><input type="time" id="editTimeInput" placeholder="Time"></td>
+                                    <td><input type="text" id="editLocationInput" placeholder="Location"></td>
+                                    <td><input type="text" id="editDmInput" placeholder="Dm"></td>
+                                    <td><input type="text" id="editPlayersInput" placeholder="Player"></td>
+                                    <td><select id="editStateinput" name="State">
+                                        <option value="Planned">Planned</option>
+                                        <option value="Concluded">Concluded</option>
+                                        <option value="Rewards Released">Rewards Released</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                        </select></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><div id="editFinished">
+                                        <input type="submit" value="Confirm">
+                                        <input type="reset" value="Cancel">
+                                    </div></td>
+                                </tr>
+                            </table>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -132,7 +162,7 @@
     
     
     
-            <div class="tabcontent" id="manageModules" style="display: none;">
+            <div class="tabcontent" id="manageModules" style="display: none">
                 <div class="modulemanage" style="overflow-x:auto;">
                     <div class="createModule">
                         <form>
@@ -223,9 +253,37 @@
         })
 
         document.getElementById('modifyButton').addEventListener('click', function() {
-            /* COME BACK USE ID ON ALL ICONS NOT MY BEST BUT WORKS*/
-        })
+            let editDate = document.getElementById("editDate");
+            let editTime = document.getElementById("editTime");
+            let editLocation = document.getElementById("editLocation");
+            let editDm = document.getElementById("editDm");
+            let editPlayers = document.getElementById("editPlayers");
+            let editState = document.getElementById("editState");
+            if(editDate.style.display == "none" && editTime.style.display == "none" && editLocation.style.display == "none" && editDm.style.display == "none" && editPlayers.style.display == "none" && editState.style.display == "none") {
+                editDate.style.display = "block";
+                editTime.style.display = "block";
+                editLocation.style.display = "block";
+                editDm.style.display = "block";
+                editPlayers.style.display = "block";
+                editState.style.display = "block";
+            } else {
+                editDate.style.display = "none";
+                editTime.style.display = "none";
+                editLocation.style.display = "none";
+                editDm.style.display = "none";
+                editPlayers.style.display = "none";
+                editState.style.display = "none";
+            }
 
+            Array.from(tablerows).forEach((tablerow, index) =>{
+                tablerow.addEventListener('click', () => {
+                    let clickedRow = event.currentTarget;
+                    let editEventInput = document.getElementById("editEventInput");
+                    clickedRow.parentNode.insertBefore(editEventInput, clickedRow.nextSibling);
+                    editEventInput.style.display = "block";
+                })
+            })
+        })
     </script>
 </body>
 </html>

@@ -73,6 +73,13 @@ td:last-child {
     display: none;
 }
 
+.manageEventsTable {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 80%;
+    border: 1px solid black;
+    overflow-y: scroll;
+}
 .manageEventsButtons {
     position: absolute;
     display: none;
@@ -80,6 +87,9 @@ td:last-child {
 i {
     float: right;
     display: none;
+}
+.editEventInput{
+    width: 60%;
 }
 
 .blogPostsButtons {
