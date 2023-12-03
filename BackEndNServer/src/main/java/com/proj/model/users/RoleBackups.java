@@ -21,6 +21,9 @@ public class RoleBackups {
     //Method
     public void addToHistory(RoleChanged roleChange){
         this.history.add(0, roleChange);    //placing the newest roleChange at the front of the list
+        if(history.size() > 20){
+            history.remove(history.size()-1);   //remove the last element if the history has more than 20 entries now
+        }
     }
 
     public ArrayList<RoleChanged> getHistory(){
@@ -32,7 +35,7 @@ public class RoleBackups {
     }
 
     /**
-     * Backs up a user's role of the give type. Only one role of each type can be stored.
+     * Backs up a user's role of the given type. Only one role of each type can be stored.
      * This method does not need to be expanded when new roles are added.
      * @param user The user whose role should be backed up.
      * @param type The type of the role that should be transferred to the backup hashmap.

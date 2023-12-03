@@ -71,10 +71,20 @@ public class ModuleManager {
             throw new NoModuleFoundException("No module was found with the ID: " + id);
         }
 
+        // Add updates
+        if(!moduleUpdate.getName().equals(name)) {
+            moduleUpdate.getModuleEdited().getChanges().add(moduleUpdate.getName() + " changed to " + name);
+            moduleUpdate.setName(name);
+        }
+        if(!moduleUpdate.getDescription().equals(description)) {
+            moduleUpdate.getModuleEdited().getChanges().add(moduleUpdate.getDescription() + " changed to " + description);
+            moduleUpdate.setDescription(description);
+        }
+        if(!moduleUpdate.getLevelRange().equals(levelRange)) {
+            moduleUpdate.getModuleEdited().getChanges().add(moduleUpdate.getLevelRange() + " changed to " + levelRange);
+            moduleUpdate.setLevelRange(levelRange);
+        }
         // Update module from database
-        moduleUpdate.setName(name);
-        moduleUpdate.setDescription(description);
-        moduleUpdate.setLevelRange(levelRange);
         if (validateModule(moduleUpdate)) {
             moduledbHandler.save(moduleUpdate);
             return moduledbHandler.findById(moduleUpdate.getId());

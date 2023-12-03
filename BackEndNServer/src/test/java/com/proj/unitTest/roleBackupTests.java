@@ -57,8 +57,8 @@ public class roleBackupTests{
         assertTrue(user.getGuestInfo() == guest); //old guest should be there again
         assertTrue(user.getRoleBackups().getBackupByType(type) == newGuest);    //we replaced newGuest, so it should be backed up
 
-        Executable e = () -> {user.getRoleBackups().restoreBackup(user, RoleType.NOTYPE);};   //trying to restore something we don't have a backup for
+        Executable e = () -> {user.getRoleBackups().restoreBackup(user, RoleType.BADTYPE);};   //trying to restore something we don't have a backup for
         Throwable thrown = assertThrows(IllegalArgumentException.class, e, "Expected setRole() to throw, but it didn't");
-        assertTrue(thrown.getMessage().contains("No backup of type " + RoleType.NOTYPE + " found!"));
+        assertTrue(thrown.getMessage().contains("No backup of type " + RoleType.BADTYPE + " found!"));
     }
 }

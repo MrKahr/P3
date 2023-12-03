@@ -1,5 +1,7 @@
 
 package com.proj.function;
+import java.lang.reflect.Array;
+
 import com.proj.model.events.RoleChanged;
 import com.proj.model.users.*;
 
@@ -83,7 +85,7 @@ public class RoleAssigner {
         int dependenciesFound = 0;
         for (RoleType type : dependencies) {
             Role dependency = user.getRoleByType(type);
-            if(dependency != null && dependency.isActive()){    //check if the role is present on the user and currently active
+            if(dependency != null){    //check if the role is present on the user
                 dependenciesFound++;
             }
         }
