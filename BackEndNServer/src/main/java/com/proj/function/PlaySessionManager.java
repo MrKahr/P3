@@ -24,8 +24,8 @@ public class PlaySessionManager {
 
     @Autowired
     PlaySessionHandler playSessionHandler;
+    @Autowired
     ModuledbHandler moduledbHandler;
-    PlaySessionRepository playSessionRepository;
 
     // Field
    

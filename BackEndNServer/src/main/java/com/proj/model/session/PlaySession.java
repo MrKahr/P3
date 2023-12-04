@@ -71,6 +71,7 @@ public class PlaySession {
         this.moduleSetEvents = new ArrayList<ModuleSet>();
         this.module = module;
     }
+    public PlaySession(){}
 
     // Method
     public String getTitle() {

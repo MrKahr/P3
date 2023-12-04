@@ -3,7 +3,6 @@ package com.proj.repositoryhandler;
 import java.util.NoSuchElementException;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import com.proj.model.session.PlaySession;
@@ -13,6 +12,8 @@ import com.proj.exception.PlaySessionNotFoundException;
 
 @Service
 public class PlaySessionHandler extends DbHandler<PlaySession>{
+
+    public PlaySessionHandler(){}
     
     @Autowired
     private PlaySessionRepository playSessionRepository;
