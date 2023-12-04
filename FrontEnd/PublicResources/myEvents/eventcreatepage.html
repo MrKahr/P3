@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyEvents</title>
+    <title>Create Event</title>
     <link rel="stylesheet" href="../../Styles/navigatorStyle.css">
     <link rel="stylesheet" href="../../Styles/splitpageStyle.css">
     <link rel="stylesheet" href="../../Styles/footerStyle.css">
@@ -24,140 +24,71 @@
     <link rel="stylesheet" href="../../Styles/eventpageStyle.css">
     <div class="content">
         <div class="content-left">
-            <!--should be hidden unless user is DM/Admin-->
-            <div class="create-event-button">create event</div>
-            <div class="table-container">
-                <!--should have additional row with "edit" buttons for each event user has edit access to, but no row if the user has none-->
-                <table>
-                    <tr>
-                      <th>Title</th>
-                      <th>Date</th>
-                      <th>Time</th>
-                      <th>Location</th>
-                      <th>DM</th>
-                      <th>Players</th>
-                      <th>State</th>
-                    </tr>
-                    <tr>
-                      <td>Mines of Phandelver</td>
-                      <td>1-25-2023</td>
-                      <td>08:00</td>
-                      <td>DiceNDrinks</td>
-                      <td>Morgenfrue</td>
-                      <td>TankMcgee</td>
-                      <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                  </table> 
+            <h1 class="eventName"><input type="text" id="eventTitle" placeholder="Event Title"></h1>
+            <div class="eventColumns">
+                <div class="column1">
+                    <div class="eventTimeBox"><!-- TIME BOX -->
+                        <p>Event Time</p>
+                        <input type="date" id="eventDate" placeholder="Date">
+                        <input type="time" id="eventTime" placeholder="Time">
+                        <br>
+                    </div>
+
+                    <div class="eventLocationBox"><!-- LOCATION BOX -->
+                        <p>Event Location</p>
+                        <input type="text" id="eventLocation" placeholder="Location">
+                        <br>
+                    </div>
+
+                    <div class="eventPlayersBox"><!-- PLAYERS BOX -->
+                        <p>Allowed Event Players</p>
+                        <select id="eventPlayers" name="players">
+                            <option value="Guest">Guest</option>
+                            <option value="Member">Member</option>
+                        </select>
+                        <br>
+                    </div>
+                </div>
+                <div class="column2">
+                    <div class="eventDescriptionBox"><!-- DESCRIPTION BOX -->
+                        <p>Event Description</p>
+                        <div class="eventTextarea">
+                            <textarea id="descriptionText" placeholder="Text here" rows="10" cols="60"></textarea>
+                        </div>
+                        <br>
+                    </div>
+                    <div class="eventModule"><!-- MODULE BOX -->
+                        <div class="moduleHeader">
+                            <p>Module Description 
+                                <select id="eventModuleList" name="moduleList">
+                                <option value="module1">Module Name</option>
+                                <option value="module2">Ice of Cold and Snow</option>
+                                </select>
+                            </p>
+                        </div>
+                        <div class="eventTextarea">
+                            <textarea id="moduleText" placeholder="Text here" rows="10" cols="60"></textarea>
+                        </div>
+                        <br>
+                    </div>
+                    <div class="createEventButton"><!-- CREATE EVENT BUTTON -->
+                        <input type="submit" value="Create Event">
+                    </div><br>
+                </div>
+                <div class="column3">
+                    <div class="eventRewards"><!-- REWARDS BOX -->
+                        <p>Rewards</p>
+                        <div class="eventTextarea">
+                            <textarea id="RewardsText" placeholder="*Add these after the event is concluded (no spoilers)*" rows="10" cols="25"></textarea>
+                        </div>
+                        <br>
+                    </div>
+                </div>
             </div>
+            
+        <!--should be hidden unless user is DM/Admin-->
         </div>
+
         <div class="content-right">
             <aside class="ProfileMenu" id="ProfileMenu" style="display: block;">
                 <ul>

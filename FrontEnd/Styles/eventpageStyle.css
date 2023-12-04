@@ -1,44 +1,46 @@
-.create-event-button{
-    margin: 3px;
-    padding: 3px;
-    color: white;
-    background-color: rgb(12, 100, 188);
-    border: 1px solid black;
-    width:fit-content;
-}
-.eventcreation-container{
-    margin: 3px;
-    background-color: darkgrey;
-    border: 1px solid black;
-    height: 30px;
-    width: 30px;
+h1 input[type="text"] {
+    Background-color: transparent;
     padding: 12px;
+    font-size: larger;
+    text-align: center;
+    border: 0;
 }
 
-table{
-    border: 1px solid black;
-    border-collapse: collapse;
-    width: 100%;
+
+.eventName {
+    text-align: center;
 }
-.table-container{
-    width: 95%;
-    border: 1px solid black;
-    border-collapse: collapse;
-    max-height: 342px;
-    overflow: scroll;
-    margin-bottom: 5px;
+.column1, .column3 {
+    float: left;
+    width: 25%;
 }
 
-td, th {
-    border-right: 1px solid #000000;
-    border-left: 1px solid #000000;
-    text-align: left;
-    padding: 7px;
-  }
-
-tr:nth-child(even) {
-    background-color: #dddddd;
+.column2 {
+    float: left;
+    width: 50%;
 }
-tr:nth-child(odd) {
-    background-color: #ffffff;
+
+.eventColumns:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.eventTimeBox, .eventLocationBox, .eventPlayersBox, .eventDescriptionBox, .eventModule, .eventRewards{
+    background-color: white;
+    border: 2px solid black;
+    margin: 8px;
+    padding: 5px;
+}
+
+.createEventButton{
+    text-align: center;
+}
+
+textarea {
+    width: auto;
+    resize: none;
+}
+.eventTextarea{
+    text-align: center;
 }
