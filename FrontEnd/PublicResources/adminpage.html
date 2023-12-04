@@ -102,7 +102,7 @@
                             <input type="text" id="editLocationInput" placeholder="Location">
                             <input type="text" id="editDmInput" placeholder="Dm">
                             <input type="text" id="editPlayersInput" placeholder="Player">
-                            <select id="editStateinput" name="State">
+                            <select id="editStateinput" name="State" form="stateForm">
                                 <option value="Planned">Planned</option>
                                 <option value="Concluded">Concluded</option>
                                 <option value="Rewards Released">Rewards Released</option>
@@ -300,6 +300,10 @@
                     let editPlayersPlace = clickedRow.cells[5];
                     editPlayersPlace.appendChild(editPlayersInput);
 
+                    /* let editStatePlace = clickedRow.cells[6];
+                    editStatePlace.innerHTML = editStateInput;
+                    console.log(editStatePlace); */
+
                     let editFinishedPlace = clickedRow.cells[6];
                     editFinishedPlace.appendChild(editFinished);
 
@@ -307,7 +311,8 @@
                     editCancelledPlace.appendChild(editCancelled);
 
                     let editStatePlace = clickedRow.cells[6];
-                    editStatePlace.appendChild(editStateInput);
+                    editStatePlace.innerHTML = editStateInput;
+                    /* editStatePlace.appendChild(editStateInput); */
                     
                     editEventInput.style.display = "block";
                 })
