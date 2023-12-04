@@ -76,7 +76,7 @@ td:last-child {
 .manageEventsTable {
     border-collapse: collapse;
     border-spacing: 0;
-    width: 80%;
+    width: 100%;
     border: 1px solid black;
     overflow-y: scroll;
 }

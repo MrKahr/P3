@@ -71,6 +71,7 @@
                 <div style="overflow-x:auto;">
                     <table id="manageEventsTable">
                         <tr>
+                            <th>Title <i class="fa fa-edit" id="editTitle" style="display: none"></i></th>
                             <th>Date <i class="fa fa-edit" id="editDate" style="display: none"></i></th>
                             <th>Time <i class="fa fa-edit" id="editTime" style="display: none"></i></th>
                             <th>Location <i class="fa fa-edit" id="editLocation" style="display: none"></i></th>
@@ -79,6 +80,7 @@
                             <th>State<i class="fa fa-edit" id="editState" style="display: none"></i></th>
                         </tr>
                         <tr>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -94,32 +96,20 @@
                     </div>
                     <div class="editEventInput" id="editEventInput" style="display: none">
                         <form>
-                            <table id="editSpace">
-                                <tr>
-                                    <td><input type="date" id="editDateInput" placeholder="Date"></td>
-                                    <td><input type="time" id="editTimeInput" placeholder="Time"></td>
-                                    <td><input type="text" id="editLocationInput" placeholder="Location"></td>
-                                    <td><input type="text" id="editDmInput" placeholder="Dm"></td>
-                                    <td><input type="text" id="editPlayersInput" placeholder="Player"></td>
-                                    <td><select id="editStateinput" name="State">
-                                        <option value="Planned">Planned</option>
-                                        <option value="Concluded">Concluded</option>
-                                        <option value="Rewards Released">Rewards Released</option>
-                                        <option value="Cancelled">Cancelled</option>
-                                        </select></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td><div id="editFinished">
-                                        <input type="submit" value="Confirm">
-                                        <input type="reset" value="Cancel">
-                                    </div></td>
-                                </tr>
-                            </table>
+                            <input type="text" id="editTitleInput" placeholder="Title">
+                            <input type="date" id="editDateInput" placeholder="Date">
+                            <input type="time" id="editTimeInput" placeholder="Time">
+                            <input type="text" id="editLocationInput" placeholder="Location">
+                            <input type="text" id="editDmInput" placeholder="Dm">
+                            <input type="text" id="editPlayersInput" placeholder="Player">
+                            <select id="editStateinput" name="State">
+                                <option value="Planned">Planned</option>
+                                <option value="Concluded">Concluded</option>
+                                <option value="Rewards Released">Rewards Released</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select><br>
+                            <input type="submit" id="editFinished" value="Confirm">
+                            <input type="reset" id="editCancelled" value="Cancel">
                         </form>
                     </div>
                 </div>
@@ -253,13 +243,15 @@
         })
 
         document.getElementById('modifyButton').addEventListener('click', function() {
+            let editTitle = document.getElementById("editTitle");
             let editDate = document.getElementById("editDate");
             let editTime = document.getElementById("editTime");
             let editLocation = document.getElementById("editLocation");
             let editDm = document.getElementById("editDm");
             let editPlayers = document.getElementById("editPlayers");
             let editState = document.getElementById("editState");
-            if(editDate.style.display == "none" && editTime.style.display == "none" && editLocation.style.display == "none" && editDm.style.display == "none" && editPlayers.style.display == "none" && editState.style.display == "none") {
+            if(editTitle.style.display == "none" && editDate.style.display == "none" && editTime.style.display == "none" && editLocation.style.display == "none" && editDm.style.display == "none" && editPlayers.style.display == "none" && editState.style.display == "none") {
+                editTitle.style.display = "block";
                 editDate.style.display = "block";
                 editTime.style.display = "block";
                 editLocation.style.display = "block";
@@ -267,6 +259,7 @@
                 editPlayers.style.display = "block";
                 editState.style.display = "block";
             } else {
+                editTitle.style.display = "none";
                 editDate.style.display = "none";
                 editTime.style.display = "none";
                 editLocation.style.display = "none";
@@ -276,10 +269,46 @@
             }
 
             Array.from(tablerows).forEach((tablerow, index) =>{
-                tablerow.addEventListener('click', () => {
+                tablerow.addEventListener('click', function editPlacement() {
                     let clickedRow = event.currentTarget;
                     let editEventInput = document.getElementById("editEventInput");
-                    clickedRow.parentNode.insertBefore(editEventInput, clickedRow.nextSibling);
+                    let editTitleInput = document.getElementById("editTitleInput");
+                    let editDateInput = document.getElementById("editDateInput");
+                    let editTimeInput = document.getElementById("editTimeInput");
+                    let editLocationInput = document.getElementById("editLocationInput");
+                    let editDmInput = document.getElementById("editDmInput");
+                    let editPlayersInput = document.getElementById("editPlayersInput");
+                    let editStateInput = document.getElementById("editStateInput");
+                    let editFinished = document.getElementById("editFinished");
+                    let editCancelled = document.getElementById("editCancelled");
+
+                    let editTitlePlace = clickedRow.cells[0];
+                    editTitlePlace.appendChild(editTitleInput);
+
+                    let editDatePlace = clickedRow.cells[1];
+                    editDatePlace.appendChild(editDateInput);
+
+                    let editTimePlace = clickedRow.cells[2];
+                    editTimePlace.appendChild(editTimeInput);
+
+                    let editLocationPlace = clickedRow.cells[3];
+                    editLocationPlace.appendChild(editLocationInput);
+
+                    let editDmPlace = clickedRow.cells[4];
+                    editDmPlace.appendChild(editDmInput);
+
+                    let editPlayersPlace = clickedRow.cells[5];
+                    editPlayersPlace.appendChild(editPlayersInput);
+
+                    let editFinishedPlace = clickedRow.cells[6];
+                    editFinishedPlace.appendChild(editFinished);
+
+                    let editCancelledPlace = clickedRow.cells[6];
+                    editCancelledPlace.appendChild(editCancelled);
+
+                    let editStatePlace = clickedRow.cells[6];
+                    editStatePlace.appendChild(editStateInput);
+                    
                     editEventInput.style.display = "block";
                 })
             })
