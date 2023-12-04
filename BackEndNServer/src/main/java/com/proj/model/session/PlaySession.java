@@ -27,20 +27,22 @@ public class PlaySession {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @JdbcTypeCode(SqlTypes.JSON)
+
     private String title;
-    @JdbcTypeCode(SqlTypes.JSON)
+
     private Integer maxNumberOfPlayers;
-    @JdbcTypeCode(SqlTypes.JSON)
+
     private Integer currentNumberOfPlayers;
-    @JdbcTypeCode(SqlTypes.JSON)
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime date;
-    @JdbcTypeCode(SqlTypes.JSON)
-    private PlaySessionStateEnum state;
+
+    private String state;
+
     @JdbcTypeCode(SqlTypes.JSON)
     private ArrayList<ModuleSet> moduleSetEvents;
+
     @JdbcTypeCode(SqlTypes.JSON)
     private Module module; // TODO: Consider whether we want object or simple string description
 
@@ -60,13 +62,12 @@ public class PlaySession {
      * @param maxNumberOfPlayers     - current maximal number of players allowed in
      *                               a session
      */
-    public PlaySession(String title, Integer id, Integer currentNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state,
+    public PlaySession(String title, Integer currentNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state,
             Integer maxNumberOfPlayers, Module module) {
         this.title = title;
-        this.id = id;
         this.currentNumberOfPlayers = currentNumberOfPlayers;
         this.date = date;
-        this.state = state;
+        this.state = state.toString();
         this.maxNumberOfPlayers = maxNumberOfPlayers;
         this.moduleSetEvents = new ArrayList<ModuleSet>();
         this.module = module;
@@ -94,7 +95,7 @@ public class PlaySession {
         return date;
     }
 
-    public PlaySessionStateEnum getState() {
+    public String getState() {
         return state;
     }
 
@@ -127,7 +128,7 @@ public class PlaySession {
     }
 
     public void setState(PlaySessionStateEnum state) {
-        this.state = state;
+        this.state = state.toString();
     }
 
     /**

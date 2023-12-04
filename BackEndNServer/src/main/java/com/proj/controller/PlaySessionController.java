@@ -31,7 +31,8 @@ public class PlaySessionController {
 
   @PostMapping(path = "/NewPlaySession")
   public @ResponseBody String addNewPlaySessionResponse(@RequestParam String title, @RequestParam Integer id, @RequestParam Integer currentNumberOfPlayers, @RequestParam LocalDateTime date, @RequestParam PlaySessionStateEnum state, @RequestParam Integer maxNumberOfPlayers, @RequestParam Module module){
-    playSessionManager.addNewPlaySession(title,id,currentNumberOfPlayers, date, state, maxNumberOfPlayers, module);
+    PlaySession playSession = new PlaySession(title,currentNumberOfPlayers, date, state, maxNumberOfPlayers, module);
+    playSessionManager.addNewPlaySession(playSession);
     return "PlaySession Created";
   }
   
@@ -41,13 +42,13 @@ public class PlaySessionController {
     return "Update Successfull";
   }
 
-  @GetMapping(path="/getAllPlaySessions") //returns all play sessions
+  /*@GetMapping(path="/getAllPlaySessions") //returns all play sessions
   public @ResponseBody List<PlaySession> getAllPlaySessions() {
     Iterable<PlaySession> playSessions = playSessionHandler.findAll();
     List<PlaySession> allPlaySessions = new ArrayList<>();
         playSessions.forEach(allPlaySessions::add);
     return allPlaySessions;
-  }
+  }*/
   
   @GetMapping(path="/DateBetween") //returns all play sessions between two dates
   public @ResponseBody List<PlaySession> getPlaySessionsBetween(@RequestParam LocalDateTime startDateTime, @RequestParam LocalDateTime endDateTime) {

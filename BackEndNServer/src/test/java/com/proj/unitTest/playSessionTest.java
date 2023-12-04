@@ -18,7 +18,7 @@ public class playSessionTest {
     @Test
     public void setNullModule(){
         LocalDateTime localdatetime = LocalDateTime.now();
-        PlaySession mySession = new PlaySession("Hello",1, 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, null);
+        PlaySession mySession = new PlaySession("Hello", 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, null);
         
         Executable e = () -> {mySession.setModule(null);};
         assertThrows(NullPointerException.class, e);
@@ -28,7 +28,7 @@ public class playSessionTest {
     public void setValidModule(){
         LocalDateTime localdatetime = LocalDateTime.now();
         Module mymodule = new Module("dnd1", "this is a session", "1-4");
-        PlaySession mySession = new PlaySession("Hi", 1, 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, null);
+        PlaySession mySession = new PlaySession("Hi", 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, null);
         
         mySession.setModule(mymodule);
         Module currentModule = mySession.getModule();
@@ -39,7 +39,7 @@ public class playSessionTest {
     public void noElementModuleSet(){
         LocalDateTime localdatetime = LocalDateTime.now();
         Module mymodule = new Module("dnd1", "this is a session", "1-4");
-        PlaySession mySession = new PlaySession("Howdy", 1, 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, null);
+        PlaySession mySession = new PlaySession("Howdy", 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, null);
         mySession.addModuleSet(mymodule);
         assertTrue(mySession.getModuleSetEvents().size() == 1);
     }
@@ -48,7 +48,7 @@ public class playSessionTest {
         int prevElements = 1;
         LocalDateTime localdatetime = LocalDateTime.now();
         Module mymodule = new Module("dnd1", "this is a session", "1-4");
-        PlaySession mySession = new PlaySession("ello",1, 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, null);
+        PlaySession mySession = new PlaySession("ello", 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, null);
         for(int i = 0; i < 2; i++){
             mySession.addModuleSet(mymodule);
         }
@@ -59,7 +59,7 @@ public class playSessionTest {
         int prevElements = 2;
         LocalDateTime localdatetime = LocalDateTime.now();
         Module mymodule = new Module("dnd1", "this is a session", "1-4");
-        PlaySession mySession = new PlaySession("bongiuourno", 1, 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, null);
+        PlaySession mySession = new PlaySession("bongiuourno", 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, null);
         for(int i = 0; i < 3; i++){
             mySession.addModuleSet(mymodule);
         }
@@ -70,7 +70,7 @@ public class playSessionTest {
     @Test
     public void removeNullModule(){
         LocalDateTime localdatetime = LocalDateTime.now();
-        PlaySession mySession = new PlaySession("Hej",1, 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, null);
+        PlaySession mySession = new PlaySession("Hej", 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, null);
 
         Executable e = () -> {mySession.removeModule();};
         assertThrows(NullPointerException.class, e);
@@ -80,7 +80,7 @@ public class playSessionTest {
     public void removeValidModule(){
         LocalDateTime localdatetime = LocalDateTime.now();
         Module mymodule = new Module("dnd1", "this is a session", "1-4");
-        PlaySession mySession = new PlaySession("davs",1, 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, mymodule);
+        PlaySession mySession = new PlaySession("davs", 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, mymodule);
 
         assertTrue(!(Objects.isNull(mySession.getModule())));
     }
