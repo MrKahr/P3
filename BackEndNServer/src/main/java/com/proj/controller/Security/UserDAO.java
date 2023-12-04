@@ -1,14 +1,19 @@
 package com.proj.controller.security;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
+// Spring necessities
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
+// Spring Security
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+// Our classes
+import com.proj.exception.UserNotFoundException;
 import com.proj.model.users.Role;
 import com.proj.model.users.RoleType;
 import com.proj.model.users.User;
@@ -35,28 +40,38 @@ public class UserDAO {
 	 * @return The user security info necessary for authentication.
 	 */
 	public UserSecurityInfo getUserInfo(String username){
-		User user = userdbHandler.findByUsername(username); //TODO: Check method runtime in userdbHandler
+		User user;
+		try {
+			user = userdbHandler.findByUsername(username); //TODO: Check method runtime in userdbHandler
+		} catch (UserNotFoundException unfe) {
+			// Converts our UserNotFoundException to Spring Security's UsernameNotFoundException in order to fire the event AuthenticationFailureBadCredentialsEvent.
+			throw new UsernameNotFoundException("User with username"+ username + "could not be found.", unfe);
+		}
 
 		UserSecurityInfo userInfo = new UserSecurityInfo(
 			user.getBasicUserInfo().getUserName(),
 			user.getBasicUserInfo().getPassword(),
-			findAuthorities(user)); // Change UserSecInfo to include role dependecies.
+			findAuthorities(user));
     	return userInfo;
     }
 
+	/**
+	 * Finds the granted authorities for the supplied user and stores them in a HashMap.
+	 * Used for authentication in Spring Security.
+	 * @param user A user object.
+	 * @return A Hashmap of granted authoritíes.
+	 */
     private HashSet<GrantedAuthority> findAuthorities(User user) { 
         HashMap<RoleType, Role> roleMap = user.getAllRoles();
 		var authorities = new HashSet<GrantedAuthority>(); // "var" is a generic object type
-		//var authorities = new HashSet<String>();
 
         for (var key : roleMap.keySet()) {
             var grantedAuthority = new SimpleGrantedAuthority(key.toString());
             authorities.add(grantedAuthority);
-			//authorities.add(grantedAuthority.getAuthority());
         }
-        System.out.println("User: "+ user.getBasicUserInfo().getUserName() +" has authorities: " + authorities);
+		// Testing:
+        // System.out.println("[UserDAO] ==================== User: "+ user.getBasicUserInfo().getUserName() +" has authorities: " + authorities);
         return authorities;
-		//return Arrays.copyOf(authorities.toArray(),authorities.size(), String[].class);
     }
 
 

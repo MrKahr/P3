@@ -40,8 +40,12 @@ async function sendData(userDetails){
             cache: "no-cache",
             body: JSON.stringify(userDetails)
         })
-        //const result = await response.json();
-        //console.log(`Success: ${result}`);
+        if(response.redirected){
+            window.location.href = response.url;    
+        }
+        // const result = response.url;
+        // const redirect = response.url;
+        // console.log(`Success: ${result} | redirect: ${redirect}`);
     } catch (error) {
         console.error(`Error sending data: ${error}`);
     }

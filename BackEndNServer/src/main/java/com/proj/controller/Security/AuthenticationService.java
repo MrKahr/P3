@@ -1,47 +1,35 @@
 package com.proj.controller.security;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-
+// Spring necessities
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proj.model.users.Role;
-import com.proj.model.users.RoleType;
-
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+// Spring Security
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-
+/**
+ * Implements the UserDetailsService interface which is necessary for authentication
+ * This overrides Spring Security's default implementation of UserDetailsService.
+ * This class is managed by Spring which means it must only be accessed within Spring's Application Context.
+ */
 @Service
 public class AuthenticationService implements UserDetailsService {
 	@Autowired
 	private UserDAO userDAO;
 	
 	/**
-	 * Extracts user security info from the DAO and provides the authority level for this user.
+	 * Extracts user security info from the DAO.
 	 * @return The UserDetails of the user.
-	 * @throws UserNameNotFoundException
 	 */
 	@Override
-	public UserDetails loadUserByUsername(String username)
-			throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) {
+		
 		UserSecurityInfo userSecurityInfo = userDAO.getUserInfo(username);
-		//var authority = new SimpleGrantedAuthority(userSecurityInfo.getRole()); // call getAuthorities here
-		//Arrays.asList
-		UserDetails userDetails = (UserDetails) new User(userSecurityInfo.getUsername(), userSecurityInfo.getPassword(), userSecurityInfo.getAuthorities()); // change to conform to getAuthorities return type
-
-		// Example:
-		//
-		// return org.springframework.security.core.userdetails.User
-		// .withUsername(appUser.getUsername())
-		// .password(appUser.getPassword())
-		// .roles(getAuthorities(appUser))
-		// .build();
+		
+		// The User class here is Spring's User class.
+		UserDetails userDetails = (UserDetails) new User(userSecurityInfo.getUsername(), userSecurityInfo.getPassword(), userSecurityInfo.getAuthorities());
 		
 		return userDetails;
 	}

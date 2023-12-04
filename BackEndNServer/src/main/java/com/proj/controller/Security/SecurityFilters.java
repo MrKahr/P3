@@ -7,6 +7,9 @@ import org.springframework.core.annotation.Order;
 
 // Web Security (Intercept incoming request)
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.config.Customizer;
@@ -56,6 +59,8 @@ public class SecurityFilters {
 	// org.springframework.security.authentication.BadCredentialsException
 	// com.proj.exception.UserNotFoundException	(Advisor exists)
 	// org.springframework.security.authentication.AccessDeniedException
+
+// ########################################
 
 	/**
 	 * Testing filter. Do NOT enable this in production!
@@ -131,6 +136,8 @@ public class SecurityFilters {
 	@Bean
 	@Order(200)
 	 public SecurityFilterChain basicDefaultFilter(HttpSecurity http) throws Exception {
+		
+		// Authorization
 		http
 			.csrf((csrf) -> csrf.disable())
 			.authorizeHttpRequests((authorize) -> authorize
@@ -138,18 +145,33 @@ public class SecurityFilters {
 				.requestMatchers("/user/**").permitAll() // TODO: For testing purposes
 				//.requestMatchers("/fisk").hasAnyAuthority(RoleType.GUEST.toString())
 				.anyRequest().authenticated()
-			)
+			);
+		
+		// Login
+		http
 			//.formLogin(Customizer.withDefaults()); // TODO: Check form login methods in Spring Docs
 			.formLogin(form -> form
 				.loginPage("/login")
 				//.loginProcessingUrl("/login")
 				//.defaultSuccessUrl("/", true)
-				.permitAll())
+				.permitAll()
+			);
+
+		// Logout
+		http
 			.logout(logout -> logout
+				.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(Directive.COOKIES)))
 				.logoutUrl("/login?logout")
 				.logoutSuccessUrl("/")
-				.permitAll());
+				.permitAll()
+			);
 
+		// Session management
+		http
+			.sessionManagement(session -> session
+				.maximumSessions(1)
+				.maxSessionsPreventsLogin(true)
+			);
 		return http.build();
 	}
 
@@ -166,19 +188,31 @@ public class SecurityFilters {
 	@Bean
 	@Order(3)
 	 public SecurityFilterChain adminFilter(HttpSecurity http) throws Exception {
-		RequestCache nullRequestCache = new NullRequestCache(); // Do not save the original request, if authentication is required.
-		
+		//RequestCache nullRequestCache = new NullRequestCache(); // Do not save the original request, if authentication is required.
 		http
 			.securityMatcher("/admin/**")
 			.csrf((csrf) -> csrf.disable())
 			.authorizeHttpRequests((authorize) -> authorize
-				.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()	
+				.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
 				.requestMatchers("/admin/**").hasAnyAuthority(RoleType.ADMIN.toString(), RoleType.SUPERADMIN.toString())
 				.anyRequest().denyAll()
-			)
-			.formLogin(Customizer.withDefaults())
-			.requestCache((cache) -> cache
-				.requestCache(nullRequestCache)
+			);
+
+		// Login
+		http
+			.formLogin(Customizer.withDefaults());
+
+		// Logout
+		http
+			.logout((logout) -> logout
+				.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(Directive.COOKIES)))
+		);
+
+		// Session management
+		http
+			.sessionManagement(session -> session
+				.maximumSessions(1)
+				.maxSessionsPreventsLogin(true)
 			);
 
 		return http.build();

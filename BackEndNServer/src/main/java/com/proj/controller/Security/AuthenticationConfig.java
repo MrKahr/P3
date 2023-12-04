@@ -1,24 +1,38 @@
 package com.proj.controller.security;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
+// Spring necessities
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+// Spring Events
+import org.springframework.security.authentication.AuthenticationEventPublisher;
+import org.springframework.context.ApplicationEventPublisher;
+
 // Authentication
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 // Passwords
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
+
+import com.proj.exception.UserNotFoundException;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
-public class Authentication {
+public class AuthenticationConfig {
 	/**
 	 * Authenticates a user based on the userDetailsService provided by the frontend.
 	 * <p>
@@ -26,7 +40,7 @@ public class Authentication {
 	 * the user is authorized to proceed to the requested page.
 	 * <p>
 	 * TODO: Implement access restriction based on roles.
-	 * @param userDetailsService // The Service managing userDetails from the frontend (e.g. password).
+	 * @param userDetailsService The service managing userDetails from the frontend (e.g. password).
 	 * @param passwordEncoder The password encoder to hash the password from the frontend. Should be identical to the encoder used on the database.
 	 * @return
 	 * @see https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/index.html
@@ -64,5 +78,27 @@ public class Authentication {
 		PasswordEncoder passwordEncoder = new DelegatingPasswordEncoder(idForEncode, encoders);
 
 		return passwordEncoder;
-	} 
+	}
+
+	/**
+	 * Enables Spring Security to listen to http requests.
+	 * @return
+	 * @see https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html#ns-concurrent-sessions
+	 */
+	@Bean
+	public HttpSessionEventPublisher httpSessionEventPublisher() {
+		return new HttpSessionEventPublisher();
+	}
+
+	/**
+	 * Enables support for listening to Spring events using @EventListener annotation.
+	 * Currently uses the default implementation.
+	 * @param applicationEventPublisher
+	 * @return
+	 * @see https://docs.spring.io/spring-security/reference/servlet/authentication/events.html
+	 */
+	@Bean
+	public AuthenticationEventPublisher authenticationEventPublisher (ApplicationEventPublisher applicationEventPublisher) {
+		return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
+	}
 }
