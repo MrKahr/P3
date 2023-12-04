@@ -11,7 +11,6 @@ import com.proj.exception.PlaySessionNotFoundException;
 import com.proj.model.session.Module;
 import com.proj.model.session.PlaySession;
 import com.proj.model.session.PlaySessionStateEnum;
-import com.proj.repositories.PlaySessionRepository;
 import com.proj.repositoryhandler.ModuledbHandler;
 import com.proj.repositoryhandler.PlaySessionHandler;
 
@@ -93,7 +92,6 @@ public class PlaySessionManager {
         final int globalMaxNumberOfPlayers = 7;
         final int maxTitleLength = 40;
         String title = playSession.getTitle();
-        Integer id = playSession.getId();
         int maxNumberOfPlayers = playSession.getMaxNumberOfPlayers();
         int currentNumberOfPlayers = playSession.getCurrentNumberOfPlayers();
         String state = playSession.getState();

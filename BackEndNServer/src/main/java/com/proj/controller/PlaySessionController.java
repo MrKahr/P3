@@ -1,7 +1,6 @@
 package com.proj.controller;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import com.proj.model.session.PlaySession;
 import com.proj.model.session.Module;
@@ -30,8 +29,8 @@ public class PlaySessionController {
   PlaySessionManager playSessionManager = new PlaySessionManager();
 
   @PostMapping(path = "/NewPlaySession")
-  public @ResponseBody String addNewPlaySessionResponse(@RequestParam String title, @RequestParam Integer id, @RequestParam Integer currentNumberOfPlayers, @RequestParam LocalDateTime date, @RequestParam PlaySessionStateEnum state, @RequestParam Integer maxNumberOfPlayers, @RequestParam Module module){
-    PlaySession playSession = new PlaySession(title,currentNumberOfPlayers, date, state, maxNumberOfPlayers, module);
+  public @ResponseBody String addNewPlaySessionResponse(@RequestParam String title, @RequestParam Integer currentNumberOfPlayers, @RequestParam LocalDateTime date, @RequestParam Integer maxNumberOfPlayers, @RequestParam Module module){
+    PlaySession playSession = new PlaySession(title,currentNumberOfPlayers, date, PlaySessionStateEnum.PLANNED, maxNumberOfPlayers, module);
     playSessionManager.addNewPlaySession(playSession);
     return "PlaySession Created";
   }
