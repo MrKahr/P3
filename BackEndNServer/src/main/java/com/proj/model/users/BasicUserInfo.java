@@ -10,7 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 public class BasicUserInfo {
     //Field
-    private String userName;
+    private String username;
     private String password; //TODO: Remember to encrypt this
 
     // Tells Hibernate's jackson instance to parse the date using the class provided in the jackson package 'jsr310'.
@@ -22,8 +22,13 @@ public class BasicUserInfo {
    
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime deletionDate; // We might want to store these as strings in the database and have a method to turn it into a date object
+    private LocalDateTime deactivationDate;
    
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime deletionDate;
+   
+
     private Ban activeBan;          //If this field is not null, the user should be treated as banned.
     private ArrayList<Ban> expiredBans; //Old bans are put here so we can keep track of bad behavior.
     
@@ -31,7 +36,7 @@ public class BasicUserInfo {
     public BasicUserInfo(){}; // Required by jackson to deserialize object
     
     public BasicUserInfo(String userName, String password){
-        this.userName = userName;
+        this.username = userName;
         this.password = password;
         this.registerDate = LocalDateTime.now();
         this.expiredBans = new ArrayList<Ban>();
@@ -40,11 +45,15 @@ public class BasicUserInfo {
 
     //Method
     public String getUserName() {
-        return userName;
+        return username;
     }
 
     public LocalDateTime getRegisterDate() {
         return registerDate;
+    }
+
+    public LocalDateTime getDeactivationDate() {
+        return deactivationDate;
     }
 
     public LocalDateTime getDeletionDate() {
@@ -64,11 +73,15 @@ public class BasicUserInfo {
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.username = userName;
     }
 
     public void setPassword(String password){
         this.password = password;
+    }
+
+    public void setDeactivationDate(LocalDateTime deactivationDate) {
+        this.deactivationDate = deactivationDate;
     }
 
     public void setDeletionDate(LocalDateTime deletionDate) {

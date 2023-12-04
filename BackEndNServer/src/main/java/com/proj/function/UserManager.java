@@ -1,5 +1,6 @@
 package com.proj.function;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,7 +19,8 @@ import com.proj.model.users.*;
 import com.proj.exception.*;
 import com.proj.repositoryhandler.RoleRequestdbHandler;
 import com.proj.repositoryhandler.UserdbHandler;
-import com.proj.validators.UserValidator;
+import com.proj.validators.BasicInfoValidator;
+import com.proj.validators.MemberValidator;
 
 // This class is broken/dummy code. NEEDS FULL REWRITE OF METHODS!!!!!
 
@@ -70,8 +72,9 @@ public class UserManager {
 
     /**
      * Creates an account
-     * @param userName              Display name of user.
-     * @param password              Password of user.
+     * 
+     * @param userName Display name of user.
+     * @param password Password of user.
      * @return A new guest object with requested attributes.
      */
     public String createAccount(String userName, String password)
@@ -88,7 +91,7 @@ public class UserManager {
                 User user = new User(basicUserInfo);
 
                 // Validate user fields
-                UserValidator userValidator = new UserValidator(user);
+                BasicInfoValidator userValidator = new BasicInfoValidator(basicUserInfo);
                 userValidator.ValidateUserName().ValidatePassword();
 
                 // Save user to db
@@ -103,6 +106,7 @@ public class UserManager {
         }
 
     }
+
     /**
      * Ensures the username of the user account that is to be created does not
      * already exist.
@@ -124,25 +128,24 @@ public class UserManager {
     }
 
     /**
-     * Queries the database for account and gets account id
+     * Queries the database for an account with a given username.
+     * This is possible because usernames are unique.
      * 
      * @param username Display name of the user.
-     * @return User ID
-     * @throws UserNotFoundException    Username is not found in the database.
-     * @throws IllegalArgumentException userID is null.
+     * @return The user object with the given username.
+     * @throws UserNotFoundException Thrown if the user is not found in the
+     *                               database.
      */
-    public int lookupAccount(String username) throws UserNotFoundException, IllegalArgumentException {
+    public User lookupAccount(String username) throws UserNotFoundException, IllegalArgumentException {
         User user = null;
         try {
-            user = userdbHandler.findById(userID);
+            user = userdbHandler.findByUserName(username);
+            if (user == null) {
+                throw new UserNotFoundException(
+                        "User with username '" + username + "' does not exist in the database.");
+            }
         } catch (NullPointerException npe) {
             System.out.println("Put exception here");
-        }
-
-        if (userExistsInDatabase(userID)) {
-
-        } else {
-            throw new UserNotFoundException("User with userID '" + userID + "' does not exist in the database.");
         }
         return user;
     }
@@ -191,49 +194,103 @@ public class UserManager {
     }
 
     /**
-     * Retrieves all user accounts from the database. Username only.
-     * 
+     * Retrieves a list of users that a controller can sanitize and send to the front end. 
+     * Function gets list of users with id
+     * @param startRangeID - the start of range of user to get from database
+     * @param endRangeID - the end of range of user to get from database
      * @return
      */
-    public void getAccountList() {
-        // TODO: Request to database goes here
-        // See
-        // https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html
 
-        // Check return type of database. if singular, wrap all users in a list or
-        // something
-        // return all_users;
+    public User[] getAccountList(int startRangeID, int endRangeID) {
+        if(startRangeID < 0 || endRangeID < 0){
+            throw new IllegalArgumentException("Range cannot be negative!");
+        }
+        if(startRangeID > endRangeID){  //quick swap if the start is greater than the end
+            int temp = startRangeID;    //to prevent errors
+            startRangeID = endRangeID;
+            endRangeID = temp;
+        }
+
+        ArrayList<Integer> IDs = new ArrayList<Integer>();  //we make a list of all the IDs from the start of the range to the end
+        for (int index = startRangeID; index < endRangeID; index++) {
+            IDs.add(index);
+        }
+        Iterable<User> userList = userdbHandler.findAllById(IDs);   //get all the users in the given ID range
+        ArrayList<User> users = new ArrayList<User>();
+        for (User user : userList) {
+            users.add(user);
+        }
+        return (User[]) users.toArray();    //we convert the list to an array to make it easier to move around
     }
-
-    public void requestMembership(String realName, String phoneNumber, String postalCode, String address, String email, String requestingUsername){
-        User requestingUser = null;
-        Member member = new Member(realName, phoneNumber, postalCode, address, email);
-        // Information about who sent the request 
-        // Create role
-        // Make role request 
-        // Notify admins that something has been requested?
+    /**
+     * Validates and creates a membership request from the user with the given name, if the information they've entered is valid.
+     * @param realName - the given name of a member
+     * @param phoneNumber - the phone number of a member
+     * @param postalCode - the postal code of the member's current place of residence
+     * @param address - the address of the member's current place of residence
+     * @param email - the member's current email address 
+     * @param username - the username of the member making the request
+     * @return A string with the request's status, which is either awaiting approval or some variation of an error message.
+     */
+    public String requestMembership(String realName, String phoneNumber, String postalCode, String address, String email, String username) {
+        try {
+            User requestingUser = lookupAccount(username);
+            Role member = new Member(realName, phoneNumber, postalCode, address, email);
+            MemberValidator validator = new MemberValidator((Member)member);
+            validator.ValidateAddress() //if none of these throw, we create the request
+                     .ValidateEmail()
+                     .ValidatePhoneNumber()
+                     .ValidatePostCode();
+            this.createRoleRequest(requestingUser.getId(), member); //we have to use "this", since createRoleRequest relies on non-static fields and so cannot be static.
+            return "Membership request made and awaiting approval.";
+        } catch (UserNotFoundException unfe) {
+            return unfe.getMessage();
+        } catch (IllegalArgumentException iae){
+            return iae.getMessage();
+        } catch (FailedValidationException fve){
+            return fve.getMessage();
+        } catch (NullPointerException npe){
+            return npe.getMessage();
+        }
     }
 
     /**
-     * When the user performs a function on the front end, the frontend sends a
-     * hashed user name to the server.
-     * This function ensures that the user has the correct access level when
-     * 
-     * @param userName            - user name associated with user
-     * @param requiredAccessLevel - required level of accessed to perform an
-     *                            operation.
-     * @pre-con access level is specified for the function a user is trying to call
-     * @return
+     * Deactivates the account with the given ID and schedules it for deletion
+     * @param userId the id of the user to deactivate
      */
-    public boolean manageAccessLevel(String userName, String requiredAccessLevel) {
-        return false;
+    public void deactivateAccount(int userId) {
+        User userToDeactivate = userdbHandler.findById(userId);
+        userToDeactivate.getBasicUserInfo().setDeactivationDate(LocalDateTime.now());
+        /* There are different limits for how long a business is allowed to keep personal info.
+        * see e.g. https://www.datatilsynet.dk/hvad-siger-reglerne/vejledning/databeskyttelse-i-forbindelse-med-ansaettelsesforhold/opbevaring-af-personoplysninger-om-ansoegere-som-ikke-bliver-ansat
+        * We opt for caution and select 6 months
+        */ 
+        userToDeactivate.getBasicUserInfo().setDeletionDate(LocalDateTime.now().plusMonths(6));
+        
     }
 
-    public void deactivateAccount(int UserID) {
+    /**
+     * Removes the deactivation-date and deletion-date from the account with the given ID.
+     * This method cannot be used to recreate an account that has already been deleted.
+     * Ensure that the user has consented to restoring their information. Otherwise use of this method may be illegal.
+     * @param userId - the id of the user to restore
+     */
+    public void restoreAccount(int userId) {
+        User userToActivate = userdbHandler.findById(userId);
+        userToActivate.getBasicUserInfo().setDeactivationDate(null);
+        userToActivate.getBasicUserInfo().setDeletionDate(null);
+        
     }
 
-    public void removeAccount(int userID) {
-
+    /**
+     * Check if the account with the given ID is past its deletion date and remove it from the database if it 
+     */
+    public void removeAccount(int userId){
+        User userToDelete = userdbHandler.findById(userId);
+        LocalDateTime deletionDate = userToDelete.getBasicUserInfo().getDeletionDate();
+        if(deletionDate != null && LocalDateTime.now().isAfter(deletionDate)){ //check if we're past the deletion date
+            userdbHandler.delete(userToDelete);
+        }
     }
 
     /**

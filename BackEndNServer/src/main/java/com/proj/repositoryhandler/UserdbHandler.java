@@ -130,10 +130,23 @@ public class UserdbHandler extends DbHandler<User> {
             // Delete the printStackTrace.
             iae.printStackTrace();
 
-        } catch (OptimisticLockingFailureException olfe){
+        } catch (OptimisticLockingFailureException olfe) {
             // TODO: Add this to a logging function. Display logs to admins on frontend.
-            // Delete the printStackTrace.           
+            // Delete the printStackTrace.
             olfe.printStackTrace();
         }
+    }
+
+    public User findByUserName(String username) {
+        Iterable<User> allUsers = userRepository.findAll();
+
+        for (User user : allUsers) {
+            if (username.equals(user.getBasicUserInfo().getUserName())) {
+                return user;
+            }
+        }
+
+        System.out.println("UserdbHandler: User " + username + " not found");
+        throw new UserNotFoundException();
     }
 }
