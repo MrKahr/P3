@@ -32,7 +32,8 @@ public class PlaySessionController {
 
   @PostMapping(path = "/NewPlaySession")
   public @ResponseBody String addNewPlaySessionResponse(@RequestParam String title,
-      @RequestParam Integer currentNumberOfPlayers, @RequestParam LocalDateTime date,
+      @RequestParam String description, @RequestParam String dm, @RequestParam Integer currentNumberOfPlayers,
+      @RequestParam LocalDateTime date,
       @RequestParam Integer maxNumberOfPlayers, @RequestParam Integer moduleID) {
     Module module;
     try {
@@ -41,7 +42,8 @@ public class PlaySessionController {
       module = null;
     }
 
-    PlaySession playSession = new PlaySession(title, currentNumberOfPlayers, date, PlaySessionStateEnum.PLANNED,
+    PlaySession playSession = new PlaySession(title, description, dm, currentNumberOfPlayers, date,
+        PlaySessionStateEnum.PLANNED,
         maxNumberOfPlayers, module);
     playSessionManager.addNewPlaySession(playSession);
     return "PlaySession Created with ID: " + playSession.getId();
@@ -49,7 +51,8 @@ public class PlaySessionController {
 
   @PostMapping(path = "/UpdatePlaySession") // responds to put requests with path "/UpdatePlaySession" and request
                                             // parameters, returns Successful if update is valid
-  public @ResponseBody String updatePlaySessionResponse(@RequestParam String title, @RequestParam Integer id,
+  public @ResponseBody String updatePlaySessionResponse(@RequestParam Integer id, @RequestParam String title,
+      @RequestParam String description,
       @RequestParam LocalDateTime date, @RequestParam String stateString,
       @RequestParam Integer maxNumberOfPlayers, Integer moduleID) {
     Module module;
@@ -59,7 +62,7 @@ public class PlaySessionController {
       module = null;
     }
     PlaySessionStateEnum state = PlaySessionStateEnum.valueOf(stateString);
-    playSessionManager.updatePlaySession(id, title, maxNumberOfPlayers, date, state, module);
+    playSessionManager.updatePlaySession(id, title, description, maxNumberOfPlayers, date, state, module);
     return "Update Successfull";
   }
 
@@ -76,6 +79,16 @@ public class PlaySessionController {
   @GetMapping(path = "/DateBetween") // returns all play sessions between two dates
   public @ResponseBody List<PlaySession> getPlaySessionsBetween(@RequestParam LocalDateTime startDateTime,
       @RequestParam LocalDateTime endDateTime) {
-    return playSessionManager.getSessions(startDateTime, endDateTime);
+    List<PlaySession> playSessions = playSessionManager.getSessions(startDateTime, endDateTime);
+    // We don't want rewards publicly accessible
+    for(PlaySession playSession : playSessions) {
+      playSession.setRewards(null);
+    }
+    return playSessions;
+  }
+
+  @GetMapping(path = "/PlaySession") //TODO: return specific play session with or without rewards, depending on access level
+  public @ResponseBody PlaySession getPlaySession() {
+    return null;
   }
 }

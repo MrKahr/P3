@@ -62,11 +62,12 @@ public class PlaySessionManager {
      * @param module of playSession
      * @return saved playSession.
      */
-    public void updatePlaySession(int id, String title, int maxNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state, Module module){
+    public void updatePlaySession(int id, String title, String description, int maxNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state, Module module){
         PlaySession playSessionUpdate;
         playSessionUpdate = lookupPlaySessionID(id);
 
         playSessionUpdate.setTitle(title);
+        playSessionUpdate.setDescription(description);
         playSessionUpdate.setMaxNumberOfPlayers(maxNumberOfPlayers);
         playSessionUpdate.setDate(date);
         playSessionUpdate.setState(state);

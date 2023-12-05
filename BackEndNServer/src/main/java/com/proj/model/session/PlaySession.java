@@ -2,19 +2,22 @@ package com.proj.model.session;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.proj.exception.AddRewardsFailedException;
+import com.proj.exception.PlaySessionFullException;
+import com.proj.model.events.DescriptionChanged;
 import com.proj.model.events.ModuleSet;
+import com.proj.model.events.RewardsGiven;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
-import java.util.Objects;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -46,6 +49,22 @@ public class PlaySession {
     @JdbcTypeCode(SqlTypes.JSON)
     private Module module; // TODO: Consider whether we want object or simple string description
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    private ArrayList<String> users;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    private ArrayList<Reward> rewards;
+
+    private String description;
+
+    private String dm;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    private RewardsGiven rewardsGiven;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    private ArrayList<DescriptionChanged> descriptionChanges;
+
     // validation check with DM = create session and check without DM = update
     // session. ?????
 
@@ -63,8 +82,9 @@ public class PlaySession {
      *                               or cancelled.
      * @param maxNumberOfPlayers     - current maximal number of players allowed in
      *                               a session
+     * @param users                  - Usernames of players currently signed up
      */
-    public PlaySession(String title, Integer currentNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state,
+    public PlaySession(String title, String description, String dm, Integer currentNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state,
             Integer maxNumberOfPlayers, Module module) {
         this.title = title;
         this.currentNumberOfPlayers = currentNumberOfPlayers;
@@ -73,6 +93,10 @@ public class PlaySession {
         this.maxNumberOfPlayers = maxNumberOfPlayers;
         this.moduleSetEvents = new ArrayList<ModuleSet>();
         this.module = module;
+        this.users = new ArrayList<String>();
+        this.description = description;
+        this.dm = dm;
+        this.descriptionChanges = new ArrayList<DescriptionChanged>();
     }
 
     public PlaySession() {
@@ -111,6 +135,30 @@ public class PlaySession {
         return this.module;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public String getDm() {
+        return dm;
+    }
+
+    public ArrayList<Reward> getRewards() {
+        return rewards;
+    }
+
+    public ArrayList<String> getUsers() {
+        return users;
+    }
+
+    public ArrayList<DescriptionChanged> getDescriptionChanges() {
+        return descriptionChanges;
+    }
+
+    public RewardsGiven getRewardsGiven() {
+        return rewardsGiven;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -135,6 +183,12 @@ public class PlaySession {
         this.state = state.toString();
     }
 
+    public void setDescription(String description) {
+        DescriptionChanged descriptionChanged = new DescriptionChanged(description);
+        this.descriptionChanges.add(descriptionChanged);
+        this.description = description;
+    }
+
     /**
      * Sets the module description of a module and adds a module set event to relect
      * this change
@@ -145,6 +199,21 @@ public class PlaySession {
     public void setModule(Module module) {
         this.module = module;
         this.addModuleSet(module);
+    }
+
+    /**
+     * 
+     * @param rewards
+     * @throws AddRewardsFailedException
+     * @throws NullPointerException
+     */
+    public void setRewards(ArrayList<Reward> rewards) throws AddRewardsFailedException, NullPointerException {
+        if(PlaySessionStateEnum.valueOf(this.state).equals(PlaySessionStateEnum.CONCLUDED)) {
+            this.rewards = rewards;
+            this.rewardsGiven = new RewardsGiven(LocalDateTime.now(), dm);
+        } else {
+            throw new AddRewardsFailedException("PlaySession is not concluded");
+        }
     }
 
     /**
@@ -194,14 +263,36 @@ public class PlaySession {
         if (currentModule == null) {
             throw new NullPointerException("Module doesn't exist");
         } else {
-            Module emptyModule = new Module("", "", ""); // TODO: Consider whether we want to model empty modules this
-                                                         // way
+            Module emptyModule = new Module("", "", ""); // TODO: Consider whether we want to model empty modules this way
             this.setModule(emptyModule); // Use empty module as base
             this.addModuleSet(emptyModule); // Module set event fixed /
         }
     }
 
-    public void setReward() {
 
+    /**
+     * Assign a user to playsession
+     * @param username of user to be assigned
+     * @throws PlaySessionFullException
+     */
+    public void assignUser(String username) throws PlaySessionFullException {
+        if (users.size() < maxNumberOfPlayers) {
+            this.users.add(username);
+            this.currentNumberOfPlayers = users.size();
+        } else {
+            throw new PlaySessionFullException("Could not add '" + username + "' as playsession is full");
+        }
+    }
+
+    /**
+     * Remove user from playsession
+     * @param username of user to be removed
+     */
+    public void unassignUser(String username) {
+        if (users.contains(username)) {
+            users.remove(username);
+        } else {
+            throw new NoSuchElementException("User '" + username + "' not found in playsession");
+        }
     }
 }

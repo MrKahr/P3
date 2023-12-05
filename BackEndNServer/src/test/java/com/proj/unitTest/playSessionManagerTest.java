@@ -1,7 +1,6 @@
 package com.proj.unitTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -39,7 +38,7 @@ public class playSessionManagerTest {
 
         // test if title length is capped by maxlength, assert throws
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession testPlaySession = new PlaySession("012345678901234567890123456789012345678911111111111111", 0,
+        PlaySession testPlaySession = new PlaySession("012345678901234567890123456789012345678911111111111111", "desc", "MrDM", 0,
                 LocalDateTime.now(), PlaySessionStateEnum.CANCELLED, 7, testModule);
         Executable e = () -> {
             testPlaySessionManager.validatePlaySession(testPlaySession, true);
@@ -52,7 +51,7 @@ public class playSessionManagerTest {
     public void invalidMaxNumberOfPlayers() {
         // test if maxNumber is capped by global max, assert throws
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession testPlaySession = new PlaySession("testtitle", 0, LocalDateTime.now(),
+        PlaySession testPlaySession = new PlaySession("testtitle", "desc", "MrDM", 0, LocalDateTime.now(),
                 PlaySessionStateEnum.CANCELLED, 20, testModule);
         Executable e = () -> {
             testPlaySessionManager.validatePlaySession(testPlaySession, true);
@@ -65,7 +64,7 @@ public class playSessionManagerTest {
     public void invalidCurrentNumberOfPlayers() {
         // test if current number is capped by max, assert throws
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession testPlaySession = new PlaySession("testtitle", 8, LocalDateTime.now(),
+        PlaySession testPlaySession = new PlaySession("testtitle", "desc", "MrDM", 8, LocalDateTime.now(),
                 PlaySessionStateEnum.CANCELLED, 7, testModule);
         Executable e = () -> {
             testPlaySessionManager.validatePlaySession(testPlaySession, true);
@@ -79,7 +78,7 @@ public class playSessionManagerTest {
     public void validSession() {
         // test assert true
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession testPlaySession = new PlaySession("testtitle", 5, LocalDateTime.now(),
+        PlaySession testPlaySession = new PlaySession("testtitle", "desc", "MrDM", 5, LocalDateTime.now(),
                 PlaySessionStateEnum.CANCELLED, 7, testModule);
         assertTrue(testPlaySessionManager.validatePlaySession(testPlaySession, true));
     }
@@ -89,7 +88,7 @@ public class playSessionManagerTest {
     public void addInvalidPlaySession() {
         // example invalid currentMax
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession playSession = new PlaySession("testtitle", 8, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED,
+        PlaySession playSession = new PlaySession("testtitle", "desc", "MrDM", 8, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED,
                 7, testModule);
         Executable e = () -> {
             testPlaySessionManager.addNewPlaySession(playSession);
@@ -101,7 +100,7 @@ public class playSessionManagerTest {
     @Test
     public void addValidPlaySession() {
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession testPlaySession = new PlaySession("testtitle", 5, LocalDateTime.now(),
+        PlaySession testPlaySession = new PlaySession("testtitle", "desc", "MrDM", 5, LocalDateTime.now(),
                 PlaySessionStateEnum.CANCELLED, 7, testModule);
         testPlaySessionManager.addNewPlaySession(testPlaySession);
 
@@ -112,7 +111,7 @@ public class playSessionManagerTest {
     @Test // Same test as addNewPlaySession
     public void invalidPlaySessionUpdate() {
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession playSession = new PlaySession("testtitle2", 8, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED,
+        PlaySession playSession = new PlaySession("testtitle2", "desc", "MrDM", 8, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED,
                 7, testModule);
         Executable e = () -> {
             testPlaySessionManager.addNewPlaySession(playSession);
@@ -124,10 +123,10 @@ public class playSessionManagerTest {
     @Test
     public void validPlaySessionUpdate() {
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession testPlaySession = new PlaySession("testtitle2", 5, LocalDateTime.now(),
+        PlaySession testPlaySession = new PlaySession("testtitle2", "desc", "MrDM", 5, LocalDateTime.now(),
                 PlaySessionStateEnum.CANCELLED, 7, testModule);
         testPlaySessionManager.addNewPlaySession(testPlaySession);
-        testPlaySessionManager.updatePlaySession(testPlaySession.getId(), "testtitle2", 7, LocalDateTime.now(),
+        testPlaySessionManager.updatePlaySession(testPlaySession.getId(), "testtitle2", "testdescription", 7, LocalDateTime.now(),
                 PlaySessionStateEnum.CANCELLED, null);
         PlaySession foundPlaySession = testPlaySessionHandler.findById(testPlaySession.getId());
 
@@ -140,9 +139,9 @@ public class playSessionManagerTest {
     @Test
     public void getSessionsTest() {// Not to sure how to test this - same, vi hører lige emil imorgen
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession testPlaySession1 = new PlaySession("testtitle1", 5, LocalDateTime.now(),
+        PlaySession testPlaySession1 = new PlaySession("testtitle1", "desc", "MrDM", 5, LocalDateTime.now(),
                 PlaySessionStateEnum.CANCELLED, 7, testModule);
-        PlaySession testPlaySession2 = new PlaySession("testtitle2", 5, LocalDateTime.of(2020, 10, 1, 0, 0),
+        PlaySession testPlaySession2 = new PlaySession("testtitle2", "desc", "MrDM", 5, LocalDateTime.of(2020, 10, 1, 0, 0),
                 PlaySessionStateEnum.CANCELLED, 7, testModule);
         testPlaySessionManager.addNewPlaySession(testPlaySession1);
         testPlaySessionManager.addNewPlaySession(testPlaySession2);
