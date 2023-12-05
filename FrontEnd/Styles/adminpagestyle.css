@@ -57,6 +57,7 @@ td {
     border-left: 1px solid black;
     border-right: 1px solid black;
     padding: 8px;
+    vertical-align: top;
 }
 
 tr:nth-child(even) {
@@ -88,8 +89,15 @@ i {
     float: right;
     display: none;
 }
-.editEventInput{
+.editEventInput {
     width: 60%;
+}
+
+td input[type="text"], td input[type="date"], td input[type="time"], td input[type="submit"], td input[type="reset"]{
+    margin: 3px;
+}
+td select{
+    margin: 3px;
 }
 
 .blogPostsButtons {
