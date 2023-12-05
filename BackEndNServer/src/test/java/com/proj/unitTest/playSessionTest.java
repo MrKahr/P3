@@ -15,14 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class playSessionTest {
     // setModule()
-    @Test
-    public void setNullModule(){
-        LocalDateTime localdatetime = LocalDateTime.now();
-        PlaySession mySession = new PlaySession("Hello", 2, localdatetime, PlaySessionStateEnum.CANCELLED, 5, null);
-        
-        Executable e = () -> {mySession.setModule(null);};
-        assertThrows(NullPointerException.class, e);
-    }
+    
 
     @Test
     public void setValidModule(){

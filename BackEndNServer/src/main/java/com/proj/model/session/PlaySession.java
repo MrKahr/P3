@@ -46,11 +46,13 @@ public class PlaySession {
     @JdbcTypeCode(SqlTypes.JSON)
     private Module module; // TODO: Consider whether we want object or simple string description
 
-    //validation check with DM = create session and check without DM = update session. ?????
+    // validation check with DM = create session and check without DM = update
+    // session. ?????
 
     // Constructor
     /**
      * Creates a play session for players to attend
+     * 
      * @param title                  - Use to show correct session on frontend
      * @param id                     - id of the playsession \\TODO: Find way to
      *                               reliably generated ID
@@ -72,7 +74,9 @@ public class PlaySession {
         this.moduleSetEvents = new ArrayList<ModuleSet>();
         this.module = module;
     }
-    public PlaySession(){}
+
+    public PlaySession() {
+    }
 
     // Method
     public String getTitle() {
@@ -138,13 +142,9 @@ public class PlaySession {
      * @param module module user wants to associate with a PlaySession
      * @throws NullPointerException
      */
-    public void setModule(Module module) throws NullPointerException {
-        if (Objects.isNull(module)) {
-            throw new NullPointerException("Module doesn't exist"); // TODO: add new no module found exception
-        } else {
-            this.module = module;
-            this.addModuleSet(module);
-        }
+    public void setModule(Module module) {
+        this.module = module;
+        this.addModuleSet(module);
     }
 
     /**
@@ -157,21 +157,29 @@ public class PlaySession {
 
     public void addModuleSet(Module module) throws NullPointerException {
         ModuleSet previousModuleSet;
-        ModuleSet currentModuleSet = new ModuleSet("", "");
         int currentNumberOfEvents;
+        String from = "";
+        String to = "";
 
         try {
             currentNumberOfEvents = getModuleSetEvents().size();
             previousModuleSet = getModuleSetEvents().get(currentNumberOfEvents - 1);
-            currentModuleSet = new ModuleSet(previousModuleSet.getChangedTo(), module.toString());      
+            from = previousModuleSet.getChangedTo();
+            to = module.toString();
+        } catch (IndexOutOfBoundsException iobe) {
+            // Catch case when only one element exists
+            from = "";
+            try {
+                to = module.toString();
+            } catch (NullPointerException npe) {
+                // Catch case when module is null and only one element exists
+                to = "null";
+            }
         } catch (NullPointerException npe) {
-            // Catch case when no previous modules existed.
-            currentModuleSet = new ModuleSet("", module.toString()); 
-        } catch (IndexOutOfBoundsException iobe){
-            // Catch case when only one element exists 
-            currentModuleSet = new ModuleSet("", module.toString()); 
-        } finally{
-            this.moduleSetEvents.add(currentModuleSet);
+            // Catch case when module is null
+            to = "null";
+        } finally {
+            this.moduleSetEvents.add(new ModuleSet(from, to));
         }
     }
 
@@ -192,7 +200,8 @@ public class PlaySession {
             this.addModuleSet(emptyModule); // Module set event fixed /
         }
     }
-    public void setReward(){
+
+    public void setReward() {
 
     }
 }
