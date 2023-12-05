@@ -44,6 +44,7 @@ public class ThymeleafSpringWebConfig implements WebMvcConfigurer {
      * SpringResourceTemplateResolver automatically integrates with Spring's own
      * resource resolution infrastructure.
      * @return
+     * @see https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#the-template-resolver
      */
     @Bean
     public SpringResourceTemplateResolver templateResolver(){
@@ -66,6 +67,8 @@ public class ThymeleafSpringWebConfig implements WebMvcConfigurer {
      * SpringTemplateEngine automatically applies SpringStandardDialect and
      * enables Spring's own MessageSource message resolution mechanisms.
      * @return
+     * @see https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#web.servlet.spring-mvc.template-engines
+     * @see https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#the-template-engine
      */
     @Bean
     public SpringTemplateEngine templateEngine(){
@@ -117,7 +120,7 @@ public class ThymeleafSpringWebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("images/**").addResourceLocations("classpath:/FrontEnd/public/images/");
         registry.addResourceHandler("js/**").addResourceLocations("classpath:/FrontEnd/public/js/");
         registry.addResourceHandler("css/**").addResourceLocations("classpath:/FrontEnd/public/css/");
-        //registry.addResourceHandler("favicon.ico").addResourceLocations("classpath:/FrontEnd/public/");
+        registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/FrontEnd/");
     }
 }
 

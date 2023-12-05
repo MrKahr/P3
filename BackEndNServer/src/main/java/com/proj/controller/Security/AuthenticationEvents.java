@@ -12,6 +12,8 @@ import org.springframework.security.authentication.event.AuthenticationSuccessEv
 
 /**
  * Listen for specific events fired from Spring Security.
+ * <p>
+ * Experimental.
  * @see https://docs.spring.io/spring-security/reference/servlet/authentication/events.html
  */
 @Component

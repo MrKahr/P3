@@ -1,8 +1,6 @@
 package com.proj.controller.security;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
 // Spring necessities
 import org.springframework.context.annotation.Bean;
@@ -11,25 +9,22 @@ import org.springframework.context.annotation.Configuration;
 // Spring Events
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 // Authentication
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 // Passwords
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
-
-import com.proj.exception.UserNotFoundException;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+
 
 @Configuration
 public class AuthenticationConfig {
@@ -62,10 +57,8 @@ public class AuthenticationConfig {
 	 * The hashmap is implemented to allow different password encoders to be used rather easily 
 	 * (but remember to convert passwords already encoded in the database to the new format).
 	 * <p>
-	 * A new PasswordEncoder instance is then created with the default password encoder.
-	 * <p>
 	 * TODO: Changing password: https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html#authentication-change-password-configuration
-	 * @return The selected PasswordEncoder.
+	 * @return  A new PasswordEncoder instance with the selected password encoder.
 	 * @see https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html
 	 */
 	@Bean
@@ -81,7 +74,7 @@ public class AuthenticationConfig {
 	}
 
 	/**
-	 * Enables Spring Security to listen to http requests.
+	 * Enables Spring Security to listen to http requests. Used to limit max concurrent login sessions in SecurityFilterChain.
 	 * @return
 	 * @see https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html#ns-concurrent-sessions
 	 */
@@ -92,7 +85,6 @@ public class AuthenticationConfig {
 
 	/**
 	 * Enables support for listening to Spring events using @EventListener annotation.
-	 * Currently uses the default implementation.
 	 * @param applicationEventPublisher
 	 * @return
 	 * @see https://docs.spring.io/spring-security/reference/servlet/authentication/events.html

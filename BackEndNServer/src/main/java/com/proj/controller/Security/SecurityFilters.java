@@ -54,7 +54,7 @@ public class SecurityFilters {
 	// #### Exception Handling ####
 	// ############################
 	// These exceptions need to be handled:
-	// Use Advisors for this!!
+	// Use Advisors for this!! (Update: use events for this - WIP)
 	//
 	// org.springframework.security.authentication.BadCredentialsException
 	// com.proj.exception.UserNotFoundException	(Advisor exists)
@@ -83,7 +83,6 @@ public class SecurityFilters {
 
 	/**
 	 * Allows all requests matching this filter. This must only be used on resources and urls which are always public, e.g. "/".
-	 * TODO: Fix 404 on GET favicon.ico.
 	 * @param http
 	 * @return
 	 * @throws Exception
@@ -92,7 +91,7 @@ public class SecurityFilters {
 	@Order(1)
 	 public SecurityFilterChain allowFilter(HttpSecurity http) throws Exception {
 		http
-			.securityMatcher("/css/**", "/login/**", "/", "/js/**", "/images/**", "favicon.ico")
+			.securityMatcher("/css/**", "/login/**", "/", "/js/**", "/images/**", "/favicon.ico", "/error")
 			.csrf((csrf) -> csrf.disable())
 			.authorizeHttpRequests((authorize) -> authorize
 				.anyRequest().permitAll()
@@ -113,7 +112,6 @@ public class SecurityFilters {
 		http
 			.securityMatcher("/private/**")
 			.csrf((csrf) -> csrf.disable())
-			.csrf(Customizer.withDefaults())
 			.authorizeHttpRequests((authorize) -> authorize
 				.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
 				.anyRequest().denyAll()
@@ -141,7 +139,7 @@ public class SecurityFilters {
 		http
 			.csrf((csrf) -> csrf.disable())
 			.authorizeHttpRequests((authorize) -> authorize
-				.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR, DispatcherType.INCLUDE).permitAll()
+				.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
 				.requestMatchers("/user/**").permitAll() // TODO: For testing purposes
 				//.requestMatchers("/fisk").hasAnyAuthority(RoleType.GUEST.toString())
 				.anyRequest().authenticated()

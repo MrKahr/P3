@@ -10,29 +10,15 @@ function gatherData(){
         password: document.getElementById("password").value // TODO: enable password hashing using same as server (bcrypt): https://www.npmjs.com/package/bcryptjs
     };
 
-    if(userDetails.username === ""){
-        console.warn(`Empty username! Setting to null`);
-        userDetails.username = null;
-    }
-    if(userDetails.password === ""){
-        console.warn(`Empty Password! Setting to null`);
-        userDetails.password = null;
-    }
-
     console.log(userDetails);
     return userDetails;
 }
 
 async function sendData(userDetails){
-
-    if(userDetails.username === null || userDetails.password === null){
-        console.warn(`userDetails incorrect! Username: ${userDetails.username} | Password: ${userDetails.password}`);
-        return;
-    }
-
-
+    let response;
+    
     try {
-        const response = await fetch("/login", {
+        response = await fetch("/login", {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
             credentials: "same-origin",
@@ -40,9 +26,12 @@ async function sendData(userDetails){
             cache: "no-cache",
             body: JSON.stringify(userDetails)
         })
+
         if(response.redirected){
             window.location.href = response.url;    
         }
+
+
         // const result = response.url;
         // const redirect = response.url;
         // console.log(`Success: ${result} | redirect: ${redirect}`);
@@ -50,13 +39,29 @@ async function sendData(userDetails){
         console.error(`Error sending data: ${error}`);
     }
 
+    // try {
+    //     if(response.redirected){
+    //         window.location.href = response.url;    
+    //     }
+    //     // The server responded with an error (e.g. bad credentials)
+    //     else{
+    //         let json = await response.json();
+    //         errorObject = JSON.parse(json);
+    //         console.log(errorObject);
+    //     }
+    //     // Unknown error during processing.
+    // } catch (error) {
+    //     console.log(`Unknown error occured: ${error}`);
+    // }
+
+
+
 
 }
 
 function setup(){
     document.getElementById("submit").addEventListener("click", (event) => {
         sendData(gatherData());
-        
     }, {once:true})
 }
 
