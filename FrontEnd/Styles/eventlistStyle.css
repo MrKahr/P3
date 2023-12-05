@@ -1,3 +1,6 @@
+a{
+    display: block;
+}
 .create-event-button{
     margin: 3px;
     padding: 3px;
@@ -5,6 +8,11 @@
     background-color: rgb(12, 100, 188);
     border: 1px solid black;
     width:fit-content;
+    transition-duration: 0.2s;
+}
+.create-event-button:hover{
+    background-color: rgb(104, 178, 251);
+    color: #000000;
 }
 .eventcreation-container{
     margin: 3px;

@@ -45,29 +45,34 @@ table {
 
 th {
     text-align: left;
-    background-color: lightgray;
     border-left: 1px solid black;
     border-right: 1px solid black;
-    padding: 8px;
+    padding: 7px;
 }
 
 td {
     text-align: left;
-    background-color: white;
     border-left: 1px solid black;
     border-right: 1px solid black;
-    padding: 8px;
+    padding: 7px;
     vertical-align: top;
+    height: 12px;
 }
 
 tr:nth-child(even) {
-    width: auto;
-    background-color: #f2f2f2
+    background-color: #dddddd;
+}
+tr:nth-child(odd) {
+    background-color: #ffffff;
 }
 
 td:last-child {
     text-align: right;
 }
+td i{
+    float: left;
+}
+
 
 .manageUsersButtons {
     position: absolute;
@@ -85,7 +90,7 @@ td:last-child {
     position: absolute;
     display: none;
 }
-i {
+th i{
     float: right;
     display: none;
 }
