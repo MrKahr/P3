@@ -1,16 +1,12 @@
 package com.proj.unitTest;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.junit.jupiter.api.function.Executable;
-
 import org.junit.jupiter.api.Test;
 
-import com.proj.function.RoleAssigner;
 import com.proj.model.users.*;
 
 public class UserGetAllRolesTest {

@@ -1,6 +1,5 @@
 
 package com.proj.function;
-import java.lang.reflect.Array;
 
 import com.proj.model.events.RoleChanged;
 import com.proj.model.users.*;
