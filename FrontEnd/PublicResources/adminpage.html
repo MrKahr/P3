@@ -30,6 +30,7 @@
                 <button class="tablinks" onclick="showTab(event, 'manageEvents')">Manage Events</button>
                 <button class="tablinks" onclick="showTab(event, 'blogPosts')">Blog Posts</button>
                 <button class="tablinks" onclick="showTab(event, 'manageModules')">Manage Modules</button>
+                <button class="tablinks" onclick="showTab(event, 'membershipRequests')">Membership Requests</button>
             </div>
             
             <div class="tabcontent" id="manageUsers" style="display: none;">
@@ -64,8 +65,6 @@
                     </div>
                 </div>
             </div>
-    
-    
     
             <div class="tabcontent" id="manageEvents" style="display: none;">
                 <div style="overflow-x:auto;">
@@ -113,9 +112,7 @@
                         </form>
                     </div>
                 </div>
-            </div>
-    
-    
+            </div>    
     
             <div class="tabcontent" id="blogPosts" style="display: none;">
                 <div class="blogmanage" style="overflow-x:auto;">
@@ -148,9 +145,7 @@
                         </form>
                     </div>
                 </div>
-            </div>
-    
-    
+            </div>    
     
             <div class="tabcontent" id="manageModules" style="display: none">
                 <div class="modulemanage" style="overflow-x:auto;">
@@ -182,6 +177,31 @@
                     </div>
                 </div>
             </div>
+
+            <div class="tabcontent" id="membershipRequests" style="display: none;">
+                <div class="membershipRequests" style="overflow-x:auto;">
+                    <table>
+                        <tr>
+                          <th>Username</th>
+                          <th>RequestDate</th>
+                          <th>Full Name</th>
+                          <th>Address</th>
+                          <th>Phone</th>
+                          <th>PostalCode</th>
+                          <th>Actions</th>
+                        </tr>
+                        <tr>
+                          <td>TankMcgee</td>
+                          <td>1-25-2023</td>
+                          <td>Jens Jensen</td>
+                          <td>Adresse</td>
+                          <td>+4511111111</td>
+                          <td>9000</td>
+                          <td><i class="fa fa-check" style="font-size:24px"></i><i class="fa fa-minus-circle" style="font-size:24px"></i></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
         <div class="content-right">
             <link rel="stylesheet" href="../Styles/navigatorStyle.css">
@@ -207,6 +227,7 @@
             document.getElementById('manageEvents').style.display = "none";
             document.getElementById('blogPosts').style.display = "none";
             document.getElementById('manageModules').style.display = "none";
+            document.getElementById('membershipRequests').style.display = "none";
             
             document.getElementById(manageTab).style.display = "block";
             event.currentTarget.className += " active";
@@ -269,7 +290,8 @@
             }
 
             Array.from(tablerows).forEach((tablerow, index) =>{
-                tablerow.addEventListener('click', function editPlacement() {
+                if (tablerow.rowIndex != 0) {
+                    tablerow.addEventListener('click', function editPlacement() {
                     let clickedRow = event.currentTarget;
                     let editEventInput = document.getElementById("editEventInput");
                     let editTitleInput = document.getElementById("editTitleInput");
@@ -310,7 +332,8 @@
                     editCancelledPlace.appendChild(editCancelled);
 
                     editEventInput.style.display = "block";
-                }, { once: true })/* Fix this when solution is found */
+                    }, { once: true })/* Fix this when solution is found */
+                }
             })
         })
     </script>
