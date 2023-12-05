@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="../Styles/loginpageStyle.css">
+</head>
+
+<body>
+    <header>
+        <link rel="stylesheet" href="../Styles/navigatorStyle.css">
+        <nav class="topnav">
+            <a href="../PublicResources/publichomepage.html"><img class="logo" alt="AalborgTableTop logo" src="../Images/AalborgTableTop_Logo.png"></a>
+            <a href="../PublicResources/publicCalendar.html">Calendar</a>
+            <a href="../PublicResources/notfoundpage.html">CONMAR</a>
+            <a href="../PublicResources/notfoundpage.html">About AT</a>
+            <a href="../PublicResources/notfoundpage.html">Contact</a>
+            <a href="../PublicResources/loginpage.html" class="split">Log In</a>
+        </nav>
+    </header>
+    <div class="background">
+        <div id="SignupBox" class="SignupBox">
+            <img src="../Images/AalborgTableTop_Logo.png" alt="AalborgTableTop logo" width="100" height="100">
+            <h2>Sign Up</h2>
+            
+            <div class="row">
+                <div class="column">
+                    <label for="Username">Username:</label><br>
+                    <input type="text" id="Username" name="Username" required><br><br>
+                    <label for="Email">Email:</label><br>
+                    <input type="email" id="Email" name="Email" required><br><br>
+                    <div class="PayingmemberInfo" id="PayingmemberInfo" style="display: none;">
+                        <label for="FullName">Full name:</label><br>
+                        <input type="text" id="FullName" name="FullName" required><br><br>
+                        <label for="Phone">Phone:</label><br>
+                        <input type="number" id="Phone" name="Phone" required><br><br>
+                    </div>
+                </div>
+                <div class="column">
+                    <label for="Password">Password:</label><br>
+                    <input type="password" id="Password" name="Password" required><br>
+                    <div class="PasswordConditions" id="PasswordConditions" style="display: none;">
+                        <input type="checkbox" id="number" name="number">
+                        <label for="number">Number</label><br>
+                        <input type="checkbox" id="upperCase" name="upperCase">
+                        <label for="upperCase">Upper Case</label><br>
+                        <input type="checkbox" id="lowerCase" name="lowerCase">
+                        <label for="lowerCase">Lower Case</label><br>
+                        <input type="checkbox" id="characters" name="characters">
+                        <label for="characters">12 Characters</label><br>
+                    </div>
+                    <br><!-- out of syntax because it want some if it's in the none display -->
+                    <label for="Confirm Password">Confirm Password:</label><br>
+                    <input type="password" id="Confirm Password" name="Confirm Password" required><br><br>
+                    <div class="PayingmemberInfo2" id="PayingmemberInfo2" style="display: none;">
+                        <label for="Address">Address:</label><br>
+                        <input type="text" id="Address" name="Address" required><br><br>
+                        <label for="PostalCode">Postal code:</label><br>
+                        <input type="number" id="PostalCode" name="PostalCode" required><br><br>
+                    </div>
+                </div>
+            </div>
+            <input type="checkbox" id="Captcha" name="Captcha" value="Captcha"><!-- Captcha needs to be implemented -->
+            <label for="Captcha"> Captcha</label><br>
+            <input type="checkbox" id="SignUpMember" name="SignUpMember" value="SignUpMember">
+            <label for="SignUpMember"> Sign up as paying member</label><br><br>
+            <input type="submit" value="Sign Up" onclick="location.href='../PublicResources/userhomepage.html'">
+            </form><!-- I need to make a function that checks if the requirements are met -->
+    
+            <p>Already have an account?</p>
+            <p><a href="../PublicResources/loginpage.html">Log In</a></p>
+        </div>
+    </div>
+    
+
+    <script>
+        document.getElementById('Password').addEventListener('focus', function() {
+            let passwordConditions = document.getElementById("PasswordConditions");
+            if(passwordConditions.style.display == "none") {
+                passwordConditions.style.display = "block";
+            } else {
+                passwordConditions.style.display = "none";
+            }
+        })
+        document.getElementById('Password').addEventListener('blur', function() {
+            let passwordConditions = document.getElementById("PasswordConditions");
+            if(passwordConditions.style.display == "block") {
+                passwordConditions.style.display = "none";
+            } else {
+                passwordConditions.style.display = "block";
+            }
+        })
+
+        document.getElementById('SignUpMember').addEventListener('click', function() {
+            let payingmemberInfo = document.getElementById("PayingmemberInfo");
+            let payingmemberInfo2 = document.getElementById("PayingmemberInfo2");
+            if(payingmemberInfo.style.display == "none" && payingmemberInfo2.style.display == "none") {
+                payingmemberInfo.style.display = "block";
+                payingmemberInfo2.style.display = "block";
+            } else {
+                payingmemberInfo.style.display = "none";
+                payingmemberInfo2.style.display = "none";
+            }
+        })
+    </script>
+</body>
+</html>
