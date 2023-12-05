@@ -184,7 +184,7 @@ public class PlaySession {
     }
 
     public void setDescription(String description) {
-        DescriptionChanged descriptionChanged = new DescriptionChanged(description);
+        DescriptionChanged descriptionChanged = new DescriptionChanged(this.description);
         this.descriptionChanges.add(descriptionChanged);
         this.description = description;
     }
@@ -208,7 +208,9 @@ public class PlaySession {
      * @throws NullPointerException
      */
     public void setRewards(ArrayList<Reward> rewards) throws AddRewardsFailedException, NullPointerException {
-        if(PlaySessionStateEnum.valueOf(this.state).equals(PlaySessionStateEnum.CONCLUDED)) {
+        if(rewards == null) { // Allows hiding of rewards
+            this.rewards = null;
+        } else if(PlaySessionStateEnum.valueOf(this.state).equals(PlaySessionStateEnum.CONCLUDED)) {
             this.rewards = rewards;
             this.rewardsGiven = new RewardsGiven(LocalDateTime.now(), dm);
         } else {
