@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 // Controller
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,7 +58,6 @@ public class LoginController {
 
 		// TODO: Handle all types of login falied.
 		// See SecurityFilters.java
-		
 
 		if(authentication.isAuthenticated()){
 			return new ModelAndView(new RedirectView("/", true));
