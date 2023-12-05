@@ -25,10 +25,105 @@
     <div class="content">
         <div class="content-left">
             <div class="profile-container">
-                <h1 class="username">username</h1>
-                <img class="profile-picture" alt="AalborgTableTop logo" src="../../Images/AalborgTableTop_Logo.png">
-                <div class="scroll-box">text</div>
-                <div class="scroll-box">text</div>
+                <div class="profile-columns">
+                    <div class="column1">
+                        <h1 class="username">username</h1>
+                        <div class="scroll-box">
+                            <textarea id="profileText" placeholder="Text here" rows="20" cols="52"></textarea>
+                        </div>
+                        <div class="textSave">
+                            <input type="submit" value="Save changes">
+                        </div>
+                        <div class="tab">
+                            <button class="tablinks" onclick="showTab(event, 'futureEvents')">Future Events</button>
+                            <button class="tablinks" onclick="showTab(event, 'changePassword')">Change Password</button>
+                            <button class="tablinks" onclick="showTab(event, 'personalInfo')">Personal Info</button>
+                        </div>
+                        
+                        <div class="tabcontent" id="futureEvents" style="display: none;">
+                            <div class="eventlist">
+                                
+                            </div>
+                        </div>
+                
+                        <div class="tabcontent" id="changePassword" style="display: none;">
+                            <div class="passwordbox">
+                                <input type="password" id="oldPassword" placeholder="Old password"><br>
+                                <input type="password" id="newPassword" placeholder="New password"><br>
+                                <input type="password" id="confirmPassword" placeholder="Confirm password"><br>
+                                <input type="submit" value="Change password">
+                            </div>
+                        </div>
+                
+                        <div class="tabcontent" id="personalInfo" style="display: none;">
+                            <div class="infobox">
+                                <div>
+                                    <div class="info-columns">
+                                        <div class="info-column1">
+                                            <div class="infoLabels">Full Name</div>
+                                        </div>
+                                        <div class="info-column2">
+                                            <input type="text" id="fullName" placeholder="full name">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="info-columns">
+                                        <div class="info-column1">
+                                            <div class="infoLabels">Phone Number</div>
+                                        </div>
+                                        <div class="info-column2">
+                                            <input type="number" id="phoneNumber" placeholder="phone number">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="info-columns">
+                                        <div class="info-column1">
+                                            <div class="infoLabels">Postal Code</div>
+                                        </div>
+                                        <div class="info-column2">
+                                            <input type="number" id="postalCode" placeholder="postal code">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="info-columns">
+                                        <div class="info-column1">
+                                            <div class="infoLabels">Adress</div>
+                                        </div>
+                                        <div class="info-column2">
+                                            <input type="text" id="adress" placeholder="adress">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="info-columns">
+                                        <div class="info-column1">
+                                            <div class="infoLabels">Email</div>
+                                        </div>
+                                        <div class="info-column2">
+                                            <input type="email" id="email" placeholder="email">
+                                            <input type="submit" value="Save changes">
+                                            <div class="membership">
+                                                <input type="submit" value="Request membership">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="column2">
+                        <img class="profile-picture" alt="AalborgTableTop logo" src="../../Images/AalborgTableTop_Logo.png">
+                    </div>
+                    <a href="../../PublicResources/usernotfoundpage.html">Change profile picture</a>
+                </div>
             </div>
         </div>
         <div class="content-right">
@@ -64,6 +159,21 @@
             trademarks or other intellectual property, please visit their website at (www.wizards.com)</div>
     </div>
 
+    <script>
+        function showTab(event, manageTab) {
+            let tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            document.getElementById('futureEvents').style.display = "none";
+            document.getElementById('changePassword').style.display = "none";
+            document.getElementById('personalInfo').style.display = "none";
+            
+            document.getElementById(manageTab).style.display = "block";
+            event.currentTarget.className += " active";
+        }
+    </script>
 </body>
 
 </html>
