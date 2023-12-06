@@ -145,8 +145,6 @@ public class UserdbHandler extends DbHandler<User> {
                 return user;
             }
         }
-
-        System.out.println("UserdbHandler: User " + username + " not found");
-        throw new UserNotFoundException();
+        throw new UserNotFoundException("UserdbHandler: User " + username + " not found");
     }
 }

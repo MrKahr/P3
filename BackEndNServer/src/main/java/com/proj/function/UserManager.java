@@ -57,6 +57,7 @@ public class UserManager {
     public RoleRequestdbHandler getRoleRequestdbHandler() {
         return roleRequestdbHandler;
     }
+
     /**
      * Creates an account
      * 
@@ -97,8 +98,10 @@ public class UserManager {
     /**
      * Ensures the username of the user account that is to be created does not
      * already exist.
+     * 
      * @param username Display name of user.
-     * @throws FailedValidationException Thrown when the username is already taken by
+     * @throws FailedValidationException Thrown when the username is already taken
+     *                                   by
      *                                   another user (i.e. exists in the
      *                                   database).
      */
@@ -119,7 +122,8 @@ public class UserManager {
      * This is possible because usernames are unique.
      * 
      * @param username Display name of the user.
-     * @return The user object with the given username or null if this user is not found
+     * @return The user object with the given username or null if this user is not
+     *         found
      * @throws UserNotFoundException Thrown if the user is not found in the
      *                               database.
      */
@@ -146,7 +150,7 @@ public class UserManager {
      * @throws IllegalArgumentException UserID is null.
      */
     public boolean userExistsInDatabase(String queriedUsername) throws NullPointerException {
-        if (queriedUsername.equals(null)) {
+        if (queriedUsername == null) {
             throw new NullPointerException("Cannot determine whether " + queriedUsername + " exists in database");
         }
 
@@ -167,11 +171,11 @@ public class UserManager {
      * @return True if userID is found, false otherwise.
      * @throws IllegalArgumentException UserID is null.
      */
-    public boolean userExistsInDatabase(int UserID) {
+    public boolean userExistsInDatabase(int userID) {
         boolean isUserInDB = false;
         try {
             // TODO: Try seeing what happens when optional is returned
-            User user = userdbHandler.findById(UserID);
+            User user = userdbHandler.findById(userID);
             if (user instanceof User) {
                 isUserInDB = true;
             }
@@ -188,7 +192,7 @@ public class UserManager {
      * 
      * @param startRangeID - the start of range of user to get from database
      * @param endRangeID   - the end of range of user to get from database
-     * @return
+     * @return - array of users from database
      */
 
     public User[] getAccountList(int startRangeID, int endRangeID) {
@@ -203,7 +207,7 @@ public class UserManager {
 
         ArrayList<Integer> IDs = new ArrayList<Integer>(); // we make a list of all the IDs from the start of the range
                                                            // to the end
-        for (int index = startRangeID; index < endRangeID; index++) {
+        for (int index = startRangeID; index <= endRangeID; index++) {
             IDs.add(index);
         }
         Iterable<User> userList = userdbHandler.findAllById(IDs); // get all the users in the given ID range
@@ -211,7 +215,14 @@ public class UserManager {
         for (User user : userList) {
             users.add(user);
         }
-        return (User[]) users.toArray(); // we convert the list to an array to make it easier to move around
+
+        // we convert the list to an array to make it easier to handle in the controller
+        // due to there being no easy way of converting javas arrayList to a javascript
+        // datastructure
+        User[] userArray = new User[users.size()];
+        userArray = users.toArray(userArray);
+
+        return userArray;
     }
 
     /**
@@ -271,6 +282,8 @@ public class UserManager {
          * We opt for caution and select 6 months
          */
         userToDeactivate.getBasicUserInfo().setDeletionDate(LocalDateTime.now().plusMonths(6));
+        // Save updated user to userDatabase
+        userdbHandler.save(userToDeactivate);
 
     }
 
@@ -288,6 +301,7 @@ public class UserManager {
         User userToActivate = userdbHandler.findById(userId);
         userToActivate.getBasicUserInfo().setDeactivationDate(null);
         userToActivate.getBasicUserInfo().setDeletionDate(null);
+        userdbHandler.save(userToActivate);
 
     }
 
@@ -299,14 +313,14 @@ public class UserManager {
      */
     public String removeAccount(int userId) {
         User userToDelete = userdbHandler.findById(userId);
-            String statusmsg = "Deletion of " + userToDelete.getBasicUserInfo().getUserName();
+        String statusmsg = "Deletion of " + userToDelete.getBasicUserInfo().getUserName();
         LocalDateTime deletionDate = userToDelete.getBasicUserInfo().getDeletionDate();
         if (deletionDate != null && LocalDateTime.now().isAfter(deletionDate)) { // check if we're past the deletion
                                                                                  // date
             userdbHandler.delete(userToDelete);
-            return statusmsg + "successful";
+            return statusmsg + " successful";
         } else {
-            return statusmsg + "unsuccessful";
+            return statusmsg + " unsuccessful";
         }
     }
 
@@ -375,6 +389,7 @@ public class UserManager {
      * @param requestingId The ID of the user that requested the role.
      * @param type         The type of role the user has requested and is allowed to
      *                     have.
+     * @return A copy of the user object that was saved to the database.
      */
     public void fulfillRoleRequest(int requestingId, RoleType type) {
         ArrayList<Request> requests = new ArrayList<Request>();
@@ -396,6 +411,7 @@ public class UserManager {
         User user = userdbHandler.findById(requestingId);
         RoleAssigner.setRole(user, roleRequest.getRoleInfo());
         userdbHandler.save(user);
+        roleRequestdbHandler.delete(roleRequest);
     }
 
     /**
@@ -407,9 +423,13 @@ public class UserManager {
      * @param requestingId The ID of the user that is requesting the role.
      * @param role         The Role-object that the user wishes to have assigned to
      *                     them.
-     * @return A copy of the RoleRequest-object that was saved to the database.
      */
     public RoleRequest createRoleRequest(int requestingId, Role role) {
+        //check if dependencies are fulfilled
+        if(!RoleAssigner.dependenciesFulfilled(this.getUserdbHandler().findById(requestingId), role)){
+            throw new IllegalArgumentException("User with id " + requestingId + " does not fulfill the requirements for the given role.");
+        }
+        //get an old request and replace it if it's there
         RoleRequest newRequest = new RoleRequest(requestingId, role);
         ArrayList<Request> requests = new ArrayList<Request>();
         for (Request r : roleRequestdbHandler.findAllByUserId(requestingId)) {

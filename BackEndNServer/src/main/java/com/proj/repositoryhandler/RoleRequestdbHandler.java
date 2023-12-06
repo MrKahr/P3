@@ -5,7 +5,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import com.proj.repositories.RoleRequestRepository;
-import com.proj.exception.UserNotFoundException;
+import com.proj.exception.RequestNotFoundException;
 import com.proj.model.events.RoleRequest;
 
 /**
@@ -54,7 +54,7 @@ public class RoleRequestdbHandler extends DbHandler<RoleRequest> {
 
     @Override
     public RoleRequest findById(Integer id) {
-        return requestRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        return requestRepository.findById(id).orElseThrow(() -> new RequestNotFoundException(id));
     }
 
     @Override
