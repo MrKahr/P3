@@ -316,10 +316,6 @@ public class UserManagerUnitTests {
     @Test 
     public void requestUpgradeUserInvalidPassword(){}
 
-    @Test 
-    public void requestUpgradeUserInvalidPassword(){}
-
-
     @Test
     public void getValidRange() {
         userManager.createAccount("thisisauser", "123HelLo+");
