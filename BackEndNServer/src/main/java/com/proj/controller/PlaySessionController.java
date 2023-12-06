@@ -7,7 +7,7 @@ import com.proj.model.session.Module;
 import com.proj.exception.NoModuleFoundException;
 import com.proj.function.ModuleManager;
 import com.proj.function.PlaySessionManager;
-import com.proj.repositoryhandler.PlaySessionHandler;
+import com.proj.repositoryhandler.PlaySessiondbHandler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,17 +20,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.proj.model.session.*;
 
 @Controller
-@RequestMapping(path = "/P3")
+@RequestMapping(path = "/play_session")
 public class PlaySessionController {
 
   @Autowired
-  PlaySessionHandler playSessionHandler;
+  private PlaySessiondbHandler playSessionHandler;
   @Autowired
-  PlaySessionManager playSessionManager;
+  private PlaySessionManager playSessionManager;
   @Autowired
-  ModuleManager moduleManager;
+  private ModuleManager moduleManager;
 
-  @PostMapping(path = "/NewPlaySession")
+  @PostMapping(path = "/new_play_session")
   public @ResponseBody String addNewPlaySessionResponse(@RequestParam String title,
       @RequestParam String description, @RequestParam String dm, @RequestParam Integer currentNumberOfPlayers,
       @RequestParam LocalDateTime date,
@@ -49,7 +49,7 @@ public class PlaySessionController {
     return "PlaySession Created with ID: " + playSession.getId();
   }
 
-  @PostMapping(path = "/UpdatePlaySession") // responds to put requests with path "/UpdatePlaySession" and request
+  @PostMapping(path = "/update_play_session") // responds to put requests with path "/UpdatePlaySession" and request
                                             // parameters, returns Successful if update is valid
   public @ResponseBody String updatePlaySessionResponse(@RequestParam Integer id, @RequestParam String title,
       @RequestParam String description,
@@ -76,7 +76,7 @@ public class PlaySessionController {
    * }
    */
 
-  @GetMapping(path = "/DateBetween") // returns all play sessions between two dates
+  @GetMapping(path = "/date_between") // returns all play sessions between two dates
   public @ResponseBody List<PlaySession> getPlaySessionsBetween(@RequestParam LocalDateTime startDateTime,
       @RequestParam LocalDateTime endDateTime) {
     List<PlaySession> playSessions = playSessionManager.getSessions(startDateTime, endDateTime);
@@ -87,7 +87,7 @@ public class PlaySessionController {
     return playSessions;
   }
 
-  @GetMapping(path = "/PlaySession") //TODO: return specific play session with or without rewards, depending on access level
+  @GetMapping(path = "/play_session/{id}") //TODO: return specific play session with or without rewards, depending on access level
   public @ResponseBody PlaySession getPlaySession() {
     return null;
   }

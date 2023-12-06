@@ -20,14 +20,14 @@ import com.proj.function.PlaySessionManager;
 import com.proj.model.session.Module;
 import com.proj.model.session.PlaySession;
 import com.proj.model.session.PlaySessionStateEnum;
-import com.proj.repositoryhandler.PlaySessionHandler;
+import com.proj.repositoryhandler.PlaySessiondbHandler;
 
 @SpringBootTest
 @ComponentScan
 public class playSessionManagerTest {
     // lookupPlaySessionID - param int id - need DB connection
     @Autowired
-    PlaySessionHandler testPlaySessionHandler;
+    PlaySessiondbHandler testPlaySessionHandler;
     @Autowired
     PlaySessionManager testPlaySessionManager;
 

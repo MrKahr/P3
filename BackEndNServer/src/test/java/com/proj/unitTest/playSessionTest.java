@@ -158,8 +158,11 @@ public class playSessionTest {
         PlaySessionStateEnum state = PlaySessionStateEnum.PLANNED;
         PlaySession testPlaySession = new PlaySession("title", "desc", "MrDM", 0, time, state, 2, module);
 
+        ArrayList<Reward> rewards = new ArrayList<Reward>();
+        rewards.add(new Reward("Legendary thingy", 1, "It is legendary."));
+        rewards.add(new Reward("Gold", 100, "It is gold"));
         Executable e = () -> {
-            testPlaySession.setRewards(null);
+            testPlaySession.setRewards(rewards);
         };
         assertThrows(AddRewardsFailedException.class, e);
     }

@@ -65,16 +65,13 @@ public class PlaySession {
     @JdbcTypeCode(SqlTypes.JSON)
     private ArrayList<DescriptionChanged> descriptionChanges;
 
-    // validation check with DM = create session and check without DM = update
-    // session. ?????
-
     // Constructor
     /**
      * Creates a play session for players to attend
      * 
      * @param title                  - Use to show correct session on frontend
-     * @param id                     - id of the playsession \\TODO: Find way to
-     *                               reliably generated ID
+     * @param description            - string describing the event itself
+     * @param dm                     - username of the dm hosting the playsession
      * @param currentNumberOfPlayers - number of players associated with the current
      *                               OlaySession
      * @param date                   - date that the PlaySession will be held
@@ -82,7 +79,7 @@ public class PlaySession {
      *                               or cancelled.
      * @param maxNumberOfPlayers     - current maximal number of players allowed in
      *                               a session
-     * @param users                  - Usernames of players currently signed up
+     * @param module                 - the module associated with the playsession or null
      */
     public PlaySession(String title, String description, String dm, Integer currentNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state,
             Integer maxNumberOfPlayers, Module module) {
@@ -190,11 +187,9 @@ public class PlaySession {
     }
 
     /**
-     * Sets the module description of a module and adds a module set event to relect
+     * Sets the module description of a module and adds a module set event to reflect
      * this change
-     * 
-     * @param module module user wants to associate with a PlaySession
-     * @throws NullPointerException
+     * @param module Module user wants to associate with a PlaySession
      */
     public void setModule(Module module) {
         this.module = module;
@@ -203,7 +198,7 @@ public class PlaySession {
 
     /**
      * 
-     * @param rewards
+     * @param rewards   list of rewards to be added to playsession
      * @throws AddRewardsFailedException
      * @throws NullPointerException
      */
@@ -221,16 +216,15 @@ public class PlaySession {
     /**
      * Handles the creation of a module set event and adds this event to module set
      * events
-     * 
      * @pre-con caller function has set a valid module
+     * @param module
      * @throws NullPointerException
      */
-
     public void addModuleSet(Module module) throws NullPointerException {
         ModuleSet previousModuleSet;
         int currentNumberOfEvents;
-        String from = "";
-        String to = "";
+        String from = ""; // previous module as string or null (or empty string if there is not previous module)
+        String to = ""; // new module as string or null
 
         try {
             currentNumberOfEvents = getModuleSetEvents().size();
@@ -290,7 +284,7 @@ public class PlaySession {
      * Remove user from playsession
      * @param username of user to be removed
      */
-    public void unassignUser(String username) {
+    public void unassignUser(String username) throws NoSuchElementException{
         if (users.contains(username)) {
             users.remove(username);
         } else {

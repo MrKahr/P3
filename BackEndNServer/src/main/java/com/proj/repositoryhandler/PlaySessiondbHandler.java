@@ -11,9 +11,7 @@ import com.proj.exception.PlaySessionNotFoundException;
 
 
 @Service
-public class PlaySessionHandler extends DbHandler<PlaySession>{
-
-    public PlaySessionHandler(){}
+public class PlaySessiondbHandler extends DbHandler<PlaySession>{
     
     @Autowired
     private PlaySessionRepository playSessionRepository;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.proj.exception.FailedValidationException;
 import com.proj.exception.PlaySessionNotFoundException;
@@ -12,37 +12,29 @@ import com.proj.model.session.Module;
 import com.proj.model.session.PlaySession;
 import com.proj.model.session.PlaySessionStateEnum;
 import com.proj.repositoryhandler.ModuledbHandler;
-import com.proj.repositoryhandler.PlaySessionHandler;
+import com.proj.repositoryhandler.PlaySessiondbHandler;
 
 /**
  * PlaySessionManager is responsible for setting the current date, lookupModuleID, validating the session, lookupPlaySessionID,
  * addNewPlaySession, updatePlaySession and getSessions.
  */
-@Component
+@Service
 public class PlaySessionManager {
 
-    @Autowired
-    PlaySessionHandler playSessionHandler;
-    @Autowired
-    ModuledbHandler moduledbHandler;
-
     // Field
-   
-
-    // Constructor
+    @Autowired
+    private PlaySessiondbHandler playSessionHandler;
+    @Autowired
+    private ModuledbHandler moduledbHandler;
     
 
 
-
     /**
-     * addNewPlaySession
-     * @param title
-     * @param maxNumberOfPlayers
-     * @param date
-     * @param state
-     * @param module
+     * 
+     * @param playSession object to be saved
+     * @throws FailedValidationException
      */
-    public void addNewPlaySession(PlaySession playSession){
+    public void addNewPlaySession(PlaySession playSession) throws FailedValidationException{
         if (validatePlaySession(playSession, true)){
             playSessionHandler.save(playSession);
         } else {
@@ -54,15 +46,16 @@ public class PlaySessionManager {
 
     /**
      * Updates the playSession in the database by resetting the playSession info.
-     * @param id unique ID of playSession in database
-     * @param title of playSession
-     * @param maxNumberOfPlayers of playSession
-     * @param date of playSession
-     * @param state of playSession
-     * @param module of playSession
-     * @return saved playSession.
+     * @param id                    unique ID of playSession in database
+     * @param title                 of playSession
+     * @param description           String describing the playsession
+     * @param maxNumberOfPlayers    of playSession
+     * @param date                  where playsession takes place
+     * @param state                 of playSession, as expressed by PlaySessionStateEnum
+     * @param module                associated with playsession
+     * @return                      saved playSession.
      */
-    public void updatePlaySession(int id, String title, String description, int maxNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state, Module module){
+    public void updatePlaySession(Integer id, String title, String description, int maxNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state, Module module){
         PlaySession playSessionUpdate;
         playSessionUpdate = lookupPlaySessionID(id);
 
@@ -84,11 +77,13 @@ public class PlaySessionManager {
 
     /**
      * Validates the playSession with If statement.
-     * @param playSession object to validate.
-     * @return True or false, true if the validation passed and false if it failed to validate. 
-     * throws ValidationFailedException with specific error messages if validation fails
+     * @param playSession                Object to validate.
+     * @param isNewSession               Boolean explaining if playsession is being created or updated
+     * @return                           True or false, true if the validation passed and false if it failed to validate. 
+     * @throws FailedValidationException with specific error messages if validation fails
      */
-    public Boolean validatePlaySession(PlaySession playSession, Boolean isNewSession){
+
+    public Boolean validatePlaySession(PlaySession playSession, Boolean isNewSession) throws FailedValidationException{
         //Static Max values
         final int globalMaxNumberOfPlayers = 7;
         final int maxTitleLength = 40;
@@ -100,8 +95,10 @@ public class PlaySessionManager {
         //int moduleID = module.getId();//this line is the problem - NullPointerException - kommer stadig ikke ned til notnull7 for some reason
         // tests kører ikke breakpoints iirc, så skal finde ud af hvor nullpointerexceptionen kommer fra
         //Validation Logic - If statment that searches for errors in the playSession info.
-        if(title.length() > maxTitleLength || title.length() <= 0){
+        if(title.length() > maxTitleLength){
             throw new FailedValidationException("title exceeds maximum lenght");
+        } else if(title.length() <= 0) {
+            throw new FailedValidationException("title is empty");
         }//local max number of players within global max limit - Done
         else if(maxNumberOfPlayers > globalMaxNumberOfPlayers){
             throw new FailedValidationException("Maximum players exceeds global maximum");
@@ -126,7 +123,7 @@ public class PlaySessionManager {
     /**
      * LookupPlaySession is used by validationPlaySession and updatePlaySession to find the playSession and see if it exists in the database.
      * @param id of playSession that is requested.
-     * @return The playSession id or throw exception.
+     * @return   The playSession id or throw exception.
      */
     public PlaySession lookupPlaySessionID(Integer id){
         PlaySession result;
@@ -145,7 +142,7 @@ public class PlaySessionManager {
     /**
      * LookModule is used by validationPlaySession to find the module and see if it exists in the database.
      * @param moduleID is the id for the playSession that is requested.
-     * @return This will return true or false, true if found and false if not.
+     * @return         This will return true or false, true if found and false if not.
      */
     public boolean lookupModuleID(int moduleID){
         boolean result = true;
@@ -163,8 +160,8 @@ public class PlaySessionManager {
     /**
      * getSessions retrieve playSessions from the database within the time period requested the default time period is a month.
      * @param startDate is the date that the user reqests the method starts retrieving playSessions.
-     * @param endDate is the date that the user request the method stops retrieving playSessions.
-     * @return playSessions within the time period.
+     * @param endDate   is the date that the user request the method stops retrieving playSessions.
+     * @return          playSessions within the time period.
      */
     public List<PlaySession> getSessions(LocalDateTime startDate, LocalDateTime endDate){
         //henter sessions i en tidsperiode fra databasen
