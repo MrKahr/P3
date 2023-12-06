@@ -163,8 +163,7 @@ public class UserManager {
      * @throws InvalidLoginException When the login request either had wrong
      *                               username or password.
      */
-    public boolean validateLogin(String userName, String password)
-            throws InvalidLoginException {
+    public boolean validateLogin(String userName, String password) {
         boolean isvalid = false;
 
         Integer userID = 0; // Dummy quick fix
@@ -172,7 +171,6 @@ public class UserManager {
         try {
             userExists(userID);
         } catch (UserNotFoundException usrnfe) {
-            throw new InvalidLoginException(String.format("Login failed with: %s", usrnfe.getMessage()), usrnfe);
         }
         isvalid = true;
         return isvalid;

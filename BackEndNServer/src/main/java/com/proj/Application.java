@@ -16,7 +16,5 @@ public class Application implements CommandLineRunner {
 
 	@Override // Overrides abstract run method
 	public void run(String... args) throws Exception {
-
 	}
-
 }
