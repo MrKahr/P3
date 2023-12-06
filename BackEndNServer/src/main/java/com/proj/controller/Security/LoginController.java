@@ -38,13 +38,24 @@ public class LoginController {
 	 * Serves the login page when receiving a GET request to the login page. 
 	 * @return
 	 */
-	@GetMapping("/login")
-	public ModelAndView showLoginPage(){
+	// @GetMapping("/login")
+	// public ModelAndView showLoginPage(){
 		
-		ModelAndView model = new ModelAndView("authentication/loginPage");
-		model.addObject("Username", "Thymeleaf");
-		return model; 
-	} 
+	// 	ModelAndView model = new ModelAndView("authentication/loginPage");
+	// 	model.addObject("Username", "Thymeleaf");
+	// 	return model; 
+	// } 
+
+	// login page
+    @GetMapping("/loginpage")
+    public String showLoginPage(){
+        return "authentication/loginPage";
+    }
+	// signup page
+    @GetMapping("/signuppage")
+    public String showSignupPage(){
+        return "signuppage";
+    }
 
 	/**
 	 * Invokes AuthenticationProcess with the supplied user info received in a POST request to the login page.

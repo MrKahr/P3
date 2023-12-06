@@ -22,7 +22,7 @@ import com.proj.model.session.*;
 
 
 @Controller
-@RequestMapping(path = "/P3")
+// @RequestMapping(path = "/P3")
 public class PlaySessionController {
   
   @Autowired

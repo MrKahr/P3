@@ -68,16 +68,16 @@ public class SecurityFilters {
 	 * @return
 	 * @throws Exception
 	 */
-	// @Bean
-	// @Order(-1)
-	//  public SecurityFilterChain testFilter(HttpSecurity http) throws Exception {
-	// 	http
-	// 		.csrf((csrf) -> csrf.disable())
-	// 		.authorizeHttpRequests((authorize) -> authorize
-	// 			.anyRequest().permitAll()
-	// 		);
-	// 	return http.build();
-	// }
+	@Bean
+	@Order(-1)
+	 public SecurityFilterChain testFilter(HttpSecurity http) throws Exception {
+		http
+			.csrf((csrf) -> csrf.disable())
+			.authorizeHttpRequests((authorize) -> authorize
+				.anyRequest().permitAll()
+			);
+		return http.build();
+	}
 
 
 
