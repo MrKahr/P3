@@ -6,15 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 // Spring Security
 import org.springframework.security.core.Authentication;
 
-// HTTP
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
-
-
 // Controller
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,15 +49,11 @@ public class LoginController {
 		
 		Authentication authentication = authenticationProcess.authenticate(loginRequest, request, response); // Authenticates the user
 
-		// TODO: Handle all types of login falied.
-		// See SecurityFilters.java
-
 		if(authentication.isAuthenticated()){
 			return new ModelAndView(new RedirectView("/", true));
 		}
 		return new ModelAndView("redirect:/fisk");
 	}
 
-	public record LoginRequest(String username, String password) {
-	}
+	public record LoginRequest(String username, String password) {}
 }
