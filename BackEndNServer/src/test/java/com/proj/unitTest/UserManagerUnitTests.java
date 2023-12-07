@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.proj.function.UserManager;
@@ -43,12 +44,6 @@ public class UserManagerUnitTests {
 
         // Requesting user is always different from user unless specified by test
         requestingUser = new User(new BasicUserInfo("user2", "1234Hell+o"));
-
-/*         // Create simple account for the current user
-        String username = user.getBasicUserInfo().getUserName();
-        String password = user.getBasicUserInfo().getPassword();
-        userManager.createAccount(username, password); */
-
     }
 
     @Test
@@ -188,8 +183,9 @@ public class UserManagerUnitTests {
 
     @Test
     public void createInvalidPasswordGuestAccount() {
-        String creationResult = userManager.createAccount("user3", "");
-        assertTrue(creationResult.equals("Cannot create user because: Password is not valid"));
+        // Bug: User3 was already made, using arbitrary name instead
+        String creationResult = userManager.createAccount("user1234", "");
+        assertEquals(creationResult, "Cannot create user because: Password is not valid");
     }
 
     @Test
@@ -453,14 +449,13 @@ public class UserManagerUnitTests {
     @Test
     public void makeInvalidRoleRequest() {
         // Create user in database
-        userManager.getUserdbHandler().save(requestingUser);
         userManager.createAccount(requestingUser.getBasicUserInfo().getUserName(),
                 requestingUser.getBasicUserInfo().getPassword());
         // Get user from database
         requestingUser = userManager.lookupAccount(requestingUser.getBasicUserInfo().getUserName());
         // Make invalid request
         Executable e = () -> {
-            userManager.createRoleRequest(requestingUser.getId(), new Member());
+            userManager.createRoleRequest(requestingUser.getId(), new SuperAdmin());
         };
         Throwable thrown = assertThrows(IllegalArgumentException.class, e);
         assertTrue(thrown.getMessage().equals(
