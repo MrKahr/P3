@@ -23,7 +23,7 @@ public class PlaySessionManager {
 
     // Field
     @Autowired
-    private PlaySessiondbHandler playSessionHandler;
+    private PlaySessiondbHandler playSessiondbHandler;
     @Autowired
     private ModuledbHandler moduledbHandler;
     
@@ -36,7 +36,7 @@ public class PlaySessionManager {
      */
     public void addNewPlaySession(PlaySession playSession) throws FailedValidationException{
         if (validatePlaySession(playSession, true)){
-            playSessionHandler.save(playSession);
+            playSessiondbHandler.save(playSession);
         } else {
             throw new FailedValidationException("Session add error");
         }
@@ -67,7 +67,7 @@ public class PlaySessionManager {
         playSessionUpdate.setModule(module);
         
         if (validatePlaySession(playSessionUpdate, false)){
-            playSessionHandler.save(playSessionUpdate);
+            playSessiondbHandler.save(playSessionUpdate);
         } else {
             throw new FailedValidationException("Session update error");
         }
@@ -127,13 +127,13 @@ public class PlaySessionManager {
      */
     public PlaySession lookupPlaySessionID(Integer id){
         PlaySession result;
-        Object optionalPlaySession = playSessionHandler.findById(id); //ERROR
+        Object optionalPlaySession = playSessiondbHandler.findById(id); //ERROR
         if (optionalPlaySession instanceof PlaySession) {
             result = (PlaySession) optionalPlaySession;
         } else {
             throw new PlaySessionNotFoundException("Session not found");
         }
-        result = playSessionHandler.findById(id);//ERROR
+        result = playSessiondbHandler.findById(id);//ERROR
         return result;
     }
 
@@ -165,7 +165,7 @@ public class PlaySessionManager {
      */
     public List<PlaySession> getSessions(LocalDateTime startDate, LocalDateTime endDate){
         //henter sessions i en tidsperiode fra databasen
-        Iterable<PlaySession> playSessions = playSessionHandler.findByDateBetween(startDate, endDate);
+        Iterable<PlaySession> playSessions = playSessiondbHandler.findByDateBetween(startDate, endDate);
         List<PlaySession> playSessionPeriod = new ArrayList<>();
         playSessions.forEach(playSessionPeriod::add);
         return playSessionPeriod;

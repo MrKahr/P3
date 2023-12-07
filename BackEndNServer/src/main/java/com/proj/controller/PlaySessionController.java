@@ -24,7 +24,7 @@ import com.proj.model.session.*;
 public class PlaySessionController {
 
   @Autowired
-  private PlaySessiondbHandler playSessionHandler;
+  private PlaySessiondbHandler playSessiondbHandler;
   @Autowired
   private PlaySessionManager playSessionManager;
   @Autowired

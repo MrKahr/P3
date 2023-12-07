@@ -27,7 +27,7 @@ import com.proj.repositoryhandler.PlaySessiondbHandler;
 public class playSessionManagerTest {
     // lookupPlaySessionID - param int id - need DB connection
     @Autowired
-    PlaySessiondbHandler testPlaySessionHandler;
+    PlaySessiondbHandler testPlaySessiondbHandler;
     @Autowired
     PlaySessionManager testPlaySessionManager;
 
@@ -104,7 +104,7 @@ public class playSessionManagerTest {
                 PlaySessionStateEnum.CANCELLED, 7, testModule);
         testPlaySessionManager.addNewPlaySession(testPlaySession);
 
-        assertEquals(testPlaySession.getTitle(), testPlaySessionHandler.findById(testPlaySession.getId()).getTitle());
+        assertEquals(testPlaySession.getTitle(), testPlaySessiondbHandler.findById(testPlaySession.getId()).getTitle());
     }
 
     // updatePlaySession
@@ -128,7 +128,7 @@ public class playSessionManagerTest {
         testPlaySessionManager.addNewPlaySession(testPlaySession);
         testPlaySessionManager.updatePlaySession(testPlaySession.getId(), "testtitle2", "testdescription", 7, LocalDateTime.now(),
                 PlaySessionStateEnum.CANCELLED, null);
-        PlaySession foundPlaySession = testPlaySessionHandler.findById(testPlaySession.getId());
+        PlaySession foundPlaySession = testPlaySessiondbHandler.findById(testPlaySession.getId());
 
         assertEquals(testPlaySession.getTitle(), foundPlaySession.getTitle());
         // opdaterer session med id 0 fra tidligere test, og sikrer at det virker ved at
