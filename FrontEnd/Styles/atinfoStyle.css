@@ -1,0 +1,34 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+.background {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url("../Images/AT_background.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-color: red;
+    padding: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.NotFoundBox {
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    width: 350px;
+    height: auto;
+}
+
+h2 {
+    font-size: 50px;
+}
+
+h3 {
+    font-size: 30px;
+}
