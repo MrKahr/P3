@@ -36,6 +36,20 @@ table{
     overflow: scroll;
     margin-bottom: 5px;
 }
+.editEventsButton {
+    position: absolute;
+    display: none;
+    margin: 2px;
+    padding: 4px;
+    border-radius: 5px;
+    background-color: lightcoral;
+    border: 1px solid black;
+    transition-duration: 0.2s;
+}
+.editEventsButton a:link, .editEventsButton a:visited {
+    text-decoration: none;
+    color: black;
+}
 
 td, th {
     border-right: 1px solid #000000;
