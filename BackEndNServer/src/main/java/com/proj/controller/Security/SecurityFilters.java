@@ -8,6 +8,7 @@ import org.springframework.core.annotation.Order;
 // Web Security (Intercept incoming request)
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive;
 import org.springframework.security.web.savedrequest.NullRequestCache;
@@ -40,7 +41,7 @@ public class SecurityFilters {
 	// To use CSRF protection, the client must send a CSRF token with POST/PUT requests which the server recognises.
 	// See: https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html
 
-	// Spring Security should be enabled at the method level for best protection.
+	// Spring Security should be enabled at the method level for best protection - known as defence in depth.
 	// See: https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html#method-security-architecture
 
 
@@ -48,6 +49,7 @@ public class SecurityFilters {
 	// #### Notes ####
 	// ###############
 	// @Order(1) -> The order in which to invoke this filter. No order defaults to last.
+	// TODO: Find a way to apply parts of the filters globally to reduce duplicate code. E.g.: http.formlogin(...) or http.logout(...)
 
 
 	// ############################
@@ -56,8 +58,6 @@ public class SecurityFilters {
 	// These exceptions need to be handled:
 	// Use Advisors for this!! (Update: use events for this - WIP)
 	//
-	// org.springframework.security.authentication.BadCredentialsException
-	// com.proj.exception.UserNotFoundException	(Advisor exists)
 	// org.springframework.security.authentication.AccessDeniedException
 
 // ########################################
@@ -72,7 +72,9 @@ public class SecurityFilters {
 	// @Order(-1)
 	//  public SecurityFilterChain testFilter(HttpSecurity http) throws Exception {
 	// 	http
-	// 		.csrf((csrf) -> csrf.disable())
+	// 		.csrf((csrf) -> csrf
+	// 		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+	// 		)
 	// 		.authorizeHttpRequests((authorize) -> authorize
 	// 			.anyRequest().permitAll()
 	// 		);
@@ -135,9 +137,19 @@ public class SecurityFilters {
 	@Order(200)
 	 public SecurityFilterChain basicDefaultFilter(HttpSecurity http) throws Exception {
 		
+		// Enable CSRF
+		// http
+		// 	.csrf((csrf) -> csrf
+		// 		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+		// 	);
+
+		// Disable CSRF
+		http
+			.csrf((csrf) -> csrf.disable());
+
+
 		// Authorization
 		http
-			.csrf((csrf) -> csrf.disable())
 			.authorizeHttpRequests((authorize) -> authorize
 				.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
 				.requestMatchers("/user/**").permitAll() // TODO: For testing purposes
@@ -159,7 +171,7 @@ public class SecurityFilters {
 		http
 			.logout(logout -> logout
 				.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(Directive.COOKIES)))
-				.logoutUrl("/login?logout")
+				.logoutUrl("/logout")
 				.logoutSuccessUrl("/")
 				.permitAll()
 			);
@@ -202,9 +214,12 @@ public class SecurityFilters {
 
 		// Logout
 		http
-			.logout((logout) -> logout
+			.logout(logout -> logout
 				.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(Directive.COOKIES)))
-		);
+				.logoutUrl("/logout")
+				.logoutSuccessUrl("/")
+				.permitAll()
+			);
 
 		// Session management
 		http

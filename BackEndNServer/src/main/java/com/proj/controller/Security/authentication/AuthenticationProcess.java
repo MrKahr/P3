@@ -1,4 +1,4 @@
-package com.proj.controller.security;
+package com.proj.controller.security.authentication;
 
 // Spring necessities
 import org.springframework.stereotype.Component;

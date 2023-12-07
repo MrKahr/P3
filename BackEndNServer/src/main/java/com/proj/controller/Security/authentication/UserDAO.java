@@ -1,4 +1,4 @@
-package com.proj.controller.security;
+package com.proj.controller.security.authentication;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,7 +44,8 @@ public class UserDAO {
 		try {
 			user = userdbHandler.findByUsername(username); //TODO: Check method runtime in userdbHandler
 		} catch (UserNotFoundException unfe) {
-			// Converts our UserNotFoundException to Spring Security's UsernameNotFoundException in order to fire the event AuthenticationFailureBadCredentialsEvent.
+			// Converts UserNotFoundException to Spring Security's UsernameNotFoundException in order to fire the event AuthenticationFailureBadCredentialsEvent
+			// and throw BadCredentialsException.
 			throw new UsernameNotFoundException("User with username"+ username + "could not be found.", unfe);
 		}
 
@@ -59,7 +60,7 @@ public class UserDAO {
 	 * Finds the granted authorities for the supplied user and stores them in a HashMap.
 	 * Used for authentication in Spring Security.
 	 * @param user A user object.
-	 * @return A Hashmap of granted authoritíes.
+	 * @return A HashSet of granted authoritíes.
 	 */
     private HashSet<GrantedAuthority> findAuthorities(User user) { 
         HashMap<RoleType, Role> roleMap = user.getAllRoles();
@@ -69,10 +70,6 @@ public class UserDAO {
             var grantedAuthority = new SimpleGrantedAuthority(key.toString());
             authorities.add(grantedAuthority);
         }
-		// Testing:
-        // System.out.println("[UserDAO] ==================== User: "+ user.getBasicUserInfo().getUserName() +" has authorities: " + authorities);
         return authorities;
     }
-
-
 } 

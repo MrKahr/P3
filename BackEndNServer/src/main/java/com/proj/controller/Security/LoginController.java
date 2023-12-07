@@ -11,12 +11,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 // Servlet
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+// Our classes
+import com.proj.controller.security.authentication.AuthenticationProcess;
 
 
 @Controller
@@ -39,6 +43,7 @@ public class LoginController {
 		return model; 
 	} 
 
+
 	/**
 	 * Invokes AuthenticationProcess with the supplied user info received in a POST request to the login page.
 	 * @param loginRequest The supplied user info from the frontend
@@ -49,10 +54,10 @@ public class LoginController {
 		
 		Authentication authentication = authenticationProcess.authenticate(loginRequest, request, response); // Authenticates the user
 
-		if(authentication.isAuthenticated()){
-			return new ModelAndView(new RedirectView("/", true));
-		}
-		return new ModelAndView("redirect:/fisk");
+		// if(authentication.isAuthenticated()){
+		// 	return new ModelAndView(new RedirectView("/", true));
+		// }
+		return new ModelAndView(new RedirectView("/", true));
 	}
 
 	public record LoginRequest(String username, String password) {}

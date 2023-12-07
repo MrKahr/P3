@@ -1,4 +1,4 @@
-package com.proj.controller.security;
+package com.proj.controller.security.authentication;
 
 import java.util.HashMap;
 
@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 // Spring Events
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 // Authentication
 import org.springframework.security.authentication.AuthenticationManager;
@@ -71,16 +70,6 @@ public class AuthenticationConfig {
 		PasswordEncoder passwordEncoder = new DelegatingPasswordEncoder(idForEncode, encoders);
 
 		return passwordEncoder;
-	}
-
-	/**
-	 * Enables Spring Security to listen to http requests. Used to limit max concurrent login sessions in SecurityFilterChain.
-	 * @return
-	 * @see https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html#ns-concurrent-sessions
-	 */
-	@Bean
-	public HttpSessionEventPublisher httpSessionEventPublisher() {
-		return new HttpSessionEventPublisher();
 	}
 
 	/**

@@ -1,16 +1,13 @@
 package com.proj.controller.advisors;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
@@ -26,10 +23,10 @@ public class AuthenticationAdvisor extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> badCredentials(HttpServletRequest request, Throwable exception){
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        return new ResponseEntity<>("Wrong username or password", status); //ResponseEntity.badRequest().body("Wrong username or password");
+        return new ResponseEntity<>("Wrong username or password", status); // The static way of doing it: ResponseEntity.badRequest().body("Wrong username or password");
     }
 
-    // Broken
+    // Broken. TODO: Fix or find another way of dynamically showing HTTP status of server.
     // private HttpStatus getStatus(HttpServletRequest request) {
     //     Integer code = (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
     //     HttpStatus status = HttpStatus.resolve(code);

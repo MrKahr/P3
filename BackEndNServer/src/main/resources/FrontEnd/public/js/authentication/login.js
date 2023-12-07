@@ -24,18 +24,25 @@ function gatherData(){
  */
 async function sendData(userDetails){
     let response;
-    
+    const csrfName = "X-XSRF-TOKEN";
+    const csrfToken = getCookie(csrfName);
+
+    const headers = new Headers({
+        'Content-Type': 'application/json',
+        'XSRF-TOKEN': csrfToken,
+    })
+
+    console.log(headers);
+
     try {
         response = await fetch("/login", {
             method: "POST",
-            headers: {'Content-Type': 'application/json'},
-            credentials: "same-origin",
-            mode: "cors",
-            cache: "no-cache",
+            headers,
+            credentials: "include",
             body: JSON.stringify(userDetails)
         })
 
-        //let explosion = await response.json(); // TODO: This nifty piece of code will make everything explode. Used for testing.
+        //let explosion = await response.json(); // This nifty piece of code will make everything explode. Used for testing.
 
         let status = response.status;
         let message = await response.text();
@@ -44,7 +51,7 @@ async function sendData(userDetails){
             case 200:
                 if(response.redirected){
                     notifyUser("Logged in successfully!");
-                    sleep(1000);
+                    //sleep(1000);
                     window.location.href = response.url;
                 } 
                 else
@@ -108,4 +115,25 @@ function setup(){
     }, {once:true})
 }
 
-
+/**
+ * Get a cookie's token by name.
+ * 
+ * Courtesy of https://www.w3schools.com/js/js_cookies.asp
+ * @param {string} name The name of the cookie.
+ * @returns The token of the specified cookie or "" if none found.
+ */
+function getCookie(name) {
+    let tempName = name + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let cookieArray = decodedCookie.split(';');
+    for(let i = 0; i <cookieArray.length; i++) {
+      let cookie = cookieArray[i];
+      while (cookie.charAt(0) == ' ') {
+        cookie = cookie.substring(1);
+      }
+      if (cookie.indexOf(tempName) == 0) {
+        return cookie.substring(tempName.length, cookie.length);
+      }
+    }
+    return "";
+  }

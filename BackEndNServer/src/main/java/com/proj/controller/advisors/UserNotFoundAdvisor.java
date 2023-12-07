@@ -8,6 +8,8 @@
 
 // import com.proj.exception.UserNotFoundException;
 
+// TODO: OUTDATED! DO NOT USE
+
 // @ControllerAdvice
 // public class UserNotFoundAdvisor{
 //   @ResponseBody

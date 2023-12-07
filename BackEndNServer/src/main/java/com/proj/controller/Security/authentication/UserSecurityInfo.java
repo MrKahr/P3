@@ -1,4 +1,4 @@
-package com.proj.controller.security;
+package com.proj.controller.security.authentication;
 
 import java.util.HashSet;
 
@@ -12,7 +12,6 @@ public class UserSecurityInfo {
     String username;
     String password;
     HashSet<GrantedAuthority> authorities;
-    //String[] authorities;
 
     // Constructor
     public UserSecurityInfo(String username, String password, HashSet<GrantedAuthority> authorities){
@@ -36,5 +35,4 @@ public class UserSecurityInfo {
     public HashSet<GrantedAuthority> getAuthorities(){
         return this.authorities;
     }
-
 }
