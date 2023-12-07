@@ -82,6 +82,9 @@ public class UserManager {
                 BasicInfoValidator userValidator = new BasicInfoValidator(basicUserInfo);
                 userValidator.ValidateUserName().ValidatePassword();
 
+                // Set empty guest info
+                user.setGuestInfo(new Guest(""));
+
                 // Save user to db
                 userdbHandler.save(user);
 
@@ -117,28 +120,22 @@ public class UserManager {
         }
     }
 
-    /**
+    /*
      * Queries the database for an account with a given username.
      * This is possible because usernames are unique.
      * 
      * @param username Display name of the user.
+     * 
      * @return The user object with the given username or null if this user is not
-     *         found
+     * found
+     * 
      * @throws UserNotFoundException Thrown if the user is not found in the
-     *                               database.
+     * database.
      */
+
     public User lookupAccount(String username) throws UserNotFoundException, IllegalArgumentException {
-        User user = null;
-        try {
-            user = userdbHandler.findByUserName(username);
-            if (user == null) {
-                throw new UserNotFoundException(
-                        "User with username '" + username + "' does not exist in the database.");
-            }
-        } catch (NullPointerException npe) {
-            System.out.println(npe.getMessage());
-            return user;
-        }
+        User user;
+        user = userdbHandler.findByUserName(username);
         return user;
     }
 
@@ -312,7 +309,8 @@ public class UserManager {
      * @param userId - identifier of the user whose account the system removes
      */
     public String removeAccount(int userId) {
-        User userToDelete = userdbHandler.findById(userId);
+        try {
+      User userToDelete = userdbHandler.findById(userId);
         String statusmsg = "Deletion of " + userToDelete.getBasicUserInfo().getUserName();
         LocalDateTime deletionDate = userToDelete.getBasicUserInfo().getDeletionDate();
         if (deletionDate != null && LocalDateTime.now().isAfter(deletionDate)) { // check if we're past the deletion
@@ -322,6 +320,10 @@ public class UserManager {
         } else {
             return statusmsg + " unsuccessful";
         }
+        } catch (UserNotFoundException unfe){
+            return unfe.getMessage();
+        }
+  
     }
 
     /**
@@ -425,11 +427,12 @@ public class UserManager {
      *                     them.
      */
     public RoleRequest createRoleRequest(int requestingId, Role role) {
-        //check if dependencies are fulfilled
-        if(!RoleAssigner.dependenciesFulfilled(this.getUserdbHandler().findById(requestingId), role)){
-            throw new IllegalArgumentException("User with id " + requestingId + " does not fulfill the requirements for the given role.");
+        // check if dependencies are fulfilled
+        if (!RoleAssigner.dependenciesFulfilled(this.getUserdbHandler().findById(requestingId), role)) {
+            throw new IllegalArgumentException(
+                    "User with id " + requestingId + " does not fulfill the requirements for the given role.");
         }
-        //get an old request and replace it if it's there
+        // get an old request and replace it if it's there
         RoleRequest newRequest = new RoleRequest(requestingId, role);
         ArrayList<Request> requests = new ArrayList<Request>();
         for (Request r : roleRequestdbHandler.findAllByUserId(requestingId)) {

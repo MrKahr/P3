@@ -12,13 +12,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.proj.function.UserManager;
 import com.proj.model.events.RoleRequest;
 import com.proj.model.users.*;
-import com.proj.repositoryhandler.RoleRequestdbHandler;
 import com.proj.exception.FailedValidationException;
 import com.proj.exception.UserNotFoundException;
 import com.proj.exception.RequestNotFoundException;
@@ -36,7 +34,6 @@ public class UserManagerUnitTests {
         // Set all users so that they have all possible info to see if filter works
         // correctly
         user = new User(new BasicUserInfo("user1", "1234Hell+o"));
-        user.setId(1);
         RoleAssigner.setRole(user, new Guest("Bard Level 1"));
         RoleAssigner.setRole(user,
                 new Member("John Adventureman", "123-339933", "9000", "Villavej 123", "John@Adventureman.dk"));
@@ -46,12 +43,11 @@ public class UserManagerUnitTests {
 
         // Requesting user is always different from user unless specified by test
         requestingUser = new User(new BasicUserInfo("user2", "1234Hell+o"));
-        requestingUser.setId(2);
 
-        // Create simple account for the current user
+/*         // Create simple account for the current user
         String username = user.getBasicUserInfo().getUserName();
         String password = user.getBasicUserInfo().getPassword();
-        userManager.createAccount(username, password);
+        userManager.createAccount(username, password); */
 
     }
 
@@ -193,7 +189,6 @@ public class UserManagerUnitTests {
     @Test
     public void createInvalidPasswordGuestAccount() {
         String creationResult = userManager.createAccount("user3", "");
-        System.out.println(creationResult);
         assertTrue(creationResult.equals("Cannot create user because: Password is not valid"));
     }
 
@@ -222,6 +217,7 @@ public class UserManagerUnitTests {
     public void createAccountAlreadyInDB() {
         String username = user.getBasicUserInfo().getUserName();
         String password = user.getBasicUserInfo().getPassword();
+        userManager.createAccount(username, password);
         String creationStatus = userManager.createAccount(username, password);
         // I am lazy - I don't have to check exact match, only that these elements are
         // part of other string -> I don't have to check for exact whitespaces
@@ -306,15 +302,73 @@ public class UserManagerUnitTests {
         assertTrue(userList.length == 2);
     }
 
-    // TODO: put request membership tests here
-    @Test 
-    public void requestUpgradeValidUser(){}
+    @Test
+    public void requestUpgradeValidUser() {
+        // Create user account in db
+        userManager.createAccount("TheBobinator", "heloO+123");
+        User userToUpgrade = userManager.lookupAccount("TheBobinator");
 
-    @Test 
-    public void requestUpgradeUserNotInDB(){}
+        // Create and fulfill role requests for user
+        userManager.createRoleRequest(userToUpgrade.getId(), new Guest("Druid level 1"));
+        userManager.fulfillRoleRequest(userToUpgrade.getId(), RoleType.GUEST);
 
-    @Test 
-    public void requestUpgradeUserInvalidPassword(){}
+        // Make membership request after all necessary roledependencies are fulfilled
+        String statusMsg = userManager.requestMembership("Bob", "43114311", "9000", "Villavej 123", "Bob@bobmail.com",
+                "TheBobinator");
+
+        // Check whether there is only one role request of type Member in for this user
+        Iterable<RoleRequest> roleRequests = userManager.getRoleRequestdbHandler()
+                .findAllByUserId(userToUpgrade.getId());
+        assertTrue(roleRequests.iterator().next().getRoleInfo() instanceof Member);
+        // Check whether correct message is returned by usermanager
+        assertTrue(statusMsg.equals("Membership request made and awaiting approval."));
+
+    }
+
+    @Test
+    public void requestUpgradeUserNotInDB() {
+        String statusmsg = userManager.requestMembership("Bob", "43114311", "9000", "Villavej 123", "Bob@bobmail.com",
+                "IdontExist123");
+        assertTrue(statusmsg.equals("UserdbHandler: User IdontExist123 not found"));
+    }
+
+    // TODO: wait for emil's reply about exception msg: User with id 2 does not
+    // fulfill the requirements for the given role.
+
+    @Test
+    public void requestUserUpgradeInvalidDependencies() {
+        // Create new account
+        userManager.createAccount("TheBobinator", "heloO+123");
+        User userToUpgrade = userManager.lookupAccount("TheBobinator");
+        // Remove guest role 
+        userToUpgrade.setGuestInfo(null);
+        userManager.getUserdbHandler().save(userToUpgrade);
+
+        // Attempt to upgrade without necessary dependencies
+        String statusmsg = userManager.requestMembership("Bob", "43114311", "9000", "Villavej 123", "Bob@bobmail.com",
+                "TheBobinator");
+        System.out.println(statusmsg);
+        assertTrue(statusmsg.equals("User with id " + userToUpgrade.getId()+  " does not fulfill the requirements for the given role."));
+    }
+
+    @Test
+    // This test should ideally cover all cases when some invalid information has
+    // been entered in upgrade - we know because we have already tested the
+    // validator
+    public void requestUpgradeUserInvalidEmail() {
+        // Create new account
+        userManager.createAccount("TheBobinator", "heloO+123");
+        User userToUpgrade = userManager.lookupAccount("TheBobinator");
+
+        // Create and fulfill guest request for user
+        userManager.createRoleRequest(userToUpgrade.getId(), new Guest("Druid level 1"));
+        userManager.fulfillRoleRequest(userToUpgrade.getId(), RoleType.GUEST);
+
+        // Attempt to upgrade with invalid email
+        String statusmsg = userManager.requestMembership("Bob", "43114311", "9000", "Villavej 123", "bobmail.com",
+                "TheBobinator");
+        assertTrue(statusmsg.equals("Email is not valid"));
+    }
 
     @Test
     public void getValidRange() {
@@ -325,8 +379,10 @@ public class UserManagerUnitTests {
 
     @Test
     public void deactivateAccountInDB() {
+        userManager.getUserdbHandler().save(user);
         userManager.deactivateAccount(user.getId());
-        user = userManager.lookupAccount(user.getBasicUserInfo().getUserName());
+        user = userManager.getUserdbHandler().findById(user.getId());
+        //user = userManager.lookupAccount(user.getBasicUserInfo().getUserName()); Bug here where user in not in db
         assertTrue(user.getBasicUserInfo().getDeactivationDate() != null);
     }
 
@@ -354,8 +410,10 @@ public class UserManagerUnitTests {
 
     @Test
     public void removeInvalidAccount() {
-        String statusmsg = userManager.removeAccount(user.getId());
-        assertTrue(statusmsg.equals("Deletion of " + user.getBasicUserInfo().getUserName() + " unsuccessful"));
+        int invalidId = 12343;
+        String statusmsg = userManager.removeAccount(invalidId);
+        System.out.println(statusmsg);
+        assertTrue(statusmsg.equals("User with id '" + invalidId + "' does not exist."));
     }
 
     @Test
@@ -382,29 +440,31 @@ public class UserManagerUnitTests {
 
     @Test
     public void makeRoleRequest() {
-        // Create user in database 
-            userManager.createAccount(requestingUser.getBasicUserInfo().getUserName(),
+        // Create user in database
+        userManager.createAccount(requestingUser.getBasicUserInfo().getUserName(),
                 requestingUser.getBasicUserInfo().getPassword());
-        // Get user from database 
-            requestingUser = userManager.lookupAccount(requestingUser.getBasicUserInfo().getUserName());
-        
+        // Get user from database
+        requestingUser = userManager.lookupAccount(requestingUser.getBasicUserInfo().getUserName());
+
         // Make request
-            userManager.createRoleRequest(requestingUser.getId(), new Guest("Level 1 barbarian"));
+        userManager.createRoleRequest(requestingUser.getId(), new Guest("Level 1 barbarian"));
     }
 
-    @Test 
-    public void makeInvalidRoleRequest(){
-        // Create user in database 
-            userManager.createAccount(requestingUser.getBasicUserInfo().getUserName(),
+    @Test
+    public void makeInvalidRoleRequest() {
+        // Create user in database
+        userManager.getUserdbHandler().save(requestingUser);
+        userManager.createAccount(requestingUser.getBasicUserInfo().getUserName(),
                 requestingUser.getBasicUserInfo().getPassword());
-        // Get user from database 
-            requestingUser = userManager.lookupAccount(requestingUser.getBasicUserInfo().getUserName());
+        // Get user from database
+        requestingUser = userManager.lookupAccount(requestingUser.getBasicUserInfo().getUserName());
         // Make invalid request
         Executable e = () -> {
             userManager.createRoleRequest(requestingUser.getId(), new Member());
         };
         Throwable thrown = assertThrows(IllegalArgumentException.class, e);
-        assertTrue(thrown.getMessage().contains("User with id " + requestingUser.getId() + " does not fulfill the requirements for the given role."));
+        assertTrue(thrown.getMessage().equals(
+                "User with id " + requestingUser.getId() + " does not fulfill the requirements for the given role."));
     }
 
     @Test
@@ -435,6 +495,7 @@ public class UserManagerUnitTests {
 
     @Test
     public void acceptNullRoleRequest() {
+        userManager.getUserdbHandler().save(requestingUser);
         Executable e = () -> {
             userManager.fulfillRoleRequest(requestingUser.getId(), null);
         };
@@ -445,6 +506,7 @@ public class UserManagerUnitTests {
 
     @Test
     public void rejectValidRoleRequest() {
+        userManager.getUserdbHandler().save(requestingUser);
         RoleRequest roleRequest = userManager.createRoleRequest(requestingUser.getId(), new Guest());
         userManager.rejectRoleRequest(requestingUser.getId(), RoleType.GUEST);
         Executable e = () -> {
@@ -457,6 +519,7 @@ public class UserManagerUnitTests {
 
     @Test
     public void rejectNullRoleRequest() {
+        userManager.getUserdbHandler().save(requestingUser);
         // rejecting without having a request to reject
         Executable e = () -> {
             userManager.rejectRoleRequest(requestingUser.getId(), RoleType.GUEST);

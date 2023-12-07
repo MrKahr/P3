@@ -7,18 +7,15 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import com.proj.repositoryhandler.UserdbHandler;
+
 import com.proj.function.RoleAssigner;
-import com.proj.function.UserManager;
-import com.proj.model.users.Admin;
-import com.proj.model.users.BasicUserInfo;
-import com.proj.model.users.DM;
-import com.proj.model.users.Guest;
-import com.proj.model.users.Member;
-import com.proj.model.users.SuperAdmin;
-import com.proj.model.users.User;
+
+import com.proj.model.users.*;
 
 @SpringBootTest
 public class UserdbHandlerTest {
