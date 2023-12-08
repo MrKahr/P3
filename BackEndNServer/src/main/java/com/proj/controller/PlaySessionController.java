@@ -29,19 +29,19 @@ public class PlaySessionController {
   PlaySessionHandler playSessionHandler;
   PlaySessionManager playSessionManager = new PlaySessionManager();
 
-  @PostMapping(path = "/NewPlaySession")
+  @PostMapping("/NewPlaySession")
   public @ResponseBody String addNewPlaySessionResponse(@RequestParam String title, @RequestParam Integer id, @RequestParam Integer currentNumberOfPlayers, @RequestParam LocalDateTime date, @RequestParam PlaySessionStateEnum state, @RequestParam Integer maxNumberOfPlayers, @RequestParam Module module){
     playSessionManager.addNewPlaySession(title,id,currentNumberOfPlayers, date, state, maxNumberOfPlayers, module);
     return "PlaySession Created";
   }
   
-  @PostMapping(path = "/UpdatePlaySession") //responds to put requests with path "/UpdatePlaySession" and request parameters, returns Successful if update is valid
+  @PostMapping("/UpdatePlaySession") //responds to put requests with path "/UpdatePlaySession" and request parameters, returns Successful if update is valid
   public @ResponseBody String updatePlaySessionResponse(@RequestParam String title, @RequestParam Integer id, @RequestParam LocalDateTime date, @RequestParam PlaySessionStateEnum state, @RequestParam Integer maxNumberOfPlayers, @RequestParam Module module){
     playSessionManager.updatePlaySession(id, title, maxNumberOfPlayers, date, state, module);
     return "Update Successfull";
   }
 
-  @GetMapping(path="/getAllPlaySessions") //returns all play sessions
+  @GetMapping("/getAllPlaySessions") //returns all play sessions
   public @ResponseBody List<PlaySession> getAllPlaySessions() {
     Iterable<PlaySession> playSessions = playSessionHandler.findAll();
     List<PlaySession> allPlaySessions = new ArrayList<>();
@@ -49,7 +49,7 @@ public class PlaySessionController {
     return allPlaySessions;
   }
   
-  @GetMapping(path="/DateBetween") //returns all play sessions between two dates
+  @GetMapping("/datebetween") //returns all play sessions between two dates
   public @ResponseBody List<PlaySession> getPlaySessionsBetween(@RequestParam LocalDateTime startDateTime, @RequestParam LocalDateTime endDateTime) {
       return playSessionManager.getSessions(startDateTime, endDateTime);
   }
