@@ -137,6 +137,12 @@ public class UserdbHandler extends DbHandler<User> {
         }
     }
 
+    /**
+     * Quiries database for first user with given user name
+     * @param username - username to lookup in database
+     * @return first instance of users with given username
+     */
+
     public User findByUserName(String username) {
         Iterable<User> allUsers = userRepository.findAll();
 

@@ -58,7 +58,6 @@ public class UserManagerUnitTests {
         }
 
         // Sanitized user
-        // TODO: consider equals for all roles
         User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
         assertTrue(sanitizedUser.getBasicUserInfo().getPassword().equals(""));
         assertTrue(sanitizedUser.getBasicUserInfo() != null);
@@ -294,7 +293,8 @@ public class UserManagerUnitTests {
     @Test
     public void getAccountListSwappedRange() {
         userManager.createAccount("thisisauser", "123HelLo+");
-        User[] userList = userManager.getAccountList(2, 1);
+        User user = userManager.lookupAccount("thisisauser");
+        User[] userList = userManager.getAccountList(user.getId(), user.getId() - 1);
         assertTrue(userList.length == 2);
     }
 
@@ -328,9 +328,6 @@ public class UserManagerUnitTests {
         assertTrue(statusmsg.equals("UserdbHandler: User IdontExist123 not found"));
     }
 
-    // TODO: wait for emil's reply about exception msg: User with id 2 does not
-    // fulfill the requirements for the given role.
-
     @Test
     public void requestUserUpgradeInvalidDependencies() {
         // Create new account
@@ -343,7 +340,6 @@ public class UserManagerUnitTests {
         // Attempt to upgrade without necessary dependencies
         String statusmsg = userManager.requestMembership("Bob", "43114311", "9000", "Villavej 123", "Bob@bobmail.com",
                 "TheBobinator");
-        System.out.println(statusmsg);
         assertTrue(statusmsg.equals("User with id " + userToUpgrade.getId()+  " does not fulfill the requirements for the given role."));
     }
 
@@ -368,8 +364,11 @@ public class UserManagerUnitTests {
 
     @Test
     public void getValidRange() {
-        userManager.createAccount("thisisauser", "123HelLo+");
-        User[] userList = userManager.getAccountList(2, 1);
+        userManager.createAccount("thisisauser1", "123HelLo+");
+        userManager.createAccount("thisisauser2", "123HelLo+");
+        User user1 = userManager.lookupAccount("thisisauser1");
+        User user2 = userManager.lookupAccount("thisisauser2");
+        User[] userList = userManager.getAccountList(user1.getId(), user2.getId());
         assertTrue(userList.length == 2);
     }
 

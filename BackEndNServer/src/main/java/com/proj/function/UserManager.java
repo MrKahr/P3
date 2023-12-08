@@ -17,7 +17,7 @@ import com.proj.repositoryhandler.UserdbHandler;
 import com.proj.validators.BasicInfoValidator;
 import com.proj.validators.MemberValidator;
 
-// This class is broken/dummy code. NEEDS FULL REWRITE OF METHODS!!!!!
+// TODO: rewrite all functions that end string message to write exception
 
 /**
  * Class responsible for handling all user management except assigning roles
@@ -31,6 +31,7 @@ public class UserManager {
     private RoleRequestdbHandler roleRequestdbHandler;
 
     private int numberOfUsers;
+    private int lastId; //the id of the most recent user created by createAccount
 
     // Constructor
     public UserManager(int numberOfUsers) {
@@ -58,6 +59,10 @@ public class UserManager {
         return roleRequestdbHandler;
     }
 
+    public int getLastId(){
+		return lastId;
+    }
+
     /**
      * Creates an account
      * 
@@ -71,8 +76,7 @@ public class UserManager {
             throw new NullPointerException("Cannot create user with username or password null");
         } else {
             try {
-                // Check whether username already exists in database
-                validateUsernameStatusInDB(userName);
+                
 
                 // Create user object
                 BasicUserInfo basicUserInfo = new BasicUserInfo(userName, password);
@@ -81,15 +85,19 @@ public class UserManager {
                 // Validate user fields
                 BasicInfoValidator userValidator = new BasicInfoValidator(basicUserInfo);
                 userValidator.ValidateUserName().ValidatePassword();
-
+                
+                // Check whether username already exists in database
+                validateUsernameStatusInDB(userName);
+                
                 // Set empty guest info
                 user.setGuestInfo(new Guest(""));
 
                 // Save user to db
                 userdbHandler.save(user);
-
                 // Increment number of users currently saved in db
                 this.numberOfUsers++;
+                // Write down what ID we just used
+                this.lastId = user.getId();
                 return "User creation successful";
             } catch (FailedValidationException ife) {
                 return "Cannot create user because: " + ife.getMessage();
@@ -120,7 +128,7 @@ public class UserManager {
         }
     }
 
-    /*
+    /**
      * Queries the database for an account with a given username.
      * This is possible because usernames are unique.
      * 
@@ -294,12 +302,12 @@ public class UserManager {
      * 
      * @param userId - the id of the user to restore
      */
-    public void restoreAccount(int userId) {
-        User userToActivate = userdbHandler.findById(userId);
+    public String restoreAccount(int userId) {
+        User userToActivate = userdbHandler.findById(userId);        
         userToActivate.getBasicUserInfo().setDeactivationDate(null);
         userToActivate.getBasicUserInfo().setDeletionDate(null);
         userdbHandler.save(userToActivate);
-
+        return "User: " + userToActivate.getBasicUserInfo().getUserName() + " with ID: " + userToActivate.getId() + " was successfully restored";
     }
 
     /**
@@ -310,7 +318,7 @@ public class UserManager {
      */
     public String removeAccount(int userId) {
         try {
-      User userToDelete = userdbHandler.findById(userId);
+        User userToDelete = userdbHandler.findById(userId);
         String statusmsg = "Deletion of " + userToDelete.getBasicUserInfo().getUserName();
         LocalDateTime deletionDate = userToDelete.getBasicUserInfo().getDeletionDate();
         if (deletionDate != null && LocalDateTime.now().isAfter(deletionDate)) { // check if we're past the deletion

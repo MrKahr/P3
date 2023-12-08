@@ -18,7 +18,6 @@ public class DatabaseCleaner{
     private UserdbHandler userdbHandler;
     
     //Method
-    /*
     @Scheduled(cron = "* * * * * ?")  //should fire every second for testing. "0 0 0 ? * *" should be used for the real application to make this happen once per day
     public void cleanupDeletedUsers() {
         long now = System.currentTimeMillis() / 1000;
@@ -38,5 +37,4 @@ public class DatabaseCleaner{
             System.out.println(name);
         }
     }
-    */
 }
