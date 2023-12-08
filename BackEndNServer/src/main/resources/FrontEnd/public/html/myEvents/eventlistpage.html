@@ -27,7 +27,7 @@
 
             <div class="table-container">
                 <!--should have additional row with "edit" buttons for each event user has edit access to, but no row if the user has none-->
-                <table>
+                <table id="eventTable">
                     <tr>
                       <th>Title</th>
                       <th>Date</th>
@@ -195,22 +195,30 @@
     </div>
 
     <script>
-        let tablerows = document.querySelectorAll('tr');
-        Array.from(tablerows).forEach((tablerow, index) =>{
-            tablerow.addEventListener('click', () => {
-                let clickedRow = event.currentTarget;
-                let editEventsButton = document.getElementById("editEventsButton");
-                let positionclickedRow = clickedRow.getBoundingClientRect();
-                let buttonTop = positionclickedRow.top + window.scrollY;
-                let buttonLeft = positionclickedRow.right + window.scrollX + 1;
+        window.addEventListener("click", function() {
+            let eventTable = document.getElementById("eventTable");
+            if(eventTable.contains(event.target)){
+                let tablerows = document.querySelectorAll('tr');
+                Array.from(tablerows).forEach((tablerow, index) =>{
+                    if (tablerow.rowIndex != 0) {
+                        tablerow.addEventListener('click', () => {
+                            let clickedRow = event.currentTarget;
+                            let editEventsButton = document.getElementById("editEventsButton");
+                            let positionclickedRow = clickedRow.getBoundingClientRect();
+                            let buttonTop = positionclickedRow.top + window.scrollY;
+                            let buttonLeft = positionclickedRow.right + window.scrollX + 1;
 
-                editEventsButton.style.top = buttonTop + 'px';
-                editEventsButton.style.left = buttonLeft + 'px';
-                editEventsButton.style.display = "block";
-            })
+                            editEventsButton.style.top = buttonTop + 'px';
+                            editEventsButton.style.left = buttonLeft + 'px';
+                            editEventsButton.style.display = "block";
+                        })
+                    }
+                })
+            } else {
+                editEventsButton.style.display = "none";
+            }
         })
 
-        
     </script>
 </body>
 </html>

@@ -292,46 +292,46 @@
             Array.from(tablerows).forEach((tablerow, index) =>{
                 if (tablerow.rowIndex != 0) {
                     tablerow.addEventListener('click', function editPlacement() {
-                    let clickedRow = event.currentTarget;
-                    let editEventInput = document.getElementById("editEventInput");
-                    let editTitleInput = document.getElementById("editTitleInput");
-                    let editDateInput = document.getElementById("editDateInput");
-                    let editTimeInput = document.getElementById("editTimeInput");
-                    let editLocationInput = document.getElementById("editLocationInput");
-                    let editDmInput = document.getElementById("editDmInput");
-                    let editPlayersInput = document.getElementById("editPlayersInput");
-                    let editStateInput = document.getElementById("editStateInput");
-                    let editFinished = document.getElementById("editFinished");
-                    let editCancelled = document.getElementById("editCancelled");
+                        let clickedRow = event.currentTarget;
+                        let editEventInput = document.getElementById("editEventInput");
+                        let editTitleInput = document.getElementById("editTitleInput");
+                        let editDateInput = document.getElementById("editDateInput");
+                        let editTimeInput = document.getElementById("editTimeInput");
+                        let editLocationInput = document.getElementById("editLocationInput");
+                        let editDmInput = document.getElementById("editDmInput");
+                        let editPlayersInput = document.getElementById("editPlayersInput");
+                        let editStateInput = document.getElementById("editStateInput");
+                        let editFinished = document.getElementById("editFinished");
+                        let editCancelled = document.getElementById("editCancelled");
 
-                    let editTitlePlace = clickedRow.cells[0];
-                    editTitlePlace.appendChild(editTitleInput);
+                        let editTitlePlace = clickedRow.cells[0];
+                        editTitlePlace.appendChild(editTitleInput);
 
-                    let editDatePlace = clickedRow.cells[1];
-                    editDatePlace.appendChild(editDateInput);
+                        let editDatePlace = clickedRow.cells[1];
+                        editDatePlace.appendChild(editDateInput);
 
-                    let editTimePlace = clickedRow.cells[2];
-                    editTimePlace.appendChild(editTimeInput);
+                        let editTimePlace = clickedRow.cells[2];
+                        editTimePlace.appendChild(editTimeInput);
 
-                    let editLocationPlace = clickedRow.cells[3];
-                    editLocationPlace.appendChild(editLocationInput);
+                        let editLocationPlace = clickedRow.cells[3];
+                        editLocationPlace.appendChild(editLocationInput);
 
-                    let editDmPlace = clickedRow.cells[4];
-                    editDmPlace.appendChild(editDmInput);
+                        let editDmPlace = clickedRow.cells[4];
+                        editDmPlace.appendChild(editDmInput);
 
-                    let editPlayersPlace = clickedRow.cells[5];
-                    editPlayersPlace.appendChild(editPlayersInput);
+                        let editPlayersPlace = clickedRow.cells[5];
+                        editPlayersPlace.appendChild(editPlayersInput);
 
-                    let editStatePlace = clickedRow.cells[6];
-                    editStatePlace.appendChild(editStateInput);
+                        let editStatePlace = clickedRow.cells[6];
+                        editStatePlace.appendChild(editStateInput);
 
-                    let editFinishedPlace = clickedRow.cells[6];
-                    editFinishedPlace.appendChild(editFinished);
+                        let editFinishedPlace = clickedRow.cells[6];
+                        editFinishedPlace.appendChild(editFinished);
 
-                    let editCancelledPlace = clickedRow.cells[6];
-                    editCancelledPlace.appendChild(editCancelled);
+                        let editCancelledPlace = clickedRow.cells[6];
+                        editCancelledPlace.appendChild(editCancelled);
 
-                    editEventInput.style.display = "block";
+                        editEventInput.style.display = "block";
                     }, { once: true })/* Fix this when solution is found */
                 }
             })
