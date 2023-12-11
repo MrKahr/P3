@@ -163,18 +163,6 @@ public class UserManager {
      * @throws InvalidLoginException When the login request either had wrong
      *                               username or password.
      */
-    public boolean validateLogin(String userName, String password) {
-        boolean isvalid = false;
-
-        Integer userID = 0; // Dummy quick fix
-
-        try {
-            userExists(userID);
-        } catch (UserNotFoundException usrnfe) {
-        }
-        isvalid = true;
-        return isvalid;
-    }
 
     public void requestMembership(String userName) {
         // Send message to frontend about it
