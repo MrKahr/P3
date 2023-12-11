@@ -74,9 +74,7 @@ public class SecurityFilters {
 	// @Order(-1)
 	//  public SecurityFilterChain testFilter(HttpSecurity http) throws Exception {
 	// 	http
-	// 		.csrf((csrf) -> csrf
-	// 		.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-	// 		)
+	// 		.csrf((csrf) -> csrf.disable())
 	// 		.authorizeHttpRequests((authorize) -> authorize
 	// 			.anyRequest().permitAll()
 	// 		);

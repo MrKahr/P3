@@ -53,7 +53,7 @@ public class AuthenticationConfig {
 	/**
 	 * Defines a hashmap of password encoders to use. Includes a default password encoder (bcrypt).
 	 * The hashmap is implemented to allow different password encoders to be used rather easily 
-	 * (but remember to convert passwords already encoded in the database to the new format).
+	 * (but remember that passwords already hashed in the database cannot be converted to the new format).
 	 * <p>
 	 * TODO: Changing password: https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html#authentication-change-password-configuration
 	 * @return  A new PasswordEncoder instance with the selected password encoder.
