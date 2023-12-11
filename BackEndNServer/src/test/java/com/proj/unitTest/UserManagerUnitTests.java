@@ -2,6 +2,9 @@ package com.proj.unitTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,8 +48,9 @@ public class UserManagerUnitTests {
         // Requesting user is always different from user unless specified by test
         requestingUser = new User(new BasicUserInfo("user2", "1234Hell+o"));
     }
-
+    
     @Test
+    @Order(34)
     public void sanitizeSelf() {
         // Requesting user has same user id as user being requested
         try {
@@ -68,6 +72,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(35)
     public void sanitizeLookupSuperAdmin() {
         // New super admin accesses user
         RoleAssigner.setRole(requestingUser, new Guest("Barbarian Level 1"));
@@ -84,6 +89,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(36)
     void SanitizeLookupAdmin() {
 
         // New admin accesses user
@@ -102,6 +108,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(37)
     void SanitizeLookupDM() {
         // New DM accesses user
         RoleAssigner.setRole(requestingUser, new Guest("Barbarian Level 1"));
@@ -119,7 +126,8 @@ public class UserManagerUnitTests {
     }
 
     @Test
-    void SanitizeLookMember() {
+    @Order(38)
+    void SanitizeLookupMember() {
         RoleAssigner.setRole(requestingUser, new Guest("Barbarian Level 1"));
         RoleAssigner.setRole(requestingUser,
                 new Member("Bob DungeonMan", "123-339933", "9000", "Villavej 123", "John@Adventureman.dk"));
@@ -135,6 +143,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(39)
     void SanitizeLookupGuest() {
         // New guest accesses user
         RoleAssigner.setRole(requestingUser, new Guest("Barbarian Level 1"));
@@ -149,6 +158,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(40)
     void userIsNull() {
         User user = null;
         Executable e = () -> {
@@ -158,6 +168,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(41)
     void requestingUserIsNull() {
         User requestingUser = null;
 
@@ -168,6 +179,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(42)
     public void createValidGuestAccount() {
         String creationResult = userManager.createAccount("APerson",
                 "helLo+3214");
@@ -175,12 +187,14 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(43)
     public void createInvalidUsernameGuestAccount() {
         String creationResult = userManager.createAccount("", "helLo+3214");
         assertTrue(creationResult.equals("Cannot create user because: Username is not valid"));
     }
 
     @Test
+    @Order(44)
     public void createInvalidPasswordGuestAccount() {
         // Bug: User3 was already made, using arbitrary name instead
         String creationResult = userManager.createAccount("user1234", "");
@@ -188,6 +202,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(45)
     // Test whether accessingUser is the same as user when accessing elements in db
     public void checkUserNotInDB() {
         boolean userInDb = userManager.userExistsInDatabase("userxxx39");
@@ -200,6 +215,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(46)
     public void createAccountNullInfo() {
         try {
             userManager.createAccount(null, null);
@@ -209,6 +225,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(47)
     public void createAccountAlreadyInDB() {
         String username = user.getBasicUserInfo().getUserName();
         String password = user.getBasicUserInfo().getPassword();
@@ -218,16 +235,19 @@ public class UserManagerUnitTests {
         // part of other string -> I don't have to check for exact whitespaces
         assertTrue(creationStatus
                 .contains("Cannot create user because: " + "Username:" + username + " is already in database"));
-
+        
+        userManager.getUserdbHandler().delete(userManager.lookupAccount(username)); //cleanup
     }
 
     @Test
+    @Order(48)
     public void createdAccountInvalidInfo() {
         String creationResultmsg = userManager.createAccount("", "");
         assertTrue(creationResultmsg.contains("Cannot create user because: " + "Username is not valid"));
     }
 
     @Test
+    @Order(49)
     public void validateUserNotInDB() {
         // Create new user with valid username and password
         BasicUserInfo basicUserInfo = new BasicUserInfo("John", "MyPassword12+");
@@ -244,6 +264,7 @@ public class UserManagerUnitTests {
      * exist
      */
     @Test
+    @Order(50)
     public void saveAndValidateStatusInDB() {
         userManager.getUserdbHandler().save(user);
         Executable e = () -> {
@@ -254,12 +275,14 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(51)
     public void validateNullUser() {
         String msg = userManager.validateUsernameStatusInDB(null);
         assertTrue(msg.equals("Cannot determine whether null exists in database"));
     }
 
     @Test
+    @Order(52)
     public void lookupNonExistingAccount() {
         String username = "IdontExist";
         try {
@@ -272,7 +295,8 @@ public class UserManagerUnitTests {
 
     }
 
-    @Test
+    @Test   //TODO: where does this user get added to the database?
+    @Order(53)
     public void lookupExistingAccount() {
         String username = user.getBasicUserInfo().getUserName();
         Executable e = () -> {
@@ -282,6 +306,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(54)
     public void getAccountListNegativeRange() {
         Executable e = () -> {
             userManager.getAccountList(-1, 0);
@@ -291,14 +316,18 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(55)
     public void getAccountListSwappedRange() {
         userManager.createAccount("thisisauser", "123HelLo+");
         User user = userManager.lookupAccount("thisisauser");
         User[] userList = userManager.getAccountList(user.getId(), user.getId() - 1);
         assertTrue(userList.length == 2);
+
+        userManager.getUserdbHandler().delete(user);    //cleanup
     }
 
     @Test
+    @Order(56)
     public void requestUpgradeValidUser() {
         // Create user account in db
         userManager.createAccount("TheBobinator", "heloO+123");
@@ -315,13 +344,17 @@ public class UserManagerUnitTests {
         // Check whether there is only one role request of type Member in for this user
         Iterable<RoleRequest> roleRequests = userManager.getRoleRequestdbHandler()
                 .findAllByUserId(userToUpgrade.getId());
-        assertTrue(roleRequests.iterator().next().getRoleInfo() instanceof Member);
+        RoleRequest request = roleRequests.iterator().next();
+        assertTrue(request.getRoleInfo() instanceof Member);
         // Check whether correct message is returned by usermanager
         assertTrue(statusMsg.equals("Membership request made and awaiting approval."));
 
+        userManager.getUserdbHandler().delete(userToUpgrade);   //cleanup
+        userManager.getRoleRequestdbHandler().delete(request);  //cleanup
     }
 
     @Test
+    @Order(57)
     public void requestUpgradeUserNotInDB() {
         String statusmsg = userManager.requestMembership("Bob", "43114311", "9000", "Villavej 123", "Bob@bobmail.com",
                 "IdontExist123");
@@ -329,6 +362,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(58)
     public void requestUserUpgradeInvalidDependencies() {
         // Create new account
         userManager.createAccount("TheBobinator", "heloO+123");
@@ -341,9 +375,12 @@ public class UserManagerUnitTests {
         String statusmsg = userManager.requestMembership("Bob", "43114311", "9000", "Villavej 123", "Bob@bobmail.com",
                 "TheBobinator");
         assertTrue(statusmsg.equals("User with id " + userToUpgrade.getId()+  " does not fulfill the requirements for the given role."));
+   
+        userManager.getUserdbHandler().delete(userToUpgrade);   //Cleanup
     }
 
     @Test
+    @Order(59)
     // This test should ideally cover all cases when some invalid information has
     // been entered in upgrade - we know because we have already tested the
     // validator
@@ -360,9 +397,12 @@ public class UserManagerUnitTests {
         String statusmsg = userManager.requestMembership("Bob", "43114311", "9000", "Villavej 123", "bobmail.com",
                 "TheBobinator");
         assertTrue(statusmsg.equals("Email is not valid"));
+
+        userManager.getUserdbHandler().delete(userToUpgrade);   //Cleanup
     }
 
     @Test
+    @Order(60)
     public void getValidRange() {
         userManager.createAccount("thisisauser1", "123HelLo+");
         userManager.createAccount("thisisauser2", "123HelLo+");
@@ -370,18 +410,25 @@ public class UserManagerUnitTests {
         User user2 = userManager.lookupAccount("thisisauser2");
         User[] userList = userManager.getAccountList(user1.getId(), user2.getId());
         assertTrue(userList.length == 2);
+
+        userManager.getUserdbHandler().delete(user1);   //Cleanup
+        userManager.getUserdbHandler().delete(user2);   //Cleanup
     }
 
     @Test
+    @Order(61)
     public void deactivateAccountInDB() {
         userManager.getUserdbHandler().save(user);
         userManager.deactivateAccount(user.getId());
         user = userManager.getUserdbHandler().findById(user.getId());
         //user = userManager.lookupAccount(user.getBasicUserInfo().getUserName()); Bug here where user in not in db
         assertTrue(user.getBasicUserInfo().getDeactivationDate() != null);
+
+        userManager.getUserdbHandler().delete(user);   //Cleanup
     }
 
     @Test
+    @Order(62)
     public void deactivateAccountNotInDB() {
         BasicUserInfo userInfo = new BasicUserInfo("userx10", "helLo23+");
         User dndUser = new User(userInfo);
@@ -391,9 +438,12 @@ public class UserManagerUnitTests {
         };
 
         assertThrows(NullPointerException.class, e);
+
+        userManager.getUserdbHandler().delete(dndUser);   //Cleanup
     }
 
-    @Test
+    @Test   //TODO: rewrite removeAccount to immediately set deletionDate to LocalDateTime.now()
+    @Order(63)
     public void removeValidAccount() {
         // We have to set deletion date manually because it is hardcoded for six months
         user.getBasicUserInfo().setDeletionDate(LocalDateTime.now().minusMinutes(2));
@@ -404,6 +454,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(64)
     public void removeInvalidAccount() {
         int invalidId = 12343;
         String statusmsg = userManager.removeAccount(invalidId);
@@ -412,6 +463,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(65)
     public void restoreValidAccount() {
         user.getBasicUserInfo().setDeletionDate(LocalDateTime.now().minusMinutes(2));
         user.getBasicUserInfo().setDeactivationDate(LocalDateTime.now().minusMinutes(2));
@@ -422,9 +474,12 @@ public class UserManagerUnitTests {
         user = userManager.lookupAccount(user.getBasicUserInfo().getUserName());
         assertTrue(user.getBasicUserInfo().getDeactivationDate() == null);
         assertTrue(user.getBasicUserInfo().getDeletionDate() == null);
+
+        userManager.getUserdbHandler().delete(user);
     }
 
     @Test
+    @Order(66)
     public void restoreInvalidAccount() {
         // Restore user with arbitrary Id that does not exist in db
         Executable e = () -> {
@@ -434,6 +489,7 @@ public class UserManagerUnitTests {
     }
 
     @Test
+    @Order(67)  //TODO: This test has no assertions!
     public void makeRoleRequest() {
         // Create user in database
         userManager.createAccount(requestingUser.getBasicUserInfo().getUserName(),
@@ -443,9 +499,22 @@ public class UserManagerUnitTests {
 
         // Make request
         userManager.createRoleRequest(requestingUser.getId(), new Guest("Level 1 barbarian"));
+        
+        // Check whether role request is in database - cannot find 
+        Iterable<RoleRequest> request = userManager.getRoleRequestdbHandler().findAllByUserId(requestingUser.getId());
+        
+        // Get elements associated with user and check whether these are of guest type
+        for (RoleRequest roleRequest : request) {
+            assertTrue(request.iterator().next().getRoleInfo() instanceof Guest);
+        }
+        
+        
+        userManager.rejectRoleRequest(requestingUser.getId(), RoleType.GUEST);  //Cleanup
+        userManager.getUserdbHandler().delete(requestingUser);  //Cleanup
     }
 
     @Test
+    @Order(68)
     public void makeInvalidRoleRequest() {
         // Create user in database
         userManager.createAccount(requestingUser.getBasicUserInfo().getUserName(),
@@ -459,9 +528,12 @@ public class UserManagerUnitTests {
         Throwable thrown = assertThrows(IllegalArgumentException.class, e);
         assertTrue(thrown.getMessage().equals(
                 "User with id " + requestingUser.getId() + " does not fulfill the requirements for the given role."));
+
+        userManager.getUserdbHandler().delete(requestingUser);  //Cleanup
     }
 
     @Test
+    @Order(69)
     public void acceptValidRoleRequest() {
         // Create new requesting user account
         userManager.createAccount(requestingUser.getBasicUserInfo().getUserName(),
@@ -485,9 +557,12 @@ public class UserManagerUnitTests {
         Throwable thrown = assertThrows(RequestNotFoundException.class, e);
         assertTrue(
                 thrown.getMessage().contains("Request with id '" + roleRequest.getRequestId() + "' does not exist."));
+
+        userManager.getUserdbHandler().delete(requestingUser); //Cleanup
     }
 
     @Test
+    @Order(70)
     public void acceptNullRoleRequest() {
         userManager.getUserdbHandler().save(requestingUser);
         Executable e = () -> {
@@ -496,9 +571,12 @@ public class UserManagerUnitTests {
         Throwable thrown = assertThrows(IllegalArgumentException.class, e);
         assertTrue(thrown.getMessage()
                 .contains("No request of the given type exists for user with ID " + requestingUser.getId()));
+        
+        userManager.getUserdbHandler().delete(requestingUser); //Cleanup
     }
 
     @Test
+    @Order(71)
     public void rejectValidRoleRequest() {
         userManager.getUserdbHandler().save(requestingUser);
         RoleRequest roleRequest = userManager.createRoleRequest(requestingUser.getId(), new Guest());
@@ -509,9 +587,12 @@ public class UserManagerUnitTests {
         Throwable thrown = assertThrows(RequestNotFoundException.class, e);
         assertTrue(
                 thrown.getMessage().contains("Request with id '" + roleRequest.getRequestId() + "' does not exist."));
+
+        userManager.getUserdbHandler().delete(requestingUser); //Cleanup
     }
 
     @Test
+    @Order(72)
     public void rejectNullRoleRequest() {
         userManager.getUserdbHandler().save(requestingUser);
         // rejecting without having a request to reject
@@ -521,5 +602,7 @@ public class UserManagerUnitTests {
         Throwable thrown = assertThrows(IllegalArgumentException.class, e);
         assertTrue(thrown.getMessage()
                 .contains("No request of the given type exists for user with ID " + requestingUser.getId()));
+
+        userManager.getUserdbHandler().delete(requestingUser); //Cleanup        
     }
 }

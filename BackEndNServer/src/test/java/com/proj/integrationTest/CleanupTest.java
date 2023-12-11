@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +22,7 @@ public class CleanupTest {
     
     //Method
     @Test
+    @Order(88)
     public void deleteExpiredUser() throws InterruptedException{
         User user = new User("UserWho'sGottaGo", "Password123");
         user.getBasicUserInfo().setDeletionDate(LocalDateTime.now().minusMinutes(1));   //tell the system that the user should have been deleted one minute ago
@@ -33,6 +35,7 @@ public class CleanupTest {
     }
 
     @Test
+    @Order(89)
     public void deleteManyUsers() throws InterruptedException {
         //create and save some expired users. Validation doesn't matter
         User user1 = new User("personperson","1234");

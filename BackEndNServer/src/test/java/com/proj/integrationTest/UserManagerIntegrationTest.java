@@ -30,7 +30,7 @@ public class UserManagerIntegrationTest {
     BasicUserInfo basicUserInfo;
 
     @Test
-    @Order(1)
+    @Order(100)
     public void createAccountAndRetriveValidUser() {
         User DnDuser;
         String username = "userxx";
@@ -46,7 +46,7 @@ public class UserManagerIntegrationTest {
     }
 
     @Test
-    @Order(2)
+    @Order(101)
     /* Bug: Users are deleted after being used in other tests, but these ids cannot be used to users generated in this test
     */ 
     public void createValidAccountsAndRetrieveSubset() {
@@ -65,12 +65,13 @@ public class UserManagerIntegrationTest {
 
         for (int j = 0; j < userArrayFromDB.length; j++) {
             assertTrue(userArrayFromDB[j].getBasicUserInfo().getUserName().equals("user" + (4 + j)));   //checking if the first user is user4, the second user is user5, and so on
-            userManager.getUserdbHandler().delete(userArrayFromDB[j]);  //cleanup
+            
+            userManager.getUserdbHandler().delete(userArrayFromDB[j]);  //Cleanup
         }
     }
 
     @Test
-    @Order(3)
+    @Order(102)
     public void createSomeInvalidAccountAndRetrieveAll() {
         // Make 5 valid and 5 invalid accounts
         String currentmsg;
@@ -82,7 +83,6 @@ public class UserManagerIntegrationTest {
             } else {
                 currentmsg = userManager.createAccount("user" + i, "fefoeefwe23-A" + i);
                 assertTrue(currentmsg.equals("User creation successful"));
-
             }
         }
 
@@ -94,13 +94,14 @@ public class UserManagerIntegrationTest {
         for (int i = 0; i < users.length; i++) {
             // Get all odd numbered (and therefore valid) accounts
             assertTrue(users[i].getBasicUserInfo().getUserName().equals("user" + (i + 6)));
-            userManager.getUserdbHandler().delete(users[i]);
+
+            userManager.getUserdbHandler().delete(users[i]);    //Cleanup
         }
 
     }
 
     @Test
-    @Order(4)
+    @Order(103)
     public void RequestAndFulfillValidUpgrade() {
         // Create account
         String statusmsgCreation = userManager.createAccount("ConfusedOwlBear", "helo0+L223");
@@ -123,7 +124,7 @@ public class UserManagerIntegrationTest {
     }
 
     @Test
-    @Order(5)
+    @Order(104)
     public void RequestAndRejectValidUpgrade() {
         // Create account
         String statusmsgCreation = userManager.createAccount("ConfusedOwlBear", "helo0+L223");
@@ -142,7 +143,7 @@ public class UserManagerIntegrationTest {
     }
 
     @Test
-    @Order(6)
+    @Order(105)
     public void removeRemovedateValid() {
         // Create account
         userManager.createAccount("ConfusedOwlBear", "helo0+L223");
@@ -163,27 +164,29 @@ public class UserManagerIntegrationTest {
     }
 
     @Test
-    @Order(7)
+    @Order(106)
     public void removeAccountDeletedateInvalid() {
         // Create account
         userManager.createAccount("ConfusedOwlBear2", "helo0+L223");
         User dndUser = userManager.lookupAccount("ConfusedOwlBear2");
         userManager.deactivateAccount(dndUser.getId());
-        assertTrue(userManager.removeAccount(dndUser.getId()).equals("Deletion of ConfusedOwlBear2 unsuccessful"));      
+        assertTrue(userManager.removeAccount(dndUser.getId()).equals("Deletion of ConfusedOwlBear2 unsuccessful"));  
     }
 
     @Test
-    @Order(8)
+    @Order(107)
     public void activateInactiveAccount() {
         // Create account
         userManager.createAccount("ConfusedOwlBear3", "helo0+L223");
         User dndUser = userManager.lookupAccount("ConfusedOwlBear3");
         userManager.deactivateAccount(dndUser.getId());
-        assertTrue(userManager.restoreAccount(dndUser.getId()).equals("User: ConfusedOwlBear3 with ID: " + dndUser.getId() + " was successfully restored")); 
+        assertTrue(userManager.restoreAccount(dndUser.getId()).equals("User: ConfusedOwlBear3 with ID: " + dndUser.getId() + " was successfully restored"));
+
+        userManager.getUserdbHandler().delete(dndUser); //Cleanup
     }
 
     @Test
-    @Order(9)
+    @Order(108)
     public void activateRemovedAccount() {
         // Create account
         userManager.createAccount("ConfusedOwlBear4", "helo0+L223");
@@ -202,11 +205,12 @@ public class UserManagerIntegrationTest {
         Throwable thrown = assertThrows(UserNotFoundException.class, e);
         assertTrue(thrown.getMessage().equals("User with id '" + dndUser.getId() + "' does not exist."));
     }
-
+    /*
     @Test       //this test is used to clean up the database by deleting all users in it.
-    @Order(10)  //Ensure it runs last and |ABSOLUTELY DO NOT| use it if the database has real users in it.
+    @Order(??)  //Ensure it runs last and |ABSOLUTELY DO NOT| use it if the database has real users in it.
     public void wipeDataBase(){
         Iterable<User> users = userManager.getUserdbHandler().findAll();
         userManager.getUserdbHandler().deleteAll(users);
     }
+    */
 }
