@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +22,7 @@ public class RoleRequestdbHandlerTest {
     private UserManager userManager;
 
     @Test
+    @Order(94)
     public void createAndRetrieveRoleRequest() {
         Role role = new Guest("Here's a string");
         RoleRequest request = new RoleRequest(1, role);
@@ -33,10 +35,11 @@ public class RoleRequestdbHandlerTest {
         assertTrue(roleRequest.getRoleInfo() == role);                  //is the info there?
         assertTrue(((Guest)roleRequest.getRoleInfo()).getCharacterInfo().equals("Here's a string"));    //is the info intact?
         
-        userManager.getRoleRequestdbHandler().delete(request);
+        userManager.getRoleRequestdbHandler().delete(request);  //Cleanup
     }
 
     @Test
+    @Order(95)
     public void createAndFulfillRoleRequest() {
         User user = new User("guestWanter1000", "giveRolePlease");
 
@@ -52,9 +55,12 @@ public class RoleRequestdbHandlerTest {
         userManager.fulfillRoleRequest(user.getId(), RoleType.GUEST); //try to fulfill the user's request
         assertTrue(userManager.getUserdbHandler().findById(user.getId()).getGuestInfo() != null);   //the object should be on the user now
         assertTrue(userManager.getUserdbHandler().findById(user.getId()).getGuestInfo().getCharacterInfo().contains("Here's a string"));
+    
+        userManager.getUserdbHandler().delete(user);    //Cleanup
     }
 
     @Test
+    @Order(96)
     public void createAndRejectRoleRequest() {
         User user = new User("guestWanter1000", "giveRolePlease");
 
@@ -70,5 +76,7 @@ public class RoleRequestdbHandlerTest {
         userManager.rejectRoleRequest(user.getId(), RoleType.GUEST);
         assertTrue(userManager.getUserdbHandler().findById(user.getId()).getGuestInfo() == null);   //there should be no guest-role on the user, since we never added it
         assertFalse(userManager.getRoleRequestdbHandler().existsById(request.getRequestId()));      //the request should no longer exist
+
+        userManager.getUserdbHandler().delete(user); //Cleanup
     }
 }

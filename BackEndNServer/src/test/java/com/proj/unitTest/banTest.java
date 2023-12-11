@@ -1,6 +1,7 @@
 package com.proj.unitTest;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -17,6 +18,7 @@ public class banTest {
     //LocalDateTime counts nanoseconds, so to avoid false negatives,
     //we check if a time is within 1 minute of another to compare them
     @Test
+    @Order(2)
     public void banConstructingLocalDateTime(){
         Ban banWithLocalDateTime = new Ban("You stepped on my toes", LocalDateTime.now().plusDays(2)); //a ban until two days from now
         assertTrue(banWithLocalDateTime.getReason().contains("You stepped on my toes"));    //has the reason been set?
@@ -27,6 +29,7 @@ public class banTest {
     }
 
     @Test
+    @Order(3)
     public void banConstructingDuration(){
         Ban banWithDuration = new Ban("You were complicit in stepping on my toes", Duration.ofDays(2));//a two day ban    
         assertTrue(banWithDuration.getReason().contains("You were complicit in stepping on my toes"));
@@ -38,6 +41,7 @@ public class banTest {
     }
 
     @Test
+    @Order(4)
     public void banConstructingPermanent(){
         Ban banPermanent = new Ban("You stepped on my toes again");
         assertTrue(banPermanent.getReason().contains("You stepped on my toes again"));
@@ -47,6 +51,7 @@ public class banTest {
     }
 
     @Test
+    @Order(5)
     public void banningPermanently(){
         User user = new User(new BasicUserInfo("user_person", "1234"));
         BanHandler.banUser(user);   //banning them permanently without a reason
@@ -58,6 +63,7 @@ public class banTest {
     }
 
     @Test
+    @Order(6)
     public void banningPermanentlyWithReason(){
         User user = new User(new BasicUserInfo("user_person", "1234"));
         BanHandler.banUser(user, "This is a test"); //banning them permanently with a reason
@@ -69,6 +75,7 @@ public class banTest {
     }
 
     @Test
+    @Order(7)
     public void banningWithLocalDateTime(){
         User user = new User(new BasicUserInfo("user_person", "1234"));
         BanHandler.banUser(user, LocalDateTime.now().plusDays(2));   //banning them for 2 days without a reason
@@ -80,7 +87,8 @@ public class banTest {
         assertTrue(startDate.isBefore(LocalDateTime.now().plusMinutes(1)) && startDate.isAfter(LocalDateTime.now().minusMinutes(1)));
     }
 
-    @Test 
+    @Test
+    @Order(8) 
     public void banningWithLocalDateTimeWithReason(){
         User user = new User(new BasicUserInfo("user_person", "1234"));
         BanHandler.banUser(user, "This is a test", LocalDateTime.now().plusDays(2)); //banning them for 2 days with a reason
@@ -93,6 +101,7 @@ public class banTest {
     }
 
     @Test
+    @Order(9)
     public void banningWithDuration(){
         User user = new User(new BasicUserInfo("user_person", "1234"));
         BanHandler.banUser(user, Duration.ofDays(2));   //banning them for 2 days without a reason
@@ -105,6 +114,7 @@ public class banTest {
     }
     
     @Test
+    @Order(10)
     public void banningWithDurationWithReason(){
         User user = new User(new BasicUserInfo("user_person", "1234"));
         BanHandler.banUser(user, "This is a test", Duration.ofDays(2)); //banning them for 2 days with a reason
@@ -117,6 +127,7 @@ public class banTest {
     }
 
     @Test
+    @Order(11)
     public void updatingBans(){
         User user = new User(new BasicUserInfo("user_person", "1234"));
         Ban ban = new Ban("This ban will expire later", LocalDateTime.now().plusHours(1));
@@ -133,6 +144,7 @@ public class banTest {
     }
 
     @Test
+    @Order(12)
     public void updatingAndCheckingBans(){
         User user = new User(new BasicUserInfo("user_person", "1234"));
         Ban ban = new Ban("This ban will expire later", LocalDateTime.now().plusHours(1));
@@ -149,6 +161,7 @@ public class banTest {
     }
 
     @Test
+    @Order(13)
     public void unbanUser(){
         User user = new User(new BasicUserInfo("user_person", "1234"));
         BanHandler.banUser(user);   //ban the user
@@ -165,6 +178,7 @@ public class banTest {
     }
 
     @Test
+    @Order(14)
     public void changeBanReason(){
         User user = new User(new BasicUserInfo("user_person", "1234"));
         Throwable thrown = assertThrows(

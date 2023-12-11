@@ -4,33 +4,44 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.proj.exception.FailedValidationException;
-import com.proj.model.users.User;
+import com.proj.model.users.BasicUserInfo;
 
-public class UserValidator implements Validatable {
+public class BasicInfoValidator implements Validatable<BasicInfoValidator> {
     // Field
-    private User user;
+    private BasicUserInfo basicUserInfo;
     // https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html
     // Make pattern to match and initialize variable to get matcher.
     private static Pattern genericStringPattern = Pattern.compile("^(\\\\w)");
     private static Pattern userNamePattern = Pattern.compile("^(\\w{4,30})");
     private static Pattern passwordPattern = Pattern
             .compile("^(?=.{4,30}$)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*['+-^&%¤$]).*$");
-    private static Pattern emailPattern = Pattern.compile("^([\\w-]{1,})(\\w[@]\\w{1,})([.]\\w{2,4}$)");
     private Matcher m;
 
     // Constructor
-    public UserValidator(User user) {
-        this.user = user;
+    public BasicInfoValidator(BasicUserInfo basicUserInfo) {
+        this.basicUserInfo = basicUserInfo;
     };
 
     // Method
-    public User getUser() {
-        return user;
+    public BasicUserInfo getBasicUserInfo() {
+        return basicUserInfo;
+    }
+
+    public void setBasicUserInfo(BasicUserInfo basicUserInfo) {
+        this.basicUserInfo = basicUserInfo;
     }
 
     @Override
-    public User ValidateStringField(String string) throws NullPointerException {
-        if (string.equals(null)) {
+    /**
+     * Validates a generic string field consisting of at least one element
+     * 
+     * @return the current basicuservalidator. This is necessary for method chaining.
+     * @throws NullPointerException
+     * @throws FailedValidationException
+     */
+    public BasicInfoValidator ValidateStringField(String string)
+            throws NullPointerException, FailedValidationException {
+        if (string == null) {
             throw new NullPointerException("Cannot validate null string");
         } else {
 
@@ -41,7 +52,7 @@ public class UserValidator implements Validatable {
             isValidString = m.matches();
 
             if (isValidString) {
-                return this.user;
+                return this;
             } else {
                 throw new FailedValidationException("Generic String is not valid");
             }
@@ -49,17 +60,22 @@ public class UserValidator implements Validatable {
 
     }
 
-    public UserValidator ValidateUserName() throws NullPointerException, FailedValidationException {
-        if (getUser() == null) {
-            throw new NullPointerException("Cannot validate null user");
-        } else if (getUser().getBasicUserInfo() == null) {
+    /**
+     * Validates the username attribute of a basic info object.
+     * 
+     * @return the current basicuservalidator.. This is necessary for method chaining.
+     * @throws NullPointerException
+     * @throws FailedValidationException
+     */
+    public BasicInfoValidator ValidateUserName() throws NullPointerException, FailedValidationException {
+        if (getBasicUserInfo() == null) {
             throw new NullPointerException("Cannot validate null basicUserInfo");
-        } else if (getUser().getBasicUserInfo().getUserName() == null) {
+        } else if (getBasicUserInfo().getUserName() == null) {
             throw new NullPointerException("Cannot validate null Username");
         } else {
             boolean isValidUserName;
             // Check whether username matches the regex pattern
-            m = userNamePattern.matcher(getUser().getBasicUserInfo().getUserName());
+            m = userNamePattern.matcher(getBasicUserInfo().getUserName());
             isValidUserName = m.matches();
 
             if (isValidUserName) {
@@ -70,17 +86,22 @@ public class UserValidator implements Validatable {
         }
     }
 
-    public UserValidator ValidatePassword() throws NullPointerException, FailedValidationException {
-        if (getUser() == null) {
-            throw new NullPointerException("Cannot validate null user");
-        } else if (getUser().getBasicUserInfo() == null) {
+    /**
+     * Validates the username attribute of a basic info object.
+     * 
+     * @return the current basicuservalidator.. This is necessary for method chaining.
+     * @throws NullPointerException
+     * @throws FailedValidationException
+     */
+    public BasicInfoValidator ValidatePassword() throws NullPointerException, FailedValidationException {
+        if (getBasicUserInfo() == null) {
             throw new NullPointerException("Cannot validate null basicUserInfo");
-        } else if (getUser().getBasicUserInfo().getPassword() == null) {
+        } else if (getBasicUserInfo().getPassword() == null) {
             throw new NullPointerException("Cannot validate null password");
         } else {
             boolean isValidPassword;
             // Check whether password matches the regex pattern
-            m = userNamePattern.matcher(getUser().getBasicUserInfo().getPassword());
+            m = passwordPattern.matcher(getBasicUserInfo().getPassword());
             isValidPassword = m.matches();
 
             if (isValidPassword) {
@@ -91,24 +112,4 @@ public class UserValidator implements Validatable {
         }
     }
 
-    public UserValidator ValidateEmail() {
-        if (getUser() == null) {
-            throw new NullPointerException("Cannot validate null user");
-        } else if (getUser().getMemberInfo() == null) {
-            throw new NullPointerException("Cannot validate null memberInfo");
-        } else if (getUser().getMemberInfo().getEmail() == null) {
-            throw new NullPointerException("Cannot validate null email");
-        } else {
-            boolean isValidEmail;
-            // Check whether password matches the regex pattern
-            m = userNamePattern.matcher(getUser().getMemberInfo().getEmail());
-            isValidEmail = m.matches();
-
-            if (isValidEmail) {
-                return this;
-            } else {
-                throw new FailedValidationException("Email is not valid");
-            }
-        }
-    }
 }

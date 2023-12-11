@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import com.proj.function.ModuleManager;
@@ -17,6 +18,7 @@ public class ModuleManagerTest {
     ModuleManager moduleManager;
 
     @Test
+    @Order(91)
     public void updateAndRetrieveModule() {
         Module module = moduleManager.createModule("name", "desc", "01-02");
         
@@ -27,6 +29,7 @@ public class ModuleManagerTest {
     }
 
     @Test
+    @Order(92)
     public void removeModuleFromDatabase() {
         Module module = moduleManager.createModule("Cool Cold Adventure", "In the icy depths of cold.\n You will freeze.", "01-02");
         moduleManager.getModuledbHandler().delete(module);
@@ -34,6 +37,7 @@ public class ModuleManagerTest {
     }
 
     @Test
+    @Order(93)
     public void setModuleRemovedDate() {
         Module module = moduleManager.createModule("null adventure", "null description", "05 to 10");
         moduleManager.removeModule(module);
