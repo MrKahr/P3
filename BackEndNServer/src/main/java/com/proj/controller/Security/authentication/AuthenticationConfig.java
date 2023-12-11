@@ -33,7 +33,6 @@ public class AuthenticationConfig {
 	 * If the username/password in userDetailsService match with the corresponding username/password in the database, 
 	 * the user is authorized to proceed to the requested page.
 	 * <p>
-	 * TODO: Implement access restriction based on roles.
 	 * @param userDetailsService The service managing userDetails from the frontend (e.g. password).
 	 * @param passwordEncoder The password encoder to hash the password from the frontend. Should be identical to the encoder used on the database.
 	 * @return

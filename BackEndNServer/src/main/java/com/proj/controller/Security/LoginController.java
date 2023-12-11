@@ -60,5 +60,9 @@ public class LoginController {
 		return new ModelAndView(new RedirectView("/", true));
 	}
 
+	/**
+	 * The object used to match input from the frontend. 
+	 * The parameters contained in the object sent from the frontend must match the parammeters of this object extactly (or vice versa)
+	 */
 	public record LoginRequest(String username, String password) {}
 }

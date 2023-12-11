@@ -41,7 +41,6 @@ public class AuthenticationProcess {
     // Method
     /**
      * Authenticates the user by calling the necessary methods to do so.
-     * The "actual" authentication is handled by Spring Security.
      * @param loginRequest The LoginRequest received from the frontend
      * @return The Authentication object containing e.g. the response.
      * @see https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html
@@ -51,7 +50,7 @@ public class AuthenticationProcess {
         // Makes an authentication token with the unauthenticated creditials from the frontend.
 		UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
 		
-        // Passes the authentication token to the authentication manager for authentication.
+        // Give the authentication token to the authentication manager for authentication.
         Authentication authentication = this.authenticationManager.authenticate(token);
 
         // Sets the security context which is used to create login sessions.
@@ -60,6 +59,7 @@ public class AuthenticationProcess {
 		this.securityContextHolderStrategy.setContext(context);
 
         // Save the securityContext in a repository managed by Spring Security. It is possible to manage such a repo manually.
+        // This ensures that after a user is logged in, their login session is persisted across requests to our site.
         securityContextRepository.saveContext(context, request, response);
 
         return authentication;

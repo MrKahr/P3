@@ -50,6 +50,8 @@ public class SecurityFilters {
 	// ###############
 	// @Order(1) -> The order in which to invoke this filter. No order defaults to last.
 	// TODO: Find a way to apply parts of the filters globally to reduce duplicate code. E.g.: http.formlogin(...) or http.logout(...)
+	//
+	// Redirect to requested page upon successful login or prevent it: https://docs.spring.io/spring-security/reference/servlet/architecture.html#requestcache-prevent-saved-request
 
 
 	// ############################

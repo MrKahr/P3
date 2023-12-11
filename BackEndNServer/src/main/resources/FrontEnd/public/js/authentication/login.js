@@ -24,15 +24,22 @@ function gatherData(){
  */
 async function sendData(userDetails){
     let response;
-    const csrfName = "X-XSRF-TOKEN";
-    const csrfToken = getCookie(csrfName);
 
+    // Attempt on implementing CSRF protection. MUST be done before deploying to production.
+    // const csrfName = "X-XSRF-TOKEN";
+    // const csrfToken = getCookie(csrfName);
+
+    // const headers = new Headers({
+    //     'Content-Type': 'application/json',
+    //     'XSRF-TOKEN': csrfToken,
+    // })
+
+    //console.log(headers);
+
+    // Temporary replacement for CSRF protection. Do NOT omit CSRF protection when deploying to production.
     const headers = new Headers({
-        'Content-Type': 'application/json',
-        'XSRF-TOKEN': csrfToken,
+        'Content-Type': 'application/json'
     })
-
-    console.log(headers);
 
     try {
         response = await fetch("/login", {

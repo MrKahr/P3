@@ -11,7 +11,7 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 @Configuration
 public class SecurityConfig {
 
-    // Doesn't seem to work as intended
+    // Doesn't seem to work as intended. Intention was to set all cookies to "SameSite=strict"
     // @Bean
     // public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
     //     return CookieSameSiteSupplier.ofStrict();
