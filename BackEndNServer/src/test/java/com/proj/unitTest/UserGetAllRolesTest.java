@@ -1,20 +1,18 @@
 package com.proj.unitTest;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.junit.jupiter.api.function.Executable;
-
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
 
-import com.proj.function.RoleAssigner;
 import com.proj.model.users.*;
 
 public class UserGetAllRolesTest {
     @Test
+    @Order(30)
     void noRoles(){
         BasicUserInfo info = new BasicUserInfo("user1", "1234");
         User user = new User(info);
@@ -24,6 +22,7 @@ public class UserGetAllRolesTest {
     }
 
     @Test
+    @Order(31)
     void OneRole(){
         BasicUserInfo buinfo = new BasicUserInfo("user1", "1234");
         User user = new User(buinfo);
@@ -34,6 +33,7 @@ public class UserGetAllRolesTest {
     }
 
     @Test
+    @Order(32)
     void twoRoles(){
         BasicUserInfo buinfo = new BasicUserInfo("user1", "1234");
         User user = new User(buinfo);
@@ -46,6 +46,7 @@ public class UserGetAllRolesTest {
     }
 
     @Test
+    @Order(33)
     void twoNoConsequitiveRoles(){
         BasicUserInfo buinfo = new BasicUserInfo("user1", "1234");
         User user = new User(buinfo);
