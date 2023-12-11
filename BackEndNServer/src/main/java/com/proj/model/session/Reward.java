@@ -13,6 +13,8 @@ public class Reward {
         this.description = description;
     }
 
+    public Reward(){}
+
     // Method
     public String getName() {
         return name;

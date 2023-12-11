@@ -1,0 +1,46 @@
+h1 input[type="text"] {
+    Background-color: transparent;
+    padding: 12px;
+    font-size: larger;
+    text-align: center;
+    border: 0;
+}
+
+
+.eventName {
+    text-align: center;
+}
+.column1, .column3 {
+    float: left;
+    width: 25%;
+}
+
+.column2 {
+    float: left;
+    width: 50%;
+}
+
+.eventColumns:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.eventTimeBox, .eventLocationBox, .eventPlayersBox, .eventDescriptionBox, .eventModule, .eventRewards{
+    background-color: white;
+    border: 2px solid black;
+    margin: 8px;
+    padding: 5px;
+}
+
+.createEventButton{
+    text-align: center;
+}
+
+textarea {
+    width: auto;
+    resize: none;
+}
+.eventTextarea{
+    text-align: center;
+}

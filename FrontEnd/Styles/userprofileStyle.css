@@ -1,0 +1,29 @@
+.profile-container{
+    outline: 1px solid black;
+    width: 80%;
+    height: fit-content;
+    margin-left: 2%;
+    border-radius: 2%;
+    background-color: aliceblue;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    padding: 15px;
+}
+.username{
+    margin: 0px;
+    
+}
+.profile-picture{
+    margin-top: 10px;
+    width: 130px;
+    height: 130px;
+    outline: 1px solid black;
+}
+
+.scroll-box{
+    margin-top: 20px;
+    outline: 1px solid black;
+    width: 50%;
+    height: 200px;
+    overflow: scroll;
+}   

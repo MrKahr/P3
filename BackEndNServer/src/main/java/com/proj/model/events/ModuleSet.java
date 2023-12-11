@@ -10,6 +10,8 @@ public class ModuleSet {
         this.changedTo = changedTo;
     }
 
+    public ModuleSet(){}
+
     // Method - No setters since we model instantenous events as object instanstiations.  
     public String getChangedFrom(){
         return changedFrom; 

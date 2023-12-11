@@ -13,6 +13,8 @@ public class RewardsGiven {
         this.responsibleDM = responsibleDM;
     }
 
+    public RewardsGiven(){}
+
     // Method -  No setDate eince we model instantenous events as object instanstiations.  
     public LocalDateTime getDate() {
         return this.date;
