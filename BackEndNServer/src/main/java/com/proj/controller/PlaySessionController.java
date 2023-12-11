@@ -22,26 +22,25 @@ import com.proj.model.session.*;
 
 
 @Controller
-// @RequestMapping(path = "/P3")
 public class PlaySessionController {
   
   @Autowired
   PlaySessionHandler playSessionHandler;
   PlaySessionManager playSessionManager = new PlaySessionManager();
 
-  @PostMapping("/NewPlaySession")
+  @PostMapping("/newplaysession")
   public @ResponseBody String addNewPlaySessionResponse(@RequestParam String title, @RequestParam Integer id, @RequestParam Integer currentNumberOfPlayers, @RequestParam LocalDateTime date, @RequestParam PlaySessionStateEnum state, @RequestParam Integer maxNumberOfPlayers, @RequestParam Module module){
     playSessionManager.addNewPlaySession(title,id,currentNumberOfPlayers, date, state, maxNumberOfPlayers, module);
     return "PlaySession Created";
   }
   
-  @PostMapping("/UpdatePlaySession") //responds to put requests with path "/UpdatePlaySession" and request parameters, returns Successful if update is valid
+  @PostMapping("/updateplaysession") //responds to put requests with path "/UpdatePlaySession" and request parameters, returns Successful if update is valid
   public @ResponseBody String updatePlaySessionResponse(@RequestParam String title, @RequestParam Integer id, @RequestParam LocalDateTime date, @RequestParam PlaySessionStateEnum state, @RequestParam Integer maxNumberOfPlayers, @RequestParam Module module){
     playSessionManager.updatePlaySession(id, title, maxNumberOfPlayers, date, state, module);
     return "Update Successfull";
   }
 
-  @GetMapping("/getAllPlaySessions") //returns all play sessions
+  @GetMapping("/getallPlaysessions") //returns all play sessions
   public @ResponseBody List<PlaySession> getAllPlaySessions() {
     Iterable<PlaySession> playSessions = playSessionHandler.findAll();
     List<PlaySession> allPlaySessions = new ArrayList<>();
