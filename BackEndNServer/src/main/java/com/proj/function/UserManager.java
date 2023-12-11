@@ -31,7 +31,7 @@ public class UserManager {
     private RoleRequestdbHandler roleRequestdbHandler;
 
     private int numberOfUsers;
-    private int lastId; //the id of the most recent user created by createAccount
+    private int lastId; // the id of the most recent user created by createAccount
 
     // Constructor
     public UserManager(int numberOfUsers) {
@@ -51,16 +51,28 @@ public class UserManager {
         this.numberOfUsers = numberOfUsers;
     }
 
+    /**
+     * Gets the current dbhandler.
+     * This getter is mainly used for testing purposes
+     * 
+     * @return - the user database handler associated with the current manager
+     */
     public UserdbHandler getUserdbHandler() {
         return userdbHandler;
     }
 
+    /**
+     * Gets the current role request db handler.
+     * This getter is mainly used for testing purposes
+     * 
+     * @return - the role request handler associated with the current manager
+     */
     public RoleRequestdbHandler getRoleRequestdbHandler() {
         return roleRequestdbHandler;
     }
 
-    public int getLastId(){
-		return lastId;
+    public int getLastId() {
+        return lastId;
     }
 
     /**
@@ -76,8 +88,6 @@ public class UserManager {
             throw new NullPointerException("Cannot create user with username or password null");
         } else {
             try {
-                
-
                 // Create user object
                 BasicUserInfo basicUserInfo = new BasicUserInfo(userName, password);
                 User user = new User(basicUserInfo);
@@ -85,10 +95,10 @@ public class UserManager {
                 // Validate user fields
                 BasicInfoValidator userValidator = new BasicInfoValidator(basicUserInfo);
                 userValidator.ValidateUserName().ValidatePassword();
-                
+
                 // Check whether username already exists in database
                 validateUsernameStatusInDB(userName);
-                
+
                 // Set empty guest info
                 user.setGuestInfo(new Guest(""));
 
@@ -111,10 +121,8 @@ public class UserManager {
      * already exist.
      * 
      * @param username Display name of user.
-     * @throws FailedValidationException Thrown when the username is already taken
-     *                                   by
-     *                                   another user (i.e. exists in the
-     *                                   database).
+     * @throws FailedValidationException Thrown when the username is already take by
+     *                                   another user (i.e. exists in the database).
      */
     public String validateUsernameStatusInDB(String username) {
         try {
@@ -135,16 +143,15 @@ public class UserManager {
      * @param username Display name of the user.
      * 
      * @return The user object with the given username or null if this user is not
-     * found
+     *         found
      * 
      * @throws UserNotFoundException Thrown if the user is not found in the
-     * database.
+     *                               database.
      */
 
     public User lookupAccount(String username) throws UserNotFoundException, IllegalArgumentException {
-        User user;
-        user = userdbHandler.findByUserName(username);
-        return user;
+        return userdbHandler.findByUserName(username);
+
     }
 
     /**
@@ -266,6 +273,8 @@ public class UserManager {
             return fve.getMessage();
         } catch (NullPointerException npe) {
             return npe.getMessage();
+        } catch (Exception e){
+            return e.getMessage();
         }
     }
 
@@ -303,11 +312,12 @@ public class UserManager {
      * @param userId - the id of the user to restore
      */
     public String restoreAccount(int userId) {
-        User userToActivate = userdbHandler.findById(userId);        
+        User userToActivate = userdbHandler.findById(userId);
         userToActivate.getBasicUserInfo().setDeactivationDate(null);
         userToActivate.getBasicUserInfo().setDeletionDate(null);
         userdbHandler.save(userToActivate);
-        return "User: " + userToActivate.getBasicUserInfo().getUserName() + " with ID: " + userToActivate.getId() + " was successfully restored";
+        return "User: " + userToActivate.getBasicUserInfo().getUserName() + " with ID: " + userToActivate.getId()
+                + " was successfully restored";
     }
 
     /**
@@ -318,20 +328,20 @@ public class UserManager {
      */
     public String removeAccount(int userId) {
         try {
-        User userToDelete = userdbHandler.findById(userId);
-        String statusmsg = "Deletion of " + userToDelete.getBasicUserInfo().getUserName();
-        LocalDateTime deletionDate = userToDelete.getBasicUserInfo().getDeletionDate();
-        if (deletionDate != null && LocalDateTime.now().isAfter(deletionDate)) { // check if we're past the deletion
-                                                                                 // date
-            userdbHandler.delete(userToDelete);
-            return statusmsg + " successful";
-        } else {
-            return statusmsg + " unsuccessful";
-        }
-        } catch (UserNotFoundException unfe){
+            User userToDelete = userdbHandler.findById(userId);
+            String statusmsg = "Deletion of " + userToDelete.getBasicUserInfo().getUserName();
+            LocalDateTime deletionDate = userToDelete.getBasicUserInfo().getDeletionDate();
+            if (deletionDate != null && LocalDateTime.now().isAfter(deletionDate)) { // check if we're past the deletion
+                                                                                     // date
+                userdbHandler.delete(userToDelete);
+                return statusmsg + " successful";
+            } else {
+                return statusmsg + " unsuccessful";
+            }
+        } catch (UserNotFoundException unfe) {
             return unfe.getMessage();
         }
-  
+
     }
 
     /**
