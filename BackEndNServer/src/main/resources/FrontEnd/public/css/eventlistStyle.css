@@ -1,0 +1,66 @@
+a{
+    display: block;
+}
+.create-event-button{
+    margin: 3px;
+    padding: 3px;
+    color: white;
+    background-color: rgb(12, 100, 188);
+    border: 1px solid black;
+    width:fit-content;
+    transition-duration: 0.2s;
+}
+.create-event-button:hover{
+    background-color: rgb(104, 178, 251);
+    color: #000000;
+}
+.eventcreation-container{
+    margin: 3px;
+    background-color: darkgrey;
+    border: 1px solid black;
+    height: 30px;
+    width: 30px;
+    padding: 12px;
+}
+
+table{
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 100%;
+}
+.table-container{
+    width: 95%;
+    border: 1px solid black;
+    border-collapse: collapse;
+    max-height: 342px;
+    overflow: scroll;
+    margin-bottom: 5px;
+}
+.editEventsButton {
+    position: absolute;
+    display: none;
+    margin: 2px;
+    padding: 4px;
+    border-radius: 5px;
+    background-color: lightcoral;
+    border: 1px solid black;
+    transition-duration: 0.2s;
+}
+.editEventsButton a:link, .editEventsButton a:visited {
+    text-decoration: none;
+    color: black;
+}
+
+td, th {
+    border-right: 1px solid #000000;
+    border-left: 1px solid #000000;
+    text-align: left;
+    padding: 7px;
+  }
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+tr:nth-child(odd) {
+    background-color: #ffffff;
+}

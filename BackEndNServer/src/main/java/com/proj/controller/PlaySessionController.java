@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.proj.model.session.*;
 
 @Controller
-@RequestMapping(path = "/play_session")
 public class PlaySessionController {
 
   @Autowired
@@ -30,7 +29,7 @@ public class PlaySessionController {
   @Autowired
   private ModuleManager moduleManager;
 
-  @PostMapping(path = "/new_play_session")
+  @PostMapping(path = "/newplaysession")
   public @ResponseBody String addNewPlaySessionResponse(@RequestParam String title,
       @RequestParam String description, @RequestParam String dm, @RequestParam Integer currentNumberOfPlayers,
       @RequestParam LocalDateTime date,
@@ -49,7 +48,7 @@ public class PlaySessionController {
     return "PlaySession Created with ID: " + playSession.getId();
   }
 
-  @PostMapping(path = "/update_play_session") // responds to put requests with path "/UpdatePlaySession" and request
+  @PostMapping(path = "/updateplaysession") // responds to put requests with path "/UpdatePlaySession" and request
                                             // parameters, returns Successful if update is valid
   public @ResponseBody String updatePlaySessionResponse(@RequestParam Integer id, @RequestParam String title,
       @RequestParam String description,
@@ -76,7 +75,7 @@ public class PlaySessionController {
    * }
    */
 
-  @GetMapping(path = "/date_between") // returns all play sessions between two dates
+  @GetMapping(path = "/datebetween") // returns all play sessions between two dates
   public @ResponseBody List<PlaySession> getPlaySessionsBetween(@RequestParam LocalDateTime startDateTime,
       @RequestParam LocalDateTime endDateTime) {
     List<PlaySession> playSessions = playSessionManager.getSessions(startDateTime, endDateTime);

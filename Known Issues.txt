@@ -1,0 +1,50 @@
+This file lists known problems we have encountered and fixes for them:
+
+
+###############
+### Jackson ###
+###############
+(1)
+Issue:
+    Java 8 date/time ('LocalDate' og 'LocalDateTime') -> com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Java 8 date/time type `java.time.LocalDateTime` not supported by default
+Fix:
+    Annotate Java 8 date/time fields with:
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    LocalDateTime ...
+
+(2)
+Issue:
+    No default constructor for database object -> com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Cannot construct instance of 'Object'
+Fix:
+    Add default constructor with no arguments.
+
+
+(3)
+Issue:
+    Jackson cannot deserialize -> com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field (class.path.here)
+Fix:
+    Annotate class in class.path.here with:
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public class ...
+
+################
+### Database ###
+################
+(1)
+Issue:
+    Null values are handled differently in the database. Maybe this will cause issues?
+Fix:
+    Avoid null values if possible.
+
+################
+### Frontend ###
+################
+(1)
+Issue:
+    HTTP 415: Content-Type 'application/x-www-form-urlencoded;charset=UTF-8' is not supported
+Help:
+    https://stackoverflow.com/a/63722759
+Fix:
+    Multiple: Either get JS to extract form data and send as JSON or see Help to tell Spring how to parse this content type.

@@ -1,0 +1,161 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.background {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url("../images/AT_background.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-color: red;
+}
+
+.tab {
+    overflow: hidden;
+}
+
+.tab button {
+    background-color: white;
+    float: left;
+    border: 1px solid black;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+}
+
+.tab button:hover {
+    background-color: lightcyan;
+}
+
+.tab button.active {
+    background-color: lightskyblue;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 60%;
+    border: 1px solid black;
+    overflow-y: scroll;
+}
+
+th {
+    text-align: left;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding: 7px;
+}
+
+td {
+    text-align: left;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding: 7px;
+    vertical-align: top;
+    height: 12px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+td:last-child {
+    text-align: right;
+}
+td i{
+    float: left;
+}
+
+
+.manageUsersButtons {
+    position: absolute;
+    display: none;
+}
+
+.manageEventsTable {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid black;
+    overflow-y: scroll;
+}
+.manageEventsButtons {
+    position: absolute;
+    display: none;
+}
+th i{
+    float: right;
+    display: none;
+}
+.editEventInput {
+    width: 60%;
+}
+
+td input[type="text"], td input[type="date"], td input[type="time"], td input[type="submit"], td input[type="reset"]{
+    margin: 3px;
+}
+td select{
+    margin: 3px;
+}
+
+.blogPostsButtons {
+    position: absolute;
+    display: none;
+}
+.blogmanage{
+    display: flex;
+    width: 60%;
+}
+.createPost {
+    flex: 1;
+    width: 50%;
+    border: 1px solid black;
+    background-color: white;
+    text-align: center;
+}
+.createPost:first-child {
+    margin-right: 20px;
+}
+.blogTextBox{
+    width: auto;
+    height: auto;
+}
+textarea {
+    resize: none;
+}
+.postTable {
+    width: 50%;
+}
+
+.manageModulesButtons {
+    position: absolute;
+    display: none;
+}
+.modulemanage{
+    display: flex;
+    width: 60%;
+}
+.createModule {
+    flex: 1;
+    width: 50%;
+    border: 1px solid black;
+    background-color: white;
+    text-align: center;
+}
+.createModule:first-child {
+    margin-right: 20px;
+}
+.moduleTextBox{
+    width: auto;
+    height: auto;
+}
+.moduleTable {
+    width: 50%;
+}
