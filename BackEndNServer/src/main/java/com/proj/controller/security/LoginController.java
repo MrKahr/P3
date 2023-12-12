@@ -1,4 +1,4 @@
-package com.proj.controller.fisk;
+package com.proj.controller.security;
 
 // Spring necessities
 import org.springframework.beans.factory.annotation.Autowired;
