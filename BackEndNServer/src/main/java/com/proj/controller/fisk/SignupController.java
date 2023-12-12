@@ -1,4 +1,4 @@
-package com.proj.controller.security;
+package com.proj.controller.fisk;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

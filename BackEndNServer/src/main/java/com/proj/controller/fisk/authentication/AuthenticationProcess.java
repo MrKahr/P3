@@ -1,4 +1,4 @@
-package com.proj.controller.security.authentication;
+package com.proj.controller.fisk.authentication;
 
 // Spring necessities
 import org.springframework.stereotype.Component;

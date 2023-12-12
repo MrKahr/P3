@@ -1,4 +1,4 @@
-package com.proj.controller.security;
+package com.proj.controller.fisk;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
