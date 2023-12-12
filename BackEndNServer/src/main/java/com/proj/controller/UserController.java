@@ -15,47 +15,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.proj.model.users.*;
-import com.proj.repositoryhandler.UserdbHandler;
+import com.proj.exception.UserNotFoundException;
 import com.proj.function.RoleAssigner;
 import com.proj.function.UserManager;
 
-/**
- * This controller handles sending HTTP requests from frontend to the server for
- * various operations on users.
- * Operations include getting a user, modifying a user, deleting a user,
- * creating a user or banning a user.
- */
-
-// Getting a user
-// TODO: Get single user from db - Profilepages(self + other)
-// TODO: Get multiple users from db - Adminpage
-// TODO: Get all users from db - Adminpage
-
-// Modifying a user
-// TODO: Modify single user - Profile, Adminpage
-// TODO: Modify multiple users in DB - Adminpage
-
-// Creating a user
-// TODO: Add users to DB - SignupPage
-// TODO: Add multiple users to DB - MAYBE NOT NEEDED
-
-// Deleting a user
-// TODO: Delete user in DB - Profile, Adminpage
-// TODO: Delete mulitiple users in DB - MAYBE NOT NEEDED
-
-// Banning a user
-// TODO: Ban single user - Adminpage
-// TODO: Ban multiple users - MAYBE NOT NEEDED
+  // DONE: Get single user from db - Profilepages(self + other)
+  // TODO: Modify single user - Profile, Adminpage
+  // TODO: Add users to DB - SignupPage
+  // TODO: Deactivate account
 
 @Controller
+@RequestMapping(path = "/user")
 public class UserController {
   @Autowired
-  private UserdbHandler userdbHandler;
+  private UserManager userManager;
 
   // TODO: FOR TESTING PURPOSES!!!!!
   ArrayList<Integer> ids = new ArrayList<Integer>();
@@ -67,7 +46,7 @@ public class UserController {
    * @param number
    * @return
    */
-  @RequestMapping(path = "/user/create/{number}")
+  @RequestMapping(path = "/create/{number}")
   @ResponseBody
   Object saveUsers(@PathVariable Integer number) {
     UserManager userManager = new UserManager(0);
@@ -75,63 +54,63 @@ public class UserController {
     try {
       for (int i = 0; i < number; i++) {
         User user = new User(new BasicUserInfo("n" + i, "p" + i));
-        if(i >= 1){
+        if (i >= 1) {
           RoleAssigner.setRole(user, new Guest("Level 1 bard" + i));
         }
-        if(i >= 2){
+        if (i >= 2) {
           RoleAssigner.setRole(user, new Member("Fisk", "Randomstuff", "Table", "Stringwauy", "NoEmail"));
         }
-        if(i >= 3){
+        if (i >= 3) {
           RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
         }
-        if(i >= 4){
-        RoleAssigner.setRole(user, new Admin(new ArrayList<String>(), new ArrayList<String>()));
+        if (i >= 4) {
+          RoleAssigner.setRole(user, new Admin(new ArrayList<String>(), new ArrayList<String>()));
         }
-        if(i == 5){
+        if (i == 5) {
           RoleAssigner.setRole(user, new SuperAdmin());
         }
-        userdbHandler.save(user);
+        userManager.getUserdbHandler().save(user);
         ids.add(user.getId());
       }
-      for(User user : userdbHandler.findAllById(ids)){
+      for (User user : userManager.getUserdbHandler().findAllById(ids)) {
         sanitizedUsers.add(userManager.sanitizeDBLookup(user, user));
       }
-      
+
       return sanitizedUsers;
     } catch (Exception e) {
       e.printStackTrace();
-      return sanitizedUsers; 
+      return sanitizedUsers;
     }
   }
 
-  /**
-   * Page showing a specific user's profile. Must check access level (Member+)
-   * TODO: DO NOT PASS STRINGS TO IDENTIFY ACCESS LEVEL. THIS MUST BE HASHED
-   * DO NOT MAP USER ID DIRECTLY TO GET
-   */
-  @GetMapping(path = "/user/{id}")
-  @ResponseBody Object profile(@PathVariable Integer id, @RequestParam Integer accessingUserID) {
-    User accessingUser = userdbHandler.findById(accessingUserID);
-    User user = null;
-    // Finding user themselves
-    if (accessingUserID == id) {
-      user = userdbHandler.findById(id);
-      // Sanitize/remove sensitive data from database (e.g. password, real name etc)
-    } else {
-      // Sanitize/remove sensitive data from database (e.g. password, real name etc)
-    }
-    return user;
-  } 
 
 
   /**
-   * Admin page for managing users. Must check access level. (Admin+)
-   * TODO: Check access level
-   * TODO: Make function flexible enough to return a couple of users
+   * Get a user from database
+   * @param username - the name of the user looked up on the database
+   * @param requestingUsername - the username of the person requesting the page
+   * @return a user object that is sanitized 
    */
-  @GetMapping(path = "/users")
-  @ResponseBody Object getSomeUsers(@PathVariable Integer start, Integer end) {
+  @GetMapping(path = "/{username}")
+  @ResponseBody Object profile(@PathVariable String username, @RequestParam String requestingUsername) {
+    // Find and sanitize users
+      User user = userManager.lookupAccount(username);
+      User requestingUser = userManager.lookupAccount(requestingUsername);
+      User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
+    // Note exceptions controlled by advisors
+    return sanitizedUser;
+  }
 
+  // TODO: Modify single user - Profile, Adminpage
+  // TODO: Add users to DB - SignupPage
+  // TODO: Deactivate account
+ 
+  @PutMapping(path = "/{username}/deactivate")
+  @ResponseBody
+  Object getSomeUsers(@PathVariable String username, @RequestParam String requestingUsername) {
+    User user = userManager.lookupAccount(username);
+    User reques
+    // YOU MAY ONLY DEACTIVE YOURSELF
     if (start > end) {
       start = 0;
     }
@@ -140,7 +119,7 @@ public class UserController {
     }
     try {
 
-      return userdbHandler.findAllById(ids);
+      return userManager.getUserdbHandler().findAllById(ids);
     } catch (Exception e) {
       e.printStackTrace();
       return "Could not retrieve users. Failed with: " + e.getMessage();
@@ -148,7 +127,8 @@ public class UserController {
   }
 
   @GetMapping(path = "/user/all")
-  @ResponseBody Object getAllUsers() {
-    return userdbHandler.findAll();
+  @ResponseBody
+  Object getAllUsers() {
+    return userManager.getUserdbHandler().findAll();
   }
 }

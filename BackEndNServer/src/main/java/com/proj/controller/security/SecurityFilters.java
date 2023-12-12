@@ -234,4 +234,20 @@ public class SecurityFilters {
 
 		return http.build();
 	}
+
+	@Order(5)
+	@Bean 
+	public SecurityFilterChain dmFilter(HttpSecurity http) throws Exception{
+		// Match all sites with addresses starting with /dm/
+		http
+		.securityMatcher("/dm/**")
+		.csrf((csrf) -> csrf.disable()) // Disable csrf 
+		.authorizeHttpRequests((authorize) -> authorize // Authorize user 
+			.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll() // Allow all dispatches of the correct type
+			.requestMatchers("/dm/**").hasAnyAuthority(RoleType.DM.toString())
+			.anyRequest().denyAll() // Deny requests from users that do not have the necessary authorization
+		);
+
+		return http.build();
+	}
 }
