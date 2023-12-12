@@ -105,25 +105,25 @@ public class UserController {
   // TODO: Add users to DB - SignupPage
   // TODO: Deactivate account
  
-  @PutMapping(path = "/{username}/deactivate")
-  @ResponseBody
-  Object getSomeUsers(@PathVariable String username, @RequestParam String requestingUsername) {
-    User user = userManager.lookupAccount(username);
-    // YOU MAY ONLY DEACTIVE YOURSELF
-    if (start > end) {
-      start = 0;
-    }
-    if (end > ids.size()) {
-      end = ids.size();
-    }
-    try {
+  // @PutMapping(path = "/{username}/deactivate")
+  // @ResponseBody
+  // Object getSomeUsers(@PathVariable String username, @RequestParam String requestingUsername) {
+  //   User user = userManager.lookupAccount(username);
+  //   // YOU MAY ONLY DEACTIVE YOURSELF
+  //   if (start > end) {
+  //     start = 0;
+  //   }
+  //   if (end > ids.size()) {
+  //     end = ids.size();
+  //   }
+  //   try {
 
-      return userManager.getUserdbHandler().findAllById(ids);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return "Could not retrieve users. Failed with: " + e.getMessage();
-    }
-  }
+  //     return userManager.getUserdbHandler().findAllById(ids);
+  //   } catch (Exception e) {
+  //     e.printStackTrace();
+  //     return "Could not retrieve users. Failed with: " + e.getMessage();
+  //   }
+  // }
 
   @GetMapping(path = "/user/all")
   @ResponseBody

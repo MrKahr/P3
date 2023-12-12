@@ -9,6 +9,11 @@ public class GenericController {
     // Show the front page
     @GetMapping("/")
     public String showHomePage(){
-        return "home";
+        return "index";
+    }
+    // Show the front page
+    @GetMapping("/userhomepage")
+    public String showUserHomePage(){
+        return "userhomepage";
     }
 }

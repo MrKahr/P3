@@ -1,7 +1,7 @@
-async function loadCalendar() {
-    try {
-        const response = await fetch("http://localhost:8080/DateBetween?startDateTime=2023-12-01T15:06:27.299631&endDateTime=2023-12-31T15:06:27.299631", {
-            method: "GET",
+async function addCalendar() {
+    try {//http://localhost:8080/DateBetween?startDateTime=2023-12-01T15:06:27.299631&endDateTime=2023-12-31T15:06:27.299631
+        const response = await fetch("http://localhost:8080/newplaysession?title=hej&description=test&dm=dmname&currentNumberOfPlayers=1&date=2023-11-12T10:10:00&maxNumberOfPlayers=3&moduleID=1", {
+            method: "POST",
             mode: "cors",
             cache: "no-cache"
         });
@@ -11,7 +11,22 @@ async function loadCalendar() {
         console.error("Error:", error);
     }
 }
-loadCalendar();
+addCalendar();
+async function loadCalendar() {
+    try {//http://localhost:8080/DateBetween?startDateTime=2023-12-01T15:06:27.299631&endDateTime=2023-12-31T15:06:27.299631
+        const response = await fetch("http://localhost:8080/datebetween?startDateTime=2022-11-12T10:10:00&endDateTime=2024-11-12T10:10:00", {
+            method: "GET",
+            mode: "cors",
+            cache: "no-cache"
+        });
+        const calendar = await response.text();
+        console.log(calendar);
+        return calendar;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+eventlist = loadCalendar();
 
 // Beautified by https://jsonformatter.org/
 // In an actual implementation this would be a GET to the server
@@ -32,22 +47,22 @@ const eventsData = [
     //         "removedDate": null
     //     }
     // },
-    // {
-    //     "id": "10",
-    //     "title": "My Sick Ass Homebrew",
-    //     "maxNumberOfPlayers": 6,
-    //     "currentNumberOfPlayers": 4,
-    //     "date": "2023-11-12T10:20:00",
-    //     "state": "Not yet",
-    //     "moduleSetEvents": [],
-    //     "module": {
-    //         "name": "Dimwits and Dummies",
-    //         "description": "Module description that describes the module Dimwits and Dummies",
-    //         "levelRange": "2-10",
-    //         "addedDate": null,
-    //         "removedDate": null
-    //     }
-    // },
+    {
+        "id": "10",
+        "title": "My Sick Ass Homebrew",
+        "maxNumberOfPlayers": 6,
+        "currentNumberOfPlayers": 4,
+        "date": "2023-11-12T10:20:00",
+        "state": "Not yet",
+        "moduleSetEvents": [],
+        "module": {
+            "name": "Dimwits and Dummies",
+            "description": "Module description that describes the module Dimwits and Dummies",
+            "levelRange": "2-10",
+            "addedDate": null,
+            "removedDate": null
+        }
+    }
     // {
     //     "id": "11",
     //     "title": "My Wacky Event",
@@ -113,7 +128,7 @@ const eventsData = [
     //     }
     // }
 ];
-
+eventsData.join(eventlist)
 
 let currentDate = new Date();
 // For event color we cycle through this array
