@@ -7,6 +7,30 @@
 	</head>
 	<body>
 		<h1>Please Log In</h1>
+		<div id="LoginContainer">
+			<div>
+				<input type="text" id="username" th:placeholder="${Username}"/>
+			</div>
+			<div>
+				<input type="password" id="password" placeholder="Password"/>
+			</div>
+				<input type="submit" id="submit" value="Log in"/>
+			</div>
+		</div>
+		<script th:src="@{~/js/authentication/login.js}"></script>
+	</body>
+</html> -->
+
+
+
+
+<!-- <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+	<head>
+		<title>Please Log In</title>
+	</head>
+	<body>
+		<h1>Please Log In</h1>
 		<div th:if="${error == true}">
 			Invalid username or password.</div>
 		<div th:if="${param.logout}">

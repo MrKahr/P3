@@ -1,3 +1,13 @@
+/**
+ * TODO: OUTDATED! DO NOT USE.
+ * This is left as a "guide/reference" on how to start implementing advisors.
+ * For additional info, see AuthenticationAdvisor.
+ * And as always, have a look at the documentaion, for instance: https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#web.servlet.spring-mvc.error-handling
+ */
+
+
+
+
 // package com.proj.controller.advisors;
 
 // import org.springframework.http.HttpStatus;

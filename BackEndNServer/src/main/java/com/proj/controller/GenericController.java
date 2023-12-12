@@ -9,18 +9,6 @@ public class GenericController {
     // Show the front page
     @GetMapping("/")
     public String showHomePage(){
-        return "index";
+        return "home";
     }
-
-    // Role testing
-    @GetMapping("/fisk")
-    public String showFisk(){
-        return "myEvents/eventlistpage";
-    }
-    // Role testing
-    @GetMapping("/userhomepage")
-    public String showFisk2(){
-        return "userhomepage";
-    }
-    
 }

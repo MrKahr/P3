@@ -1,4 +1,4 @@
-package com.proj.controller.security;
+package com.proj.controller.security.authentication;
 
 import java.util.HashMap;
 
@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 // Spring Events
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 // Authentication
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,7 +33,6 @@ public class AuthenticationConfig {
 	 * If the username/password in userDetailsService match with the corresponding username/password in the database, 
 	 * the user is authorized to proceed to the requested page.
 	 * <p>
-	 * TODO: Implement access restriction based on roles.
 	 * @param userDetailsService The service managing userDetails from the frontend (e.g. password).
 	 * @param passwordEncoder The password encoder to hash the password from the frontend. Should be identical to the encoder used on the database.
 	 * @return
@@ -55,7 +53,7 @@ public class AuthenticationConfig {
 	/**
 	 * Defines a hashmap of password encoders to use. Includes a default password encoder (bcrypt).
 	 * The hashmap is implemented to allow different password encoders to be used rather easily 
-	 * (but remember to convert passwords already encoded in the database to the new format).
+	 * (but remember that passwords already hashed in the database cannot be converted to the new format).
 	 * <p>
 	 * TODO: Changing password: https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html#authentication-change-password-configuration
 	 * @return  A new PasswordEncoder instance with the selected password encoder.
@@ -64,6 +62,10 @@ public class AuthenticationConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		String idForEncode = "bcrypt";
+
+		// Format of HashMap: 
+		//	String = name of PasswordEncoder. 
+		//	PasswordEncoder = the implementation of the PasswordEncoder.
 		HashMap<String, PasswordEncoder> encoders = new HashMap<String, PasswordEncoder>();
 		encoders.put(idForEncode, new BCryptPasswordEncoder(10)); // Default strength
 		encoders.put("pbkdf2@SpringSecurity_v5_8", Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8());
@@ -71,16 +73,6 @@ public class AuthenticationConfig {
 		PasswordEncoder passwordEncoder = new DelegatingPasswordEncoder(idForEncode, encoders);
 
 		return passwordEncoder;
-	}
-
-	/**
-	 * Enables Spring Security to listen to http requests. Used to limit max concurrent login sessions in SecurityFilterChain.
-	 * @return
-	 * @see https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html#ns-concurrent-sessions
-	 */
-	@Bean
-	public HttpSessionEventPublisher httpSessionEventPublisher() {
-		return new HttpSessionEventPublisher();
 	}
 
 	/**

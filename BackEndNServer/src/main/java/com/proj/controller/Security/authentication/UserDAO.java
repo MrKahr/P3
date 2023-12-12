@@ -1,4 +1,4 @@
-package com.proj.controller.security;
+package com.proj.controller.security.authentication;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,8 +21,10 @@ import com.proj.repositoryhandler.UserdbHandler;
 
 /**
  * The DAO (Data Access Object) was by Spring originally intended to access the database directly.
- * <p>
  * However, that is not the case in this implementation, where database access is abstracted to userdbHandler.
+ * <p>
+ * The purpose of UserDAO is to search the database for the user requesting login, fetch info used for authentication, 
+ * and insert it into a UserSecurityInfo object which is returned.
  * @see https://docs.spring.io/spring-framework/reference/data-access/dao.html
  */
 @Service
@@ -44,7 +46,8 @@ public class UserDAO {
 		try {
 			user = userdbHandler.findByUsername(username); //TODO: Check method runtime in userdbHandler
 		} catch (UserNotFoundException unfe) {
-			// Converts our UserNotFoundException to Spring Security's UsernameNotFoundException in order to fire the event AuthenticationFailureBadCredentialsEvent.
+			// Converts UserNotFoundException to Spring Security's UsernameNotFoundException in order to fire the event AuthenticationFailureBadCredentialsEvent
+			// and throw BadCredentialsException.
 			throw new UsernameNotFoundException("User with username"+ username + "could not be found.", unfe);
 		}
 
@@ -59,7 +62,7 @@ public class UserDAO {
 	 * Finds the granted authorities for the supplied user and stores them in a HashMap.
 	 * Used for authentication in Spring Security.
 	 * @param user A user object.
-	 * @return A Hashmap of granted authoritíes.
+	 * @return A HashSet of granted authoritíes.
 	 */
     private HashSet<GrantedAuthority> findAuthorities(User user) { 
         HashMap<RoleType, Role> roleMap = user.getAllRoles();
@@ -69,10 +72,6 @@ public class UserDAO {
             var grantedAuthority = new SimpleGrantedAuthority(key.toString());
             authorities.add(grantedAuthority);
         }
-		// Testing:
-        // System.out.println("[UserDAO] ==================== User: "+ user.getBasicUserInfo().getUserName() +" has authorities: " + authorities);
         return authorities;
     }
-
-
 } 

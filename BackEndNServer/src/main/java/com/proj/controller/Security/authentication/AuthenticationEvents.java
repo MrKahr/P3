@@ -1,4 +1,4 @@
-package com.proj.controller.security;
+package com.proj.controller.security.authentication;
 
 // Spring necessities
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import org.springframework.security.authentication.event.AuthenticationSuccessEv
 /**
  * Listen for specific events fired from Spring Security.
  * <p>
- * Experimental.
+ * Experimental as we have not implemented actual code to run when an event is fired.
  * @see https://docs.spring.io/spring-security/reference/servlet/authentication/events.html
  */
 @Component
