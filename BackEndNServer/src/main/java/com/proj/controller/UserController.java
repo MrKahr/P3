@@ -109,7 +109,6 @@ public class UserController {
   @ResponseBody
   Object getSomeUsers(@PathVariable String username, @RequestParam String requestingUsername) {
     User user = userManager.lookupAccount(username);
-    User reques
     // YOU MAY ONLY DEACTIVE YOURSELF
     if (start > end) {
       start = 0;
