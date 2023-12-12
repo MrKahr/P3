@@ -11,10 +11,4 @@ public class GenericController {
     public String showHomePage(){
         return "home";
     }
-
-    // Role testing
-    @GetMapping("/fisk")
-    public String showFisk(){
-        return "restDemo";
-    }
 }

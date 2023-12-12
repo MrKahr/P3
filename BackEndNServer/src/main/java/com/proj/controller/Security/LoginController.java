@@ -22,7 +22,9 @@ import jakarta.servlet.http.HttpServletResponse;
 // Our classes
 import com.proj.controller.security.authentication.AuthenticationProcess;
 
-
+/**
+ * The login controller handles requests to the login endpoint on our site.
+ */
 @Controller
 public class LoginController {
 
@@ -39,10 +41,9 @@ public class LoginController {
 	public ModelAndView showLoginPage(){
 		
 		ModelAndView model = new ModelAndView("authentication/loginPage");
-		model.addObject("Username", "Thymeleaf");
+		//model.addObject("Username", "Thymeleaf"); // Testing Thymeleaf's capabilities
 		return model; 
 	} 
-
 
 	/**
 	 * Invokes AuthenticationProcess with the supplied user info received in a POST request to the login page.
@@ -54,9 +55,7 @@ public class LoginController {
 		
 		Authentication authentication = authenticationProcess.authenticate(loginRequest, request, response); // Authenticates the user
 
-		// if(authentication.isAuthenticated()){
-		// 	return new ModelAndView(new RedirectView("/", true));
-		// }
+		// If login is successful, return this.
 		return new ModelAndView(new RedirectView("/", true));
 	}
 

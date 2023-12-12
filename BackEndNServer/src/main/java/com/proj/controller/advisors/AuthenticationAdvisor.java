@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class AuthenticationAdvisor extends ResponseEntityExceptionHandler {
     
     /**
-     * 
+     * This advisor is used when a BadCredentialsException is encountered, i.e. when a user supplied a wrong username/password.
      * Uses a wildcard, see: https://docs.oracle.com/javase/tutorial/java/generics/wildcards.html 
      * @return
      * 
@@ -23,13 +23,11 @@ public class AuthenticationAdvisor extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> badCredentials(HttpServletRequest request, Throwable exception){
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        return new ResponseEntity<>("Wrong username or password", status); // The static way of doing it: ResponseEntity.badRequest().body("Wrong username or password");
-    }
 
-    // Broken. TODO: Fix or find another way of dynamically showing HTTP status of server.
-    // private HttpStatus getStatus(HttpServletRequest request) {
-    //     Integer code = (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-    //     HttpStatus status = HttpStatus.resolve(code);
-    //     return (status != null) ? status : HttpStatus.INTERNAL_SERVER_ERROR;
-    // }
+        // ResponseEntities can be constructed either statically or using their constructor.
+        //      The static way: ResponseEntity.badRequest().body("Wrong username or password");
+        // Either way is valid. This method uses their constructor for no particular reason.
+
+        return new ResponseEntity<>("Wrong username or password", status); 
+    }
 }

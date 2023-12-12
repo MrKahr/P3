@@ -10,13 +10,6 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
  */
 @Configuration
 public class SecurityConfig {
-
-    // Doesn't seem to work as intended. Intention was to set all cookies to "SameSite=strict"
-    // @Bean
-    // public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
-    //     return CookieSameSiteSupplier.ofStrict();
-    // }
-    
  	/**
 	 * Enables Spring Security to listen to http requests. Used to limit max concurrent login sessions in SecurityFilterChain.
 	 * @return

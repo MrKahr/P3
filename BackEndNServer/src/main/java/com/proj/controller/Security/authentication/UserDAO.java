@@ -21,8 +21,10 @@ import com.proj.repositoryhandler.UserdbHandler;
 
 /**
  * The DAO (Data Access Object) was by Spring originally intended to access the database directly.
- * <p>
  * However, that is not the case in this implementation, where database access is abstracted to userdbHandler.
+ * <p>
+ * The purpose of UserDAO is to search the database for the user requesting login, fetch info used for authentication, 
+ * and insert it into a UserSecurityInfo object which is returned.
  * @see https://docs.spring.io/spring-framework/reference/data-access/dao.html
  */
 @Service

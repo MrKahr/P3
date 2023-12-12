@@ -62,6 +62,10 @@ public class AuthenticationConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		String idForEncode = "bcrypt";
+
+		// Format of HashMap: 
+		//	String = name of PasswordEncoder. 
+		//	PasswordEncoder = the implementation of the PasswordEncoder.
 		HashMap<String, PasswordEncoder> encoders = new HashMap<String, PasswordEncoder>();
 		encoders.put(idForEncode, new BCryptPasswordEncoder(10)); // Default strength
 		encoders.put("pbkdf2@SpringSecurity_v5_8", Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8());

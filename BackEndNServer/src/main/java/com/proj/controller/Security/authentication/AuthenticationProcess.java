@@ -27,8 +27,12 @@ import com.proj.controller.security.LoginController.LoginRequest;
 public class AuthenticationProcess {
     
     // Field
-	private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
 
+    // Object containing the strategy for storing the SecurityContext information against a thread.
+    // See: https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/core/context/SecurityContextHolderStrategy.html
+	private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();  
+    
+    // Repository to store the SecurityContext.
     private SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
 	private final AuthenticationManager authenticationManager;

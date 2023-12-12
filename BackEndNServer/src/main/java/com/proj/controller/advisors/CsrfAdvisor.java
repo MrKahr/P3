@@ -1,3 +1,11 @@
+/**
+ * TODO: For use with CSRF. Currently disabled.
+ * We have disabled it as trying to implement it took longer than we had allocated time for.
+ * As per our report, we did not prioritise security features highly, hence why we decided against spending more time to implement it.
+ */
+
+
+
 // package com.proj.controller.advisors;
 
 // import org.apache.catalina.connector.Response;
@@ -31,8 +39,6 @@
 //  * https://docs.spring.io/spring-security/reference/features/exploits/csrf.html#csrf-considerations-timeouts
 //  */
 
-
-// TODO: For use with CSRF. Currently disabled as that stuff is very annoying to work with.
 
 // @ControllerAdvice
 // public class CsrfAdvisor {
