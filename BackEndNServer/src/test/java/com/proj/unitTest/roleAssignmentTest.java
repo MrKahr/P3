@@ -1,6 +1,7 @@
 package com.proj.unitTest;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -17,6 +18,7 @@ import com.proj.function.RoleAssigner;
 
 public class roleAssignmentTest {
     @Test
+    @Order(19)
     public void constructUserObject(){
         BasicUserInfo info = new BasicUserInfo("user1", "1234");
         User user = new User(info);
@@ -25,6 +27,7 @@ public class roleAssignmentTest {
     }
 
     @Test   //we'll be using RoleAssigner for these next tests
+    @Order(20)
     public void checkForDependencies(){ 
         User user = new User("user", "1234");   //this user is not an admin or a member
 
@@ -64,6 +67,7 @@ public class roleAssignmentTest {
     }
 
     @Test
+    @Order(21)
     public void setNewRole(){
         BasicUserInfo info = new BasicUserInfo("user1", "1234");
         User user = new User(info);
@@ -78,6 +82,7 @@ public class roleAssignmentTest {
     }
 
     @Test
+    @Order(22)
     public void setReplacementRole(){
         BasicUserInfo info = new BasicUserInfo("user1", "1234");
         User user = new User(info);
@@ -96,6 +101,38 @@ public class roleAssignmentTest {
     }
 
     @Test
+    @Order(23)
+    public void setAllRolesAndUpdate() {
+        User user = new User("user", "1234");
+        Guest guest = new Guest("Some information about the user's character");
+        Member member = new Member("John Doe", "12345678", "0000", "City Town Street 1", "RealMail@mailService.com");
+        DM dm = new DM(null);
+        Admin admin = new Admin(null, null);
+        SuperAdmin superAdmin = new SuperAdmin(); // User needs Guest, Member and Admin roles to become SuperAdmin
+
+        // Set user's role to all
+        RoleAssigner.setRole(user, guest);
+        RoleAssigner.setRole(user, member);
+        RoleAssigner.setRole(user, dm);
+        RoleAssigner.setRole(user, admin);
+        RoleAssigner.setRole(user, superAdmin);
+
+        // Update all roles
+        RoleAssigner.setRole(user, guest);
+        RoleAssigner.setRole(user, member);
+        RoleAssigner.setRole(user, dm);
+        RoleAssigner.setRole(user, admin);
+        RoleAssigner.setRole(user, superAdmin);
+
+        assertNotNull(user.getGuestInfo());
+        assertNotNull(user.getMemberInfo());
+        assertNotNull(user.getDmInfo());
+        assertNotNull(user.getAdminInfo());
+        assertNotNull(user.getSuperAdminInfo());
+    }
+
+    @Test
+    @Order(24)
     public void setBadRoleType(){
         BasicUserInfo info = new BasicUserInfo("user1", "1234");
         User user = new User(info);
@@ -123,6 +160,7 @@ public class roleAssignmentTest {
     }
 
     @Test
+    @Order(25)
     public void setRoleMissingDependency(){
         User user = new User("user", "1234");
         Member member = new Member("John Doe", "12345678", "0000", "City Town Street 1", "RealMail@mailService.com");

@@ -39,7 +39,6 @@ public class LoginController {
 	 */
 	@GetMapping("/login")
 	public ModelAndView showLoginPage(){
-		
 		ModelAndView model = new ModelAndView("authentication/loginPage");
 		//model.addObject("Username", "Thymeleaf"); // Testing Thymeleaf's capabilities
 		return model; 

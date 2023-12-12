@@ -10,7 +10,6 @@ package com.proj.controller;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
-import com.proj.exception.FailedValidationException;
 import com.proj.function.ModuleManager;
 import com.proj.model.session.Module;
 
@@ -35,13 +32,8 @@ public class ModuleController {
     // https://stackoverflow.com/questions/630453/what-is-the-difference-between-post-and-put-in-http
     @PutMapping(path = "/add")
     Module addModule(@RequestParam String name, @RequestParam String description, @RequestParam String levelRange) {
-        try {
-            Module addedModule = moduleManager.createModule(name, description, levelRange);
-            return addedModule;
-        } catch (FailedValidationException FVE) {
-            // https://stackoverflow.com/questions/25422255/how-to-return-404-response-status-in-spring-boot-responsebody-method-return-t
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "validation failed");
-        }
+        Module addedModule = moduleManager.createModule(name, description, levelRange);
+        return addedModule;
     }
 
     @GetMapping(path = "/getAll")

@@ -154,6 +154,8 @@ public class User implements Cloneable {
     public boolean equals(Object obj) throws NullPointerException {
         if (obj == null) {
             return false;
+        } else if(this.getId() == null || ((User) obj).getId() == null){
+            return false;
         } else {
             return this.getId() == ((User) obj).getId();
         }

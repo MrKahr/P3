@@ -1,0 +1,62 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+.background {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url("../images/AT_background.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-color: red;
+    padding: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.LoginBox {
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    padding-right: 20px;
+    padding-left: 20px;
+    width: 350px;
+    height: auto;
+    margin: auto;
+}
+
+.SignupBox {
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    padding-right: 100px;
+    padding-left: 100px;
+    width: 350px;
+    height: auto;
+    margin: auto;
+}
+
+.column {
+    float: left;
+    width: 50%;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.PasswordConditions input{
+    width: 9px;
+    height: 9px;
+}
+
+.PasswordConditions label{
+    font-size: 9px;
+}
+
