@@ -87,31 +87,27 @@ public class UserManager {
         if (userName == null || password == null) {
             throw new NullPointerException("Cannot create user with username or password null");
         } else {
-            try {
-                // Create user object
-                BasicUserInfo basicUserInfo = new BasicUserInfo(userName, password);
-                User user = new User(basicUserInfo);
+            // Create user object
+            BasicUserInfo basicUserInfo = new BasicUserInfo(userName, password);
+            User user = new User(basicUserInfo);
 
-                // Validate user fields
-                BasicInfoValidator userValidator = new BasicInfoValidator(basicUserInfo);
-                userValidator.ValidateUserName().ValidatePassword();
+            // Validate user fields
+            BasicInfoValidator userValidator = new BasicInfoValidator(basicUserInfo);
+            userValidator.ValidateUserName().ValidatePassword();
 
-                // Check whether username already exists in database
-                validateUsernameStatusInDB(userName);
+            // Check whether username already exists in database
+            validateUsernameStatusInDB(userName);
 
-                // Set empty guest info
-                user.setGuestInfo(new Guest(""));
+            // Set empty guest info
+            user.setGuestInfo(new Guest(""));
 
-                // Save user to db
-                userdbHandler.save(user);
-                // Increment number of users currently saved in db
-                this.numberOfUsers++;
-                // Write down what ID we just used
-                this.lastId = user.getId();
-                return "User creation successful";
-            } catch (FailedValidationException ife) {
-                return "Cannot create user because: " + ife.getMessage();
-            }
+            // Save user to db
+            userdbHandler.save(user);
+            // Increment number of users currently saved in db
+            this.numberOfUsers++;
+            // Write down what ID we just used
+            this.lastId = user.getId();
+            return "User creation successful";
         }
 
     }

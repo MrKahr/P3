@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
-    <link rel="stylesheet" href="../css/loginpageStyle.css">
+    <link rel="stylesheet" href="../css/loginStyle.css">
 </head>
 
 <body>
@@ -16,7 +16,7 @@
             <a href="notfoundpage">CONMAR</a>
             <a href="notfoundpage">About AT</a>
             <a href="notfoundpage">Contact</a>
-            <a href="loginpage" class="split">Log In</a>
+            <a href="/login" class="split">Log In</a>
         </nav>
     </header>
     <div class="background">
@@ -24,23 +24,23 @@
             <img src="../images/AalborgTableTop_Logo.png" alt="AalborgTableTop logo" width="100" height="100">
             <h2>Sign Up</h2>
             
-            <div class="row">
+            <div class="row" id="SignupContainer">
                 <div class="column">
                     <label for="Username">Username:</label><br>
-                    <input type="text" id="Username" name="Username" required><br><br>
+                    <input type="text" id="username" name="Username" required><br><br>
                     <label for="Email">Email:</label><br>
-                    <input type="email" id="Email" name="Email" required><br><br>
-                    <div class="PayingmemberInfo" id="PayingmemberInfo" style="display: none;">
+                    <input type="email" id="email" name="Email" required><br><br>
+                    <div class="PayingmemberInfo" id="payingmemberInfo" style="display: none;">
                         <label for="FullName">Full name:</label><br>
-                        <input type="text" id="FullName" name="FullName" required><br><br>
+                        <input type="text" id="fullName" name="FullName" required><br><br>
                         <label for="Phone">Phone:</label><br>
-                        <input type="number" id="Phone" name="Phone" required><br><br>
+                        <input type="tel" id="phone" name="Phone" pattern="[0-9]{8}" minlength="8" maxlength="8" required><br><br>
                     </div>
                 </div>
                 <div class="column">
                     <label for="Password">Password:</label><br>
-                    <input type="password" id="Password" name="Password" required><br>
-                    <div class="PasswordConditions" id="PasswordConditions" style="display: none;">
+                    <input type="password" id="password" name="Password" required><br>
+                    <div class="PasswordConditions" id="passwordConditions" style="display: none;">
                         <input type="checkbox" id="number" name="number">
                         <label for="number">Number</label><br>
                         <input type="checkbox" id="upperCase" name="upperCase">
@@ -52,39 +52,39 @@
                     </div>
                     <br><!-- out of syntax because it want some if it's in the none display -->
                     <label for="Confirm Password">Confirm Password:</label><br>
-                    <input type="password" id="Confirm Password" name="Confirm Password" required><br><br>
-                    <div class="PayingmemberInfo2" id="PayingmemberInfo2" style="display: none;">
+                    <input type="password" id="confirmPassword" name="Confirm Password" required><br><br>
+                    <div class="PayingmemberInfo2" id="payingmemberInfo2" style="display: none;">
                         <label for="Address">Address:</label><br>
-                        <input type="text" id="Address" name="Address" required><br><br>
+                        <input type="text" id="address" name="Address" required><br><br>
                         <label for="PostalCode">Postal code:</label><br>
-                        <input type="number" id="PostalCode" name="PostalCode" required><br><br>
+                        <input type="text" id="postalCode" name="PostalCode" pattern="[0-9]{4}" minlength="4" maxlength="4" required><br><br>
                     </div>
                 </div>
             </div>
-            <input type="checkbox" id="Captcha" name="Captcha" value="Captcha"><!-- Captcha needs to be implemented -->
-            <label for="Captcha"> Captcha</label><br>
-            <input type="checkbox" id="SignUpMember" name="SignUpMember" value="SignUpMember">
+            <input type="checkbox" id="captcha" name="Captcha" value="Captcha"><!-- Captcha needs to be implemented -->
+            <label for="Captcha"> Captcha (Work In Progress)</label><br>
+            <input type="checkbox" id="signUpMember" name="SignUpMember" value="SignUpMember">
             <label for="SignUpMember"> Sign up as paying member</label><br><br>
-            <input type="submit" value="Sign Up" onclick="location.href='../PublicResources/userhomepage.html'">
-            </form><!-- I need to make a function that checks if the requirements are met -->
+            <input type="submit" id="submit" value="Sign Up">
+            <!-- </form>I need to make a function that checks if the requirements are met -->
     
             <p>Already have an account?</p>
-            <p><a href="loginpage">Log In</a></p>
+            <p><a href="/login">Log In</a></p>
         </div>
     </div>
     
 
     <script>
-        document.getElementById('Password').addEventListener('focus', function() {
-            let passwordConditions = document.getElementById("PasswordConditions");
+        document.getElementById('password').addEventListener('focus', function() {
+            let passwordConditions = document.getElementById("passwordConditions");
             if(passwordConditions.style.display == "none") {
                 passwordConditions.style.display = "block";
             } else {
                 passwordConditions.style.display = "none";
             }
         })
-        document.getElementById('Password').addEventListener('blur', function() {
-            let passwordConditions = document.getElementById("PasswordConditions");
+        document.getElementById('password').addEventListener('blur', function() {
+            let passwordConditions = document.getElementById("passwordConditions");
             if(passwordConditions.style.display == "block") {
                 passwordConditions.style.display = "none";
             } else {
@@ -92,9 +92,9 @@
             }
         })
 
-        document.getElementById('SignUpMember').addEventListener('click', function() {
-            let payingmemberInfo = document.getElementById("PayingmemberInfo");
-            let payingmemberInfo2 = document.getElementById("PayingmemberInfo2");
+        document.getElementById('signUpMember').addEventListener('click', function() {
+            let payingmemberInfo = document.getElementById("payingmemberInfo");
+            let payingmemberInfo2 = document.getElementById("payingmemberInfo2");
             if(payingmemberInfo.style.display == "none" && payingmemberInfo2.style.display == "none") {
                 payingmemberInfo.style.display = "block";
                 payingmemberInfo2.style.display = "block";
@@ -104,5 +104,6 @@
             }
         })
     </script>
+    <script th:src="@{~/js/authentication/signup.js}"></script>
 </body>
 </html>

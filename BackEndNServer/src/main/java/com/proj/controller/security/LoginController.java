@@ -34,7 +34,7 @@ public class LoginController {
 
 	// Method
 	/**
-	 * Serves the login page when receiving a GET request to the login page. 
+	 * Serves the login page when receiving a GET request to the login endpoint. 
 	 * @return
 	 */
 	@GetMapping("/login")
@@ -59,7 +59,7 @@ public class LoginController {
 
 	/**
 	 * The object used to match input from the frontend. 
-	 * The parameters contained in the object sent from the frontend must match the parammeters of this object extactly (or vice versa)
+	 * The parameters contained in the object sent from the frontend must match the parameters of this object exactly (or vice versa)
 	 */
 	public record LoginRequest(String username, String password) {}
 }
