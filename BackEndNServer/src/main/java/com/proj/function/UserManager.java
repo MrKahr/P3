@@ -306,20 +306,14 @@ public class UserManager {
      * Check if the account with the given ID is past its deletion date and remove
      * it from the database if it
      * 
-     * @param userId - identifier of the user whose account the system removes
+     * @param userId - identifier of the user whose account the system should remove
      */
-    public String removeAccount(int userId) {
+    public String removeAccount(String username) {
         try {
-      User userToDelete = userdbHandler.findById(userId);
-        String statusmsg = "Deletion of " + userToDelete.getBasicUserInfo().getUserName();
-        LocalDateTime deletionDate = userToDelete.getBasicUserInfo().getDeletionDate();
-        if (deletionDate != null && LocalDateTime.now().isAfter(deletionDate)) { // check if we're past the deletion
-                                                                                 // date
-            userdbHandler.delete(userToDelete);
-            return statusmsg + " successful";
-        } else {
-            return statusmsg + " unsuccessful";
-        }
+        User userToDelete = this.lookupAccount(username);
+        userToDelete.getBasicUserInfo().setDeletionDate(LocalDateTime.now());   //setting the expiry date to right now so the cleanup-function will get it
+        this.getUserdbHandler().save(userToDelete);
+        return "User " + username + "scheduled for deletion.";
         } catch (UserNotFoundException unfe){
             return unfe.getMessage();
         }
