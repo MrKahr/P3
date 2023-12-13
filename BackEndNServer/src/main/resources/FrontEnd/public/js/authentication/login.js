@@ -1,6 +1,6 @@
 
 window.addEventListener("load", () => {
-    console.log("Loaded"); // TODO: disable after testing
+    //console.log("Loaded"); // TODO: disable after testing
     setup();
 })
 
@@ -59,10 +59,10 @@ async function sendData(userDetails){
                 if(response.redirected){
                     notifyUser("Logged in successfully!");
                     //sleep(1000);
-                    window.location.href = response.url;
+                    //window.location.href = response.url;
                 } 
                 else
-                    notifyUser("Server is not redirecting properly", status);           
+                    notifyUser("Server is not redirecting properly", status, "warn");           
                 break;
 
             case 400:
@@ -74,7 +74,7 @@ async function sendData(userDetails){
                 break;
         }
     } catch (error) {
-        let errorMessage = `Unhandled exception while logging in: " ${error} "`;
+        let errorMessage = `Exception ocurred while logging in: " ${error} "`;
         notifyUser(errorMessage, "", "error");
     }
 }
@@ -87,7 +87,7 @@ async function sendData(userDetails){
  * @param {int} httpStatus 
  * @param {string} logSeverity 
  */
-function notifyUser(message, httpStatus = "", logSeverity = "warn"){
+function notifyUser(message, httpStatus = "", logSeverity = "log"){
     let loginFieldsContainer = document.getElementById("LoginContainer");
 
     // Set custom message if httpstatus is defined

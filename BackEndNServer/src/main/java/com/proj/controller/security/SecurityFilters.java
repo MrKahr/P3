@@ -171,7 +171,7 @@ public class SecurityFilters {
 		http
 		.logout(logout -> logout /* Customize logout functionality */
 			.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(Directive.COOKIES))) /* Tell the client to clear stored cookies from our site */
-			.logoutUrl("/logout") /* Specify logout endpoint. A request to this will automatically logout the user */
+			.logoutUrl("/login?logout") /* Specify logout endpoint. A request to this will automatically logout the user */
 			.logoutSuccessUrl("/") /* If logout is successful, redirect to this endpoint */
 			.permitAll() /* Always allow requests to logout */
 		);
@@ -220,7 +220,7 @@ public class SecurityFilters {
 		http
 		.logout(logout -> logout /* Customize logout functionality */
 			.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(Directive.COOKIES))) /* Tell the client to clear stored cookies from our site */
-			.logoutUrl("/logout") /* Specify logout endpoint. A request to this will automatically logout the user */
+			.logoutUrl("/login?logout") /* Specify logout endpoint. A request to this will automatically logout the user */
 			.logoutSuccessUrl("/") /* If logout is successful, redirect to this endpoint */
 			.permitAll() /* Always allow requests to logout */
 		);

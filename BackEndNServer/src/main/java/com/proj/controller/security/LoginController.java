@@ -2,7 +2,7 @@ package com.proj.controller.security;
 
 // Spring necessities
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.http.MediaType;
 // Spring Security
 import org.springframework.security.core.Authentication;
 
@@ -38,19 +38,18 @@ public class LoginController {
 	 * @return
 	 */
 	@GetMapping("/login")
-	public ModelAndView showLoginPage(){
-		ModelAndView model = new ModelAndView("authentication/loginPage");
-		//model.addObject("Username", "Thymeleaf"); // Testing Thymeleaf's capabilities
-		return model; 
+	public String showLoginPage(){
+		return "authentication/loginPage";
 	} 
 
 	/**
 	 * Invokes AuthenticationProcess with the supplied user info received in a POST request to the login page.
+	 * To enable form support, insert this in postmapping: ", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE}" AND remove "@Requestbody"
 	 * @param loginRequest The supplied user info from the frontend
 	 * @return TODO: If login succesful, redirect to the page that was initially requested.
 	 */
-	@PostMapping("/login")
-	public ModelAndView login(@RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
+	@PostMapping(path = "/login")
+	public ModelAndView login (@RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
 		
 		Authentication authentication = authenticationProcess.authenticate(loginRequest, request, response); // Authenticates the user
 
