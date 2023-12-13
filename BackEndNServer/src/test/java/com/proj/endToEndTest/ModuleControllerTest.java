@@ -24,7 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 // https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/SpringBootTest.WebEnvironment.html
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc // MockMvc allows us to mock HTTP requests to our REST controllers
+@AutoConfigureMockMvc(addFilters = false) // MockMvc allows us to mock HTTP requests to our REST controllers
+// "addFilters = false" disables Spring Security in test
 public class ModuleControllerTest {
 
     @Autowired
@@ -41,17 +42,17 @@ public class ModuleControllerTest {
     // Add module through mocked PUT request to test controller
     public void requestAddModule() {
         try {
-            String name = "The Circle of Life";
-            String description = "I am going to change.";
-            String levelRange = "01-02";
+            Module module = new Module ("Creation", "I am going to born.", "01-01");
+            module.setId(1);
             ResultActions response = mockMvc
-                    .perform(put("/module/add?name=" + name + "&description=" + description + "&levelRange=" + levelRange));
+                    .perform(put("/admin/module/add?name=" + module.getName() + "&description=" + module.getDescription() + "&levelRange=" + module.getLevelRange()));
 
             response.andExpect(status().isOk());
+
+            moduleManager.getModuledbHandler().delete(module); // Cleanup
         } catch (Exception e) {
             fail("Unexpected exception thrown requestAddModule: " + e.getMessage()); // https://www.baeldung.com/junit-fail
         }
-        //TODO: cleanup
     }
 
     @Test
@@ -59,14 +60,14 @@ public class ModuleControllerTest {
     // Edit module through mocked PUT request to test controller
     public void requestEditModule() { // Database persists from the last test, but not in the third
         try {
-            moduleManager.createModule("null", "null", "01-02");
+            moduleManager.createModule("The Circle of Life", "I am going to change.", "01-02");
 
             Module updateModule = new Module("The Circle of Death", "I am not who I was.", "02-10");
             updateModule.setId(2);
             
             assertTrue(moduleManager.getModuledbHandler().existsById(2));
 
-            ResultActions response = mockMvc.perform(put("/module/editByID") // Compare fields of response to expected values
+            ResultActions response = mockMvc.perform(put("/admin/module/editByID") // Compare fields of response to expected values
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(updateModule)));
 
             response.andExpect(status().isOk())
@@ -76,10 +77,10 @@ public class ModuleControllerTest {
                         is(updateModule.getDescription())))
                 .andExpect(jsonPath("$.levelRange",
                         is(updateModule.getLevelRange())));
+            moduleManager.getModuledbHandler().delete(updateModule); // Cleanup
         } catch (Exception e) {
             fail("Unexpected exception thrown by requestEditModule: " + e.getMessage());
         }
-        //TODO: cleanup
     }
     
     @Test
@@ -87,16 +88,16 @@ public class ModuleControllerTest {
     // Delete module through mocked PUT request to test controller
     public void requestRemoveModule() {
         try {
-            Module moduleToEdit = moduleManager.createModule("I live to die", "My fear is palpable", "20-20");
+            Module moduleToRemove = moduleManager.createModule("I live to die", "My fear is palpable", "20-20");
 
-            ResultActions response = mockMvc.perform(delete("/module/removeByID?id=" + moduleToEdit.getId()));
+            ResultActions response = mockMvc.perform(delete("/admin/module/removeByID?id=" + moduleToRemove.getId()));
             response.andExpect(status().isOk());
 
             assertTrue(moduleManager.getModuledbHandler().existsById(1));
 
+            moduleManager.getModuledbHandler().delete(moduleToRemove); // Cleanup
         } catch (Exception e) {
             fail("Unexpected exception thrown by requestRemoveModule: " + e.getMessage());
         }
-        //TODO: cleanup
     }
 }
