@@ -1,6 +1,6 @@
 async function addCalendar() {
     try {//http://localhost:8080/DateBetween?startDateTime=2023-12-01T15:06:27.299631&endDateTime=2023-12-31T15:06:27.299631
-        const response = await fetch("http://localhost:8080/newplaysession?title=hej&description=test&dm=dmname&currentNumberOfPlayers=1&date=2023-11-12T10:10:00&maxNumberOfPlayers=3&moduleID=1", {
+        const response = await fetch("http://localhost:8080/newplaysession?title=hej&description=test&dm=dmname&currentNumberOfPlayers=1&date=2023-12-12T10:10:00&maxNumberOfPlayers=3&moduleID=1", {
             method: "POST",
             mode: "cors",
             cache: "no-cache"
@@ -30,7 +30,7 @@ eventlist = loadCalendar();
 
 // Beautified by https://jsonformatter.org/
 // In an actual implementation this would be a GET to the server
-const eventsData = [
+let eventsData = [
     // {
     //     "id": "2",
     //     "title": "Cool Event På DiceNDrinks",
@@ -128,17 +128,27 @@ const eventsData = [
     //     }
     // }
 ];
-eventsData.join(eventlist)
 
 let currentDate = new Date();
 // For event color we cycle through this array
 const colors = ["#add8e6", "#559374", "#fca9e0", "#84ba5e"];
 const NUMCOLORS = colors.length;
 
-function addEventsToCalendar(events) {
+async function addEventsToCalendar(events) {
+    events = await JSON.parse(await loadCalendar());
     let colorNum = 0; // Event color cycles through an array
     events.forEach(event => {
         const eventDate = new Date(event.date);
+        console.log(event.id);
+        if (event.module === null) {
+            event.module = {
+                "name": "",
+                "description": "",
+                "levelRange": "",
+                "addedDate": null,
+                "removedDate": null
+            }
+        }
 
         if (eventDate.getMonth() === currentDate.getMonth() && eventDate.getFullYear() === currentDate.getFullYear()) {
             const eventElement = document.createElement('div');
