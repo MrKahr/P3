@@ -1,6 +1,7 @@
 package com.proj.endToEndTest;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,6 +37,7 @@ public class ModuleControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
+    @Order(110)
     // Add module through mocked PUT request to test controller
     public void requestAddModule() {
         try {
@@ -49,9 +51,11 @@ public class ModuleControllerTest {
         } catch (Exception e) {
             fail("Unexpected exception thrown requestAddModule: " + e.getMessage()); // https://www.baeldung.com/junit-fail
         }
+        //TODO: cleanup
     }
 
     @Test
+    @Order(111)
     // Edit module through mocked PUT request to test controller
     public void requestEditModule() { // Database persists from the last test, but not in the third
         try {
@@ -75,9 +79,11 @@ public class ModuleControllerTest {
         } catch (Exception e) {
             fail("Unexpected exception thrown by requestEditModule: " + e.getMessage());
         }
+        //TODO: cleanup
     }
     
     @Test
+    @Order(112)
     // Delete module through mocked PUT request to test controller
     public void requestRemoveModule() {
         try {
@@ -91,5 +97,6 @@ public class ModuleControllerTest {
         } catch (Exception e) {
             fail("Unexpected exception thrown by requestRemoveModule: " + e.getMessage());
         }
+        //TODO: cleanup
     }
 }

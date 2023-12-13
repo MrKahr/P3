@@ -9,24 +9,18 @@
 
 package com.proj.controller;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.proj.model.users.*;
-import com.proj.model.session.PlaySession;
-import com.proj.model.session.Module;
 import com.proj.repositoryhandler.UserdbHandler;
-import com.proj.exception.IllegalUserOperationException;
 import com.proj.function.RoleAssigner;
 import com.proj.function.UserManager;
 
@@ -61,7 +55,7 @@ import com.proj.function.UserManager;
 @Controller
 public class UserController {
   @Autowired
-  UserdbHandler userdbHandler;
+  private UserdbHandler userdbHandler;
 
   // TODO: FOR TESTING PURPOSES!!!!!
   ArrayList<Integer> ids = new ArrayList<Integer>();
@@ -80,15 +74,15 @@ public class UserController {
     ArrayList<User> sanitizedUsers = new ArrayList<User>();
     try {
       for (int i = 0; i < number; i++) {
-        User user = new User(new BasicUserInfo("name" + i, "password" + i));
+        User user = new User(new BasicUserInfo("n" + i, "p" + i));
         if(i >= 1){
-        RoleAssigner.setRole(user, new Guest("Level 1 bard" + i));
+          RoleAssigner.setRole(user, new Guest("Level 1 bard" + i));
         }
         if(i >= 2){
-        RoleAssigner.setRole(user, new Member("Fisk", "Randomstuff", "Table", "Stringwauy", "NoEmail"));
+          RoleAssigner.setRole(user, new Member("Fisk", "Randomstuff", "Table", "Stringwauy", "NoEmail"));
         }
         if(i >= 3){
-        RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
+          RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
         }
         if(i >= 4){
         RoleAssigner.setRole(user, new Admin(new ArrayList<String>(), new ArrayList<String>()));
@@ -116,8 +110,7 @@ public class UserController {
    * DO NOT MAP USER ID DIRECTLY TO GET
    */
   @GetMapping(path = "/user/{id}")
-  @ResponseBody
-  Object profile(@PathVariable Integer id, @RequestParam Integer accessingUserID) {
+  @ResponseBody Object profile(@PathVariable Integer id, @RequestParam Integer accessingUserID) {
     User accessingUser = userdbHandler.findById(accessingUserID);
     User user = null;
     // Finding user themselves
@@ -137,8 +130,7 @@ public class UserController {
    * TODO: Make function flexible enough to return a couple of users
    */
   @GetMapping(path = "/users")
-  @ResponseBody
-  Object getSomeUsers(@PathVariable Integer start, Integer end) {
+  @ResponseBody Object getSomeUsers(@PathVariable Integer start, Integer end) {
 
     if (start > end) {
       start = 0;
@@ -156,8 +148,7 @@ public class UserController {
   }
 
   @GetMapping(path = "/user/all")
-  @ResponseBody
-  Object getAllUsers() {
+  @ResponseBody Object getAllUsers() {
     return userdbHandler.findAll();
   }
 }

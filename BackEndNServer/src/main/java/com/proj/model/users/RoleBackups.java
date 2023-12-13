@@ -3,9 +3,12 @@ package com.proj.model.users;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import com.proj.model.events.RoleChanged;
 import com.proj.function.RoleAssigner;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RoleBackups {
     //Field
     private ArrayList<RoleChanged> history;
@@ -15,6 +18,7 @@ public class RoleBackups {
     //Constructor
     public RoleBackups(){
         this.history = new ArrayList<RoleChanged>();
+
         this.roles = new HashMap<RoleType, Role>();
     }
 

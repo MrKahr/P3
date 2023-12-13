@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.function.Executable;
 
 import com.proj.model.users.*;
@@ -12,6 +13,7 @@ import com.proj.model.events.RoleChanged;
 
 public class roleBackupTests{
     @Test
+    @Order(26)
     public void constructingBackupsClass(){
         User user1 = new User("Person", "OneMillion");
         assertNotNull(user1.getRoleBackups());
@@ -21,6 +23,7 @@ public class roleBackupTests{
     }
 
     @Test
+    @Order(27)
     public void addingToHistory(){
         User user = new User("Person", "OneMillion");
         assertNotNull(user.getRoleBackups().getHistory());
@@ -30,6 +33,7 @@ public class roleBackupTests{
     }
 
     @Test
+    @Order(28)
     public void usingBackupMap(){
         User user = new User("Person", "OneMillion");
         Guest role = new Guest("");
@@ -40,6 +44,7 @@ public class roleBackupTests{
     }
 
     @Test
+    @Order(29)
     public void restoringBackup(){
         User user = new User("Person", "OneMillion");
         Guest guest = new Guest("A string");

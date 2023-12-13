@@ -1,7 +1,6 @@
 package com.proj.model.session;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;

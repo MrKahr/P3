@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
 
 import com.proj.model.users.*;
 
@@ -41,6 +42,7 @@ public class ValidatorUnitTest {
 
     // BASIC USER INFO TESTS
     @Test
+    @Order(74)
     public void nullBasicuserInfo() {
         basicUserInfoValidator.setBasicUserInfo(null);
 
@@ -53,6 +55,7 @@ public class ValidatorUnitTest {
     }
 
     @Test
+    @Order(75)
     public void nullUsername() {
         user.getBasicUserInfo().setUserName(null);
         basicUserInfoValidator.setBasicUserInfo(user.getBasicUserInfo());
@@ -66,6 +69,7 @@ public class ValidatorUnitTest {
     }
 
     @Test
+    @Order(76)
     public void nullPassword() {
         user.getBasicUserInfo().setPassword(null);
         basicUserInfoValidator.setBasicUserInfo(user.getBasicUserInfo());
@@ -79,6 +83,7 @@ public class ValidatorUnitTest {
     }
 
     @Test
+    @Order(77)
     public void userNameInvalid() {
         user.getBasicUserInfo().setUserName("");
         basicUserInfoValidator.setBasicUserInfo(user.getBasicUserInfo());
@@ -93,6 +98,7 @@ public class ValidatorUnitTest {
     }
 
     @Test
+    @Order(78)
     public void passwordnvalid() {
         user.getBasicUserInfo().setPassword("");
         basicUserInfoValidator.setBasicUserInfo(user.getBasicUserInfo());
@@ -107,6 +113,7 @@ public class ValidatorUnitTest {
 
     // MEMBER INFO TESTS
     @Test
+    @Order(79)
     public void nullMemberInfo() {
         memberValidator.setMemberInfo(null);
 
@@ -119,6 +126,7 @@ public class ValidatorUnitTest {
     }
 
     @Test
+    @Order(80)
     public void nullEmail() {
         user.getMemberInfo().setEmail(null);
         memberValidator.setMemberInfo(user.getMemberInfo());
@@ -131,6 +139,7 @@ public class ValidatorUnitTest {
     }
 
     @Test
+    @Order(81)
     public void emailInvalid() {
         user.getMemberInfo().setEmail("");
         memberValidator.setMemberInfo(user.getMemberInfo());
@@ -144,6 +153,7 @@ public class ValidatorUnitTest {
     }
 
     @Test
+    @Order(82)
     public void nullPhoneNumber() {
         user.getMemberInfo().setPhoneNumber(null);
         memberValidator.setMemberInfo(user.getMemberInfo());
@@ -157,6 +167,7 @@ public class ValidatorUnitTest {
     }
 
     @Test
+    @Order(83)
     public void invalidPhoneNumber() {
         user.getMemberInfo().setPhoneNumber("");
         memberValidator.setMemberInfo(user.getMemberInfo());
@@ -170,6 +181,7 @@ public class ValidatorUnitTest {
     }
 
     @Test
+    @Order(84)
     public void nullAddress() {
         user.getMemberInfo().setAddress(null);
         memberValidator.setMemberInfo(user.getMemberInfo());
@@ -183,6 +195,7 @@ public class ValidatorUnitTest {
     }
 
     @Test
+    @Order(85)
     public void invalidAddress() {
         user.getMemberInfo().setAddress("");
         memberValidator.setMemberInfo(user.getMemberInfo());
@@ -196,6 +209,7 @@ public class ValidatorUnitTest {
     }
 
     @Test
+    @Order(86)
     public void nullPostcode() {
         user.getMemberInfo().setPostalCode(null);
         memberValidator.setMemberInfo(user.getMemberInfo());
@@ -209,6 +223,7 @@ public class ValidatorUnitTest {
     }
 
     @Test
+    @Order(87)
     public void invalidPostcode() {
         user.getMemberInfo().setPostalCode("");
         memberValidator.setMemberInfo(user.getMemberInfo());

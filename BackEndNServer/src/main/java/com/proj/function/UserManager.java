@@ -17,7 +17,7 @@ import com.proj.repositoryhandler.UserdbHandler;
 import com.proj.validators.BasicInfoValidator;
 import com.proj.validators.MemberValidator;
 
-// This class is broken/dummy code. NEEDS FULL REWRITE OF METHODS!!!!!
+// TODO: rewrite all functions that end string message to write exception
 
 /**
  * Class responsible for handling all user management except assigning roles
@@ -31,6 +31,7 @@ public class UserManager {
     private RoleRequestdbHandler roleRequestdbHandler;
 
     private int numberOfUsers;
+    private int lastId; // the id of the most recent user created by createAccount
 
     // Constructor
     public UserManager(int numberOfUsers) {
@@ -50,12 +51,28 @@ public class UserManager {
         this.numberOfUsers = numberOfUsers;
     }
 
+    /**
+     * Gets the current dbhandler.
+     * This getter is mainly used for testing purposes
+     * 
+     * @return - the user database handler associated with the current manager
+     */
     public UserdbHandler getUserdbHandler() {
         return userdbHandler;
     }
 
+    /**
+     * Gets the current role request db handler.
+     * This getter is mainly used for testing purposes
+     * 
+     * @return - the role request handler associated with the current manager
+     */
     public RoleRequestdbHandler getRoleRequestdbHandler() {
         return roleRequestdbHandler;
+    }
+
+    public int getLastId() {
+        return lastId;
     }
 
     /**
@@ -71,9 +88,6 @@ public class UserManager {
             throw new NullPointerException("Cannot create user with username or password null");
         } else {
             try {
-                // Check whether username already exists in database
-                validateUsernameStatusInDB(userName);
-
                 // Create user object
                 BasicUserInfo basicUserInfo = new BasicUserInfo(userName, password);
                 User user = new User(basicUserInfo);
@@ -82,14 +96,18 @@ public class UserManager {
                 BasicInfoValidator userValidator = new BasicInfoValidator(basicUserInfo);
                 userValidator.ValidateUserName().ValidatePassword();
 
+                // Check whether username already exists in database
+                validateUsernameStatusInDB(userName);
+
                 // Set empty guest info
                 user.setGuestInfo(new Guest(""));
 
                 // Save user to db
                 userdbHandler.save(user);
-
                 // Increment number of users currently saved in db
                 this.numberOfUsers++;
+                // Write down what ID we just used
+                this.lastId = user.getId();
                 return "User creation successful";
             } catch (FailedValidationException ife) {
                 return "Cannot create user because: " + ife.getMessage();
@@ -103,10 +121,8 @@ public class UserManager {
      * already exist.
      * 
      * @param username Display name of user.
-     * @throws FailedValidationException Thrown when the username is already taken
-     *                                   by
-     *                                   another user (i.e. exists in the
-     *                                   database).
+     * @throws FailedValidationException Thrown when the username is already take by
+     *                                   another user (i.e. exists in the database).
      */
     public String validateUsernameStatusInDB(String username) {
         try {
@@ -120,23 +136,22 @@ public class UserManager {
         }
     }
 
-    /*
+    /**
      * Queries the database for an account with a given username.
      * This is possible because usernames are unique.
      * 
      * @param username Display name of the user.
      * 
      * @return The user object with the given username or null if this user is not
-     * found
+     *         found
      * 
      * @throws UserNotFoundException Thrown if the user is not found in the
-     * database.
+     *                               database.
      */
 
     public User lookupAccount(String username) throws UserNotFoundException, IllegalArgumentException {
-        User user;
-        user = userdbHandler.findByUserName(username);
-        return user;
+        return userdbHandler.findByUserName(username);
+
     }
 
     /**
@@ -258,6 +273,8 @@ public class UserManager {
             return fve.getMessage();
         } catch (NullPointerException npe) {
             return npe.getMessage();
+        } catch (Exception e){
+            return e.getMessage();
         }
     }
 
@@ -294,12 +311,13 @@ public class UserManager {
      * 
      * @param userId - the id of the user to restore
      */
-    public void restoreAccount(int userId) {
+    public String restoreAccount(int userId) {
         User userToActivate = userdbHandler.findById(userId);
         userToActivate.getBasicUserInfo().setDeactivationDate(null);
         userToActivate.getBasicUserInfo().setDeletionDate(null);
         userdbHandler.save(userToActivate);
-
+        return "User: " + userToActivate.getBasicUserInfo().getUserName() + " with ID: " + userToActivate.getId()
+                + " was successfully restored";
     }
 
     /**
@@ -310,14 +328,20 @@ public class UserManager {
      */
     public String removeAccount(String username) {
         try {
-        User userToDelete = this.lookupAccount(username);
-        userToDelete.getBasicUserInfo().setDeletionDate(LocalDateTime.now());   //setting the expiry date to right now so the cleanup-function will get it
-        this.getUserdbHandler().save(userToDelete);
-        return "User " + username + "scheduled for deletion.";
-        } catch (UserNotFoundException unfe){
+            User userToDelete = userdbHandler.findById(userId);
+            String statusmsg = "Deletion of " + userToDelete.getBasicUserInfo().getUserName();
+            LocalDateTime deletionDate = userToDelete.getBasicUserInfo().getDeletionDate();
+            if (deletionDate != null && LocalDateTime.now().isAfter(deletionDate)) { // check if we're past the deletion
+                                                                                     // date
+                userdbHandler.delete(userToDelete);
+                return statusmsg + " successful";
+            } else {
+                return statusmsg + " unsuccessful";
+            }
+        } catch (UserNotFoundException unfe) {
             return unfe.getMessage();
         }
-  
+
     }
 
     /**
