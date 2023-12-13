@@ -21,14 +21,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.proj.model.users.*;
+import com.proj.validators.MemberValidator;
+import com.proj.exception.IllegalUserOperationException;
 import com.proj.exception.UserNotFoundException;
 import com.proj.function.RoleAssigner;
 import com.proj.function.UserManager;
 
-  // DONE: Get single user from db - Profilepages(self + other)
-  // TODO: Modify single user - Profile, Adminpage
-  // TODO: Add users to DB - SignupPage
-  // TODO: Deactivate account
+// DONE: Get single user from db - Profilepages(self + other)
+// TODO: Modify single user - Profile, Adminpage
+// TODO: Add users to DB - SignupPage
+// TODO: Deactivate account
 
 @Controller
 @RequestMapping(path = "/user")
@@ -83,51 +85,130 @@ public class UserController {
     }
   }
 
-
-
   /**
    * Get a user from database
-   * @param username - the name of the user looked up on the database
+   * 
+   * @param username           - the name of the user looked up on the database
    * @param requestingUsername - the username of the person requesting the page
-   * @return a user object that is sanitized 
+   * @return a user object that is sanitized
    */
   @GetMapping(path = "/{username}")
-  @ResponseBody Object profile(@PathVariable String username, @RequestParam String requestingUsername) {
+  @ResponseBody
+  User profile(@PathVariable String username, @RequestParam String requestingUsername) {
     // Find and sanitize users
-      User user = userManager.lookupAccount(username);
-      User requestingUser = userManager.lookupAccount(requestingUsername);
-      User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
+    User user = userManager.lookupAccount(username);
+    User requestingUser = userManager.lookupAccount(requestingUsername);
+    User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
     // Note exceptions controlled by advisors
     return sanitizedUser;
   }
 
-  // TODO: Modify single user - Profile, Adminpage
-  // TODO: Add users to DB - SignupPage
-  // TODO: Deactivate account
- 
+  /**
+   * Deactivates a user with the given username
+   * 
+   * @param username           - the username of the account to deactivate
+   * @param requestingUsername - the username of the person requesting the
+   *                           deactivation
+   * @return string message indicating that the deactivation is successful
+   */
+
   @PutMapping(path = "/{username}/deactivate")
   @ResponseBody
-  Object getSomeUsers(@PathVariable String username, @RequestParam String requestingUsername) {
+  String deactivateAccount(@PathVariable String username, @RequestParam String requestingUsername) {
     User user = userManager.lookupAccount(username);
-    // YOU MAY ONLY DEACTIVE YOURSELF
-    if (start > end) {
-      start = 0;
-    }
-    if (end > ids.size()) {
-      end = ids.size();
-    }
-    try {
+    User requestingUser = userManager.lookupAccount(requestingUsername);
 
-      return userManager.getUserdbHandler().findAllById(ids);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return "Could not retrieve users. Failed with: " + e.getMessage();
+    if (user.equals(requestingUser)) {
+      userManager.deactivateAccount(user.getId());
+      return "Deactivation of" + user.getBasicUserInfo().getUserName() + " succesful";
+    } else {
+      throw new IllegalUserOperationException("You may only deactivate your own account!");
     }
   }
 
-  @GetMapping(path = "/user/all")
+  /**
+   * Reactivate a user with the given username
+   * 
+   * @param username           - the username of the account to reactivate
+   * @param requestingUsername - the username of the person requesting the
+   *                           reactivation
+   * @return string message indicating that the reactivation is successful
+   */
+
+  @PutMapping(path = "/{username}/reactivate")
   @ResponseBody
-  Object getAllUsers() {
-    return userManager.getUserdbHandler().findAll();
+  String reactivateAccount(@PathVariable String username, @RequestParam String requestingUsername) {
+    User user = userManager.lookupAccount(username);
+    User requestingUser = userManager.lookupAccount(requestingUsername);
+
+    if (user.equals(requestingUser)) {
+      userManager.restoreAccount(user.getId());
+      return "Reactivation of" + user.getBasicUserInfo().getUserName() + " succesful";
+    } else {
+      throw new IllegalUserOperationException("You may only reactivate your own account!");
+    }
   }
+
+  /**
+   * 
+   * @param username
+   * @param requestingUsername
+   * @param currentInfo
+   * @param infoType
+   * @return
+   */
+  @PutMapping(path = "/{username}/editInfo")
+  @ResponseBody
+  String editInfo(@PathVariable String username, @RequestParam String requestingUsername,
+      @RequestParam String[] currentInfo, @RequestParam String infoType) {
+
+    // Create objects that can are used to check access
+    User user = userManager.lookupAccount(username);
+    User requestingUser = userManager.lookupAccount(requestingUsername);
+
+    if (user.equals(requestingUser)) {
+      // Change info on user object according to the information changed on website
+      if (infoType.equals("Profile info")) {
+        user.getGuestInfo().setCharacterInfo(currentInfo[0]);
+        userManager.getUserdbHandler().save(user);
+      } else if (infoType.equals("Password")) {
+        user.getBasicUserInfo().setPassword(currentInfo[0]);
+        userManager.getUserdbHandler().save(user);
+      } else if (infoType.equals("Personal info")) {
+
+        // Put current info into correct fields
+        user.getMemberInfo().setAddress(currentInfo[0]);
+        user.getMemberInfo().setEmail(currentInfo[1]);
+        user.getMemberInfo().setPhoneNumber(currentInfo[2]);
+        user.getMemberInfo().setPostalCode(currentInfo[3]);
+        user.getMemberInfo().setRealName(currentInfo[4]);
+
+        // Create validator that can check information before it is saved to database
+        MemberValidator memberValidator = new MemberValidator(user.getMemberInfo());
+        // Validate all fields before user is saved to database
+        memberValidator.ValidateAddress().ValidateEmail().ValidatePhoneNumber().ValidatePostCode().ValidateStringField(user.getMemberInfo().getRealName());
+
+        userManager.getUserdbHandler().save(user);
+      }
+      return "Changes saved succesfully!";
+    } else {
+      throw new IllegalUserOperationException("You may only edit your own account!");
+    }
+  }
+
+  @PutMapping(path = "/create/Account")
+  @ResponseBody
+  String createAccount(@RequestParam String username, @RequestParam String password, @RequestParam String[] memberInfo) {
+    String membershipRequestInfo = "membership request not made";
+    userManager.createAccount(username, password);
+    
+    // If the user has requested membership 
+    if(memberInfo.length > 0){
+      membershipRequestInfo = "member request made";
+      userManager.requestMembership(memberInfo[0], memberInfo[1], memberInfo[2], memberInfo[3], memberInfo[4], memberInfo[5]);
+    }
+
+    return "Account created and " +  membershipRequestInfo;
+  }
+
 }
