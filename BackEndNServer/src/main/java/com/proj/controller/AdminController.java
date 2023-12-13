@@ -1,9 +1,27 @@
 package com.proj.controller;
+/* 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.stereotype.Controller;
 
+import com.proj.controller.security.authentication.UserDAO;
+import com.proj.model.users.RoleType;
+
+@Controller
 public class AdminController {
-    
-}
+    // Added to enable authetication of users
+    @Autowired
+    private UserDAO userDAO;
 
+    @CurrentSecurityContext(expression = "authentication") Authentication authentication)
+    {
+
+        // Find and sanitize users
+        System.out.println("Has authority: " + userDAO.checkAuthority(authentication, RoleType.ADMIN));
+    }
+}
+ */
 /**
  * This controller handles sending HTTP requests from frontend to the server for
  * various operations on users.

@@ -12,6 +12,8 @@ package com.proj.controller;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,11 +28,6 @@ import com.proj.exception.IllegalUserOperationException;
 import com.proj.exception.UserNotFoundException;
 import com.proj.function.RoleAssigner;
 import com.proj.function.UserManager;
-
-// DONE: Get single user from db - Profilepages(self + other)
-// TODO: Modify single user - Profile, Adminpage
-// TODO: Add users to DB - SignupPage
-// TODO: Deactivate account
 
 @Controller
 @RequestMapping(path = "/user")
@@ -50,8 +47,7 @@ public class UserController {
    */
   @RequestMapping(path = "/create/{number}")
   @ResponseBody
-  Object saveUsers(@PathVariable Integer number) {
-    UserManager userManager = new UserManager(0);
+  ArrayList<User> saveUsers(@PathVariable Integer number) {
     ArrayList<User> sanitizedUsers = new ArrayList<User>();
     try {
       for (int i = 0; i < number; i++) {
@@ -86,21 +82,30 @@ public class UserController {
   }
 
   /**
-   * Get a user from database
+   * Get a user from database and return information based on user access level
    * 
    * @param username           - the name of the user looked up on the database
    * @param requestingUsername - the username of the person requesting the page
-   * @return a user object that is sanitized
+   * @return a sanitized user object
    */
   @GetMapping(path = "/{username}")
   @ResponseBody
-  User profile(@PathVariable String username, @RequestParam String requestingUsername) {
-    // Find and sanitize users
-    User user = userManager.lookupAccount(username);
-    User requestingUser = userManager.lookupAccount(requestingUsername);
-    User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
-    // Note exceptions controlled by advisors
-    return sanitizedUser;
+  User profile(@PathVariable String username,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+    try {
+       // Check whether user has correct priviledges
+      User requestingUser = userManager.lookupAccount(authentication.getName());
+      
+      // Get user to lookup from database if they exist 
+      User user = userManager.lookupAccount(username);
+
+      // Get user information
+      User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
+      
+      return sanitizedUser;
+    } catch (NullPointerException npe) {
+      throw new UserNotFoundException("Cannot lookup your credentials or cannot find the person you are looking for");
+    }
   }
 
   /**
@@ -186,7 +191,8 @@ public class UserController {
         // Create validator that can check information before it is saved to database
         MemberValidator memberValidator = new MemberValidator(user.getMemberInfo());
         // Validate all fields before user is saved to database
-        memberValidator.ValidateAddress().ValidateEmail().ValidatePhoneNumber().ValidatePostCode().ValidateStringField(user.getMemberInfo().getRealName());
+        memberValidator.ValidateAddress().ValidateEmail().ValidatePhoneNumber().ValidatePostCode()
+            .ValidateStringField(user.getMemberInfo().getRealName());
 
         userManager.getUserdbHandler().save(user);
       }
@@ -196,19 +202,21 @@ public class UserController {
     }
   }
 
+  //TODO: delete before pushing to main
   @PutMapping(path = "/create/Account")
   @ResponseBody
-  String createAccount(@RequestParam String username, @RequestParam String password, @RequestParam String[] memberInfo) {
+  String createAccount(@RequestParam String username, @RequestParam String password,
+      @RequestParam String[] memberInfo) {
     String membershipRequestInfo = "membership request not made";
     userManager.createAccount(username, password);
-    
-    // If the user has requested membership 
-    if(memberInfo.length > 0){
+
+    // If the user has requested membership
+    if (memberInfo.length > 0) {
       membershipRequestInfo = "member request made";
-      userManager.requestMembership(memberInfo[0], memberInfo[1], memberInfo[2], memberInfo[3], memberInfo[4], memberInfo[5]);
+      userManager.requestMembership(memberInfo[0], memberInfo[1], memberInfo[2], memberInfo[3], memberInfo[4],
+          memberInfo[5]);
     }
 
-    return "Account created and " +  membershipRequestInfo;
+    return "Account created and " + membershipRequestInfo;
   }
-
 }

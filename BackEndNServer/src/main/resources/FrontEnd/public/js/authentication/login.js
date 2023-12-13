@@ -59,7 +59,7 @@ async function sendData(userDetails){
                 if(response.redirected){
                     notifyUser("Logged in successfully!");
                     //sleep(1000);
-                    //window.location.href = response.url;
+                    window.location.href = response.url;
                 } 
                 else
                     notifyUser("Server is not redirecting properly", status, "warn");           
