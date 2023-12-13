@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.function.Executable;
@@ -43,7 +44,7 @@ public class UserManagerIntegrationTest {
         DnDuser = userManager.lookupAccount("userxx");
 
         assertTrue(DnDuser.getBasicUserInfo().getUserName().equals("userxx"));
-        assertTrue(DnDuser.getBasicUserInfo().getPassword().equals("fefoeefwe23-A"));
+        assertTrue(passwordEncoder.matches(password, DnDuser.getBasicUserInfo().getPassword()));
 
         userManager.getUserdbHandler().delete(DnDuser); //Cleanup after the test
     }
