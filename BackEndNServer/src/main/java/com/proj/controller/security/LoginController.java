@@ -37,7 +37,7 @@ public class LoginController {
 	 * Serves the login page when receiving a GET request to the login endpoint. 
 	 * @return
 	 */
-	@GetMapping("/login")
+	@GetMapping("/loginpage")
 	public String showLoginPage(){
 		return "authentication/loginPage";
 	} 
@@ -54,7 +54,7 @@ public class LoginController {
 		Authentication authentication = authenticationProcess.authenticate(loginRequest, request, response); // Authenticates the user
 
 		// If login is successful, return this.
-		return new ModelAndView(new RedirectView("/", true));
+		return new ModelAndView(new RedirectView("/userhomepage", true));
 	}
 
 	/**
@@ -62,4 +62,6 @@ public class LoginController {
 	 * The parameters contained in the object sent from the frontend must match the parameters of this object exactly (or vice versa)
 	 */
 	public record LoginRequest(String username, String password) {}
+
+	
 }

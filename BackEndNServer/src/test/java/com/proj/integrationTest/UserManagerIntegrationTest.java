@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.function.Executable;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.proj.model.users.BasicUserInfo;
 import com.proj.model.users.RoleType;
@@ -28,6 +30,8 @@ public class UserManagerIntegrationTest {
     @Autowired
     UserManager userManager;
     BasicUserInfo basicUserInfo;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Test
     @Order(100)
@@ -40,9 +44,9 @@ public class UserManagerIntegrationTest {
         DnDuser = userManager.lookupAccount("userxx");
 
         assertTrue(DnDuser.getBasicUserInfo().getUserName().equals("userxx"));
-        assertTrue(DnDuser.getBasicUserInfo().getPassword().equals("fefoeefwe23-A"));
+        assertTrue(passwordEncoder.matches(password, DnDuser.getBasicUserInfo().getPassword()));
 
-        userManager.getUserdbHandler().delete(DnDuser); //cleanup after the test
+        userManager.getUserdbHandler().delete(DnDuser); //Cleanup after the test
     }
 
     @Test
@@ -144,7 +148,7 @@ public class UserManagerIntegrationTest {
 
     @Test
     @Order(105)
-    public void removeRemovedateValid() {
+    public void removeRemovedateValid() throws InterruptedException {
         // Create account
         userManager.createAccount("ConfusedOwlBear", "helo0+L223");
         User dndUser = userManager.lookupAccount("ConfusedOwlBear");
@@ -159,18 +163,9 @@ public class UserManagerIntegrationTest {
         dndUser.getBasicUserInfo().setDeletionDate(LocalDateTime.now().minusMinutes(2));
         userManager.getUserdbHandler().save(dndUser);
         
-        String statusmsgRemove = userManager.removeAccount(dndUser.getId());
-        assertTrue(statusmsgRemove.equals("Deletion of " + dndUser.getBasicUserInfo().getUserName() + " successful"));
-    }
-
-    @Test
-    @Order(106)
-    public void removeAccountDeletedateInvalid() {
-        // Create account
-        userManager.createAccount("ConfusedOwlBear2", "helo0+L223");
-        User dndUser = userManager.lookupAccount("ConfusedOwlBear2");
-        userManager.deactivateAccount(dndUser.getId());
-        assertTrue(userManager.removeAccount(dndUser.getId()).equals("Deletion of ConfusedOwlBear2 unsuccessful"));  
+        String statusmsgRemove = userManager.removeAccount(dndUser.getBasicUserInfo().getUserName());
+        Thread.sleep(2000);
+        assertTrue(statusmsgRemove.equals("User \"" + dndUser.getBasicUserInfo().getUserName() + "\" scheduled for deletion."));
     }
 
     @Test
@@ -180,14 +175,14 @@ public class UserManagerIntegrationTest {
         userManager.createAccount("ConfusedOwlBear3", "helo0+L223");
         User dndUser = userManager.lookupAccount("ConfusedOwlBear3");
         userManager.deactivateAccount(dndUser.getId());
-        assertTrue(userManager.restoreAccount(dndUser.getId()).equals("User: ConfusedOwlBear3 with ID: " + dndUser.getId() + " was successfully restored"));
+        assertTrue(userManager.restoreAccount(dndUser.getBasicUserInfo().getUserName()).equals("User: ConfusedOwlBear3 with ID: " + dndUser.getId() + " was successfully restored"));
 
         userManager.getUserdbHandler().delete(dndUser); //Cleanup
     }
 
     @Test
     @Order(108)
-    public void activateRemovedAccount() {
+    public void activateRemovedAccount() throws InterruptedException {
         // Create account
         userManager.createAccount("ConfusedOwlBear4", "helo0+L223");
         User dndUser = userManager.lookupAccount("ConfusedOwlBear4");
@@ -198,12 +193,12 @@ public class UserManagerIntegrationTest {
 
         // Save user and remove account
         userManager.getUserdbHandler().save(dndUser);
-        userManager.removeAccount(dndUser.getId());
-
+        userManager.removeAccount(dndUser.getBasicUserInfo().getUserName());
+        Thread.sleep(2000); //Wait for the account to be removed
         // Attempt to restore account
-        Executable e = () -> {userManager.restoreAccount(dndUser.getId());};
+        Executable e = () -> {userManager.restoreAccount(dndUser.getBasicUserInfo().getUserName());};
         Throwable thrown = assertThrows(UserNotFoundException.class, e);
-        assertTrue(thrown.getMessage().equals("User with id '" + dndUser.getId() + "' does not exist."));
+        assertEquals(thrown.getMessage(), "UserdbHandler: User '" + dndUser.getBasicUserInfo().getUserName() + "' not found");
     }
     /*
     @Test       //this test is used to clean up the database by deleting all users in it.

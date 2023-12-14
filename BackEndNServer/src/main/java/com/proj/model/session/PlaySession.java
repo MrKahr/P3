@@ -10,6 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.proj.exception.AddRewardsFailedException;
 import com.proj.exception.PlaySessionFullException;
+import com.proj.exception.UserAlreadyAssignedException;
 import com.proj.model.events.DescriptionChanged;
 import com.proj.model.events.ModuleSet;
 import com.proj.model.events.RewardsGiven;
@@ -270,13 +271,16 @@ public class PlaySession {
      * Assign a user to playsession
      * @param username of user to be assigned
      * @throws PlaySessionFullException
+     * @throws UserAlreadyAssignedException
      */
-    public void assignUser(String username) throws PlaySessionFullException {
-        if (users.size() < maxNumberOfPlayers) {
+    public void assignUser(String username) throws PlaySessionFullException, UserAlreadyAssignedException {
+        if (users.size() >= maxNumberOfPlayers) {
+            throw new PlaySessionFullException("Could not add '" + username + "' as playsession is full");
+        } else if(users.contains(username)) {
+            throw new UserAlreadyAssignedException("Could not add '" + username + "' as they are already assigned");
+        } else {
             this.users.add(username);
             this.currentNumberOfPlayers = users.size();
-        } else {
-            throw new PlaySessionFullException("Could not add '" + username + "' as playsession is full");
         }
     }
 

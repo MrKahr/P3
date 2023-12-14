@@ -6,6 +6,7 @@ import com.proj.model.session.PlaySessionStateEnum;
 import com.proj.model.session.Reward;
 import com.proj.exception.AddRewardsFailedException;
 import com.proj.exception.PlaySessionFullException;
+import com.proj.exception.UserAlreadyAssignedException;
 import com.proj.model.session.Module;
 
 import java.util.ArrayList;
@@ -13,7 +14,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.function.Executable;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -120,7 +120,19 @@ public class playSessionTest {
             testPlaySession.unassignUser("Guy the only");
         };
         assertThrows(NoSuchElementException.class, e);
-        
+    }
+
+    @Test
+    public void AssignSameUser() {
+        Module module = new Module("moduleName", "description", "02-03");
+        LocalDateTime time = LocalDateTime.of(2024, 1, 1, 0, 0, 0, 0);
+        PlaySessionStateEnum state = PlaySessionStateEnum.PLANNED;
+        PlaySession testPlaySession = new PlaySession("title", "desc", "MrDM", 0, time, state, 2, module);
+        testPlaySession.assignUser("Guy");
+        Executable e = () -> {
+            testPlaySession.assignUser("Guy");
+        };
+        assertThrows(UserAlreadyAssignedException.class, e);
     }
 
     @Test

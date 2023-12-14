@@ -11,8 +11,8 @@ public class BasicInfoValidator implements Validatable<BasicInfoValidator> {
     private BasicUserInfo basicUserInfo;
     // https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html
     // Make pattern to match and initialize variable to get matcher.
-    private static Pattern genericStringPattern = Pattern.compile("^(\\\\w)");
-    private static Pattern userNamePattern = Pattern.compile("^(\\w{4,30})");
+    private static Pattern genericStringPattern = Pattern.compile("^(\\\\w)$");
+    private static Pattern userNamePattern = Pattern.compile("^(\\w{4,30})$");
     private static Pattern passwordPattern = Pattern
             .compile("^(?=.{4,30}$)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*['+-^&%¤$]).*$");
     private Matcher m;

@@ -299,16 +299,16 @@ public class UserManager {
 
     /**
      * Removes the deactivation-date and deletion-date from the account with the
-     * given ID.
+     * given username.
      * This method cannot be used to recreate an account that has already been
      * deleted.
      * Ensure that the user has consented to restoring their information. Otherwise
      * use of this method may be illegal.
      * 
-     * @param userId - the id of the user to restore
+     * @param username - the name of the user to restore
      */
-    public String restoreAccount(int userId) {
-        User userToActivate = userdbHandler.findById(userId);
+    public String restoreAccount(String username) {
+        User userToActivate = this.lookupAccount(username);
         userToActivate.getBasicUserInfo().setDeactivationDate(null);
         userToActivate.getBasicUserInfo().setDeletionDate(null);
         userdbHandler.save(userToActivate);
@@ -316,28 +316,23 @@ public class UserManager {
                 + " was successfully restored";
     }
 
-    /**
-     * Check if the account with the given ID is past its deletion date and remove
-     * it from the database if it
-     * 
-     * @param userId - identifier of the user whose account the system removes
+  /**
+     * Schedule an account for deletion the next time the cleanup code runs (hopefully within 24 hours).
+     * restoreAccount can be used until the account is deleted.
+     * This method exists to ensure compliance with GDPR article 17 which gives users the right to request deletion
+     * of any of their own personal data. As long as the cleanup code runs every day, the time frame is acceptable.
+     *
+     * @param username - name of the user whose account the system should remove
      */
-    public String removeAccount(int userId) {
+    public String removeAccount(String username) {
         try {
-            User userToDelete = userdbHandler.findById(userId);
-            String statusmsg = "Deletion of " + userToDelete.getBasicUserInfo().getUserName();
-            LocalDateTime deletionDate = userToDelete.getBasicUserInfo().getDeletionDate();
-            if (deletionDate != null && LocalDateTime.now().isAfter(deletionDate)) { // check if we're past the deletion
-                                                                                     // date
-                userdbHandler.delete(userToDelete);
-                return statusmsg + " successful";
-            } else {
-                return statusmsg + " unsuccessful";
-            }
-        } catch (UserNotFoundException unfe) {
+        User userToDelete = this.lookupAccount(username);
+        userToDelete.getBasicUserInfo().setDeletionDate(LocalDateTime.now());   //setting the expiry date to right now so the cleanup-function will get it
+        this.getUserdbHandler().save(userToDelete);
+        return "User \"" + username + "\" scheduled for deletion.";
+        } catch (UserNotFoundException unfe){
             return unfe.getMessage();
         }
-
     }
 
     /**
