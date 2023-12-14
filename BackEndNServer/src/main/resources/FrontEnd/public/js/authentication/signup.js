@@ -129,7 +129,7 @@ function setup(){
         
         // TODO: Validate input before sending
         sendData(gatherData());
-    }, {once:false})
+    })
 
     document.getElementById('signUpMember').addEventListener('click', (event) => {
         SIGNUP_AS_MEMBER ? SIGNUP_AS_MEMBER = false : SIGNUP_AS_MEMBER = true;

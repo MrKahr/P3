@@ -119,7 +119,7 @@ function sleep(ms) {
 function setup(){
     document.getElementById("submit").addEventListener("click", (event) => {
         sendData(gatherData());
-    }, {once:true})
+    })
 }
 
 /**
