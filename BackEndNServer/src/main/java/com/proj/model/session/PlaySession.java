@@ -27,6 +27,8 @@ import org.hibernate.type.SqlTypes;
 public class PlaySession {
     // Field
 
+    //TODO: Add location field(String), allowed players field(ENUM roletype), players field (ArrayList<User>), rewards field<>
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
