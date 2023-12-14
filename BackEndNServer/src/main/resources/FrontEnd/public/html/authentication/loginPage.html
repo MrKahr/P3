@@ -49,7 +49,7 @@
 </html> -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,20 +75,24 @@
         <div id="LoginBox" class="LoginBox">
             <img src="../images/AalborgTableTop_Logo.png" alt="AalborgTableTop logo" width="100" height="100">
             <h2>Log In</h2>
-
-            <form>
-                <label for="Username">Username:</label><br>
-                <input type="text" id="Username" name="Username" required><br>
-                <label for="Password">Password:</label><br>
-                <input type="password" id="Password" name="Password" required><br><br>
-                <a><input type="submit" value="Log In" onclick="location.href='userhomepage'">
-            </form><!-- I need to make a function that checks if the requirements are met -->
+			<div th:if="${param.logout}">
+				You have been logged out.</div>
+			<div id="LoginContainer">
+				<!-- <form th:action="@{/login}" method="post"> -->
+					<label for="Username">Username:</label><br>
+					<input type="text" id="username" placeholder="Username"/><br>
+					<label for="Password">Password:</label><br>
+					<input type="password" id="password" placeholder="Password"/><br><br>
+					<a><input type="submit" id="submit" value="Log in"/>
+				<!-- </form> -->
+			</div>
 
             <p>Don't have an account?</p>
             <p><a href="signuppage">Sign Up</a></p>
             <p><a href="notfoundpage">Forgot Password</a></p>
         </div>
     </div>
+	<script th:src="@{~/js/authentication/login.js}"></script>
 </body>
 </html>
 

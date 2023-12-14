@@ -49,7 +49,6 @@ public class UserController {
   @RequestMapping(path = "/create/{number}")
   @ResponseBody
   Object saveUsers(@PathVariable Integer number) {
-    UserManager userManager = new UserManager(0);
     ArrayList<User> sanitizedUsers = new ArrayList<User>();
     try {
       for (int i = 0; i < number; i++) {

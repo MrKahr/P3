@@ -55,14 +55,8 @@ public class LoginController {
 		Authentication authentication = authenticationProcess.authenticate(loginRequest, request, response); // Authenticates the user
 
 		// If login is successful, return this.
-		return new ModelAndView(new RedirectView("/", true));
+		return new ModelAndView(new RedirectView("/userhomepage", true));
 	}
-
-	// Show the front page
-    @GetMapping("/loginpage")
-    public String showUserHomePage(){
-        return "/authentication/loginpage";
-    }
 
 	/**
 	 * The object used to match input from the frontend. 
