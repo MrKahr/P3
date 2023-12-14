@@ -7,7 +7,7 @@
 // Help Repository setup -> https://www.geeksforgeeks.org/spring-boot-crudrepository-with-example/
 // Help JPARepositories annotation -> https://stackoverflow.com/questions/27856266/how-to-make-instance-of-crudrepository-interface-during-testing-in-spring 
 
-package com.proj.controller;
+package com.proj.controller.api;
 
 import java.util.ArrayList;
 
@@ -30,7 +30,7 @@ import com.proj.function.RoleAssigner;
 import com.proj.function.UserManager;
 
 @Controller
-@RequestMapping(path = "/user")
+@RequestMapping(path = "/api")
 public class UserController {
   @Autowired
   private UserManager userManager;
@@ -156,7 +156,7 @@ public class UserController {
 
   /**
    * 
-   * @param username
+   * @param username 
    * @param requestingUsername
    * @param currentInfo
    * @param infoType
