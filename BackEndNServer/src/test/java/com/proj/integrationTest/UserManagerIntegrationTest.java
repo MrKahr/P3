@@ -198,7 +198,7 @@ public class UserManagerIntegrationTest {
         // Attempt to restore account
         Executable e = () -> {userManager.restoreAccount(dndUser.getBasicUserInfo().getUserName());};
         Throwable thrown = assertThrows(UserNotFoundException.class, e);
-        assertTrue(thrown.getMessage().equals("UserdbHandler: User " + dndUser.getBasicUserInfo().getUserName() + " not found"));
+        assertEquals(thrown.getMessage(), "UserdbHandler: User '" + dndUser.getBasicUserInfo().getUserName() + "' not found");
     }
     /*
     @Test       //this test is used to clean up the database by deleting all users in it.

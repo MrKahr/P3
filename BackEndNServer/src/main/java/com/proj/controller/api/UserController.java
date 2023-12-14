@@ -147,7 +147,7 @@ public class UserController {
     User requestingUser = userManager.lookupAccount(requestingUsername);
 
     if (user.equals(requestingUser)) {
-      userManager.restoreAccount(user.getId());
+      userManager.restoreAccount(user.getBasicUserInfo().getUserName());
       return "Reactivation of" + user.getBasicUserInfo().getUserName() + " succesful";
     } else {
       throw new IllegalUserOperationException("You may only reactivate your own account!");
