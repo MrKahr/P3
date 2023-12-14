@@ -295,7 +295,7 @@ public class UserManagerUnitTests {
 
     }
 
-    @Test   //TODO: where does this user get added to the database?
+    @Test
     @Order(53)
     public void lookupExistingAccount() {
         String username = user.getBasicUserInfo().getUserName();
@@ -442,24 +442,23 @@ public class UserManagerUnitTests {
         userManager.getUserdbHandler().delete(dndUser);   //Cleanup
     }
 
-    @Test   //TODO: rewrite removeAccount to immediately set deletionDate to LocalDateTime.now()
+    @Test
     @Order(63)
-    public void removeValidAccount() {
-        // We have to set deletion date manually because it is hardcoded for six months
-        user.getBasicUserInfo().setDeletionDate(LocalDateTime.now().minusMinutes(2));
-        // Save user with new deletion date
-        userManager.getUserdbHandler().save(user);
-        String statusmsg = userManager.removeAccount(user.getId());
-        assertTrue(statusmsg.equals("Deletion of " + user.getBasicUserInfo().getUserName() + " successful"));
+    public void removeValidAccount() throws InterruptedException {
+        userManager.removeAccount(user.getBasicUserInfo().getUserName());
+        Thread.sleep(2000);
+        Executable e = () -> {userManager.lookupAccount(user.getBasicUserInfo().getUserName());};
+        assertThrows(UserNotFoundException.class, e);
     }
 
     @Test
     @Order(64)
     public void removeInvalidAccount() {
-        int invalidId = 12343;
-        String statusmsg = userManager.removeAccount(invalidId);
+        String nonExistantUserName = user.getBasicUserInfo().getUserName();
+        userManager.getUserdbHandler().delete(user);    //Make the user not exist anymore
+        String statusmsg = userManager.removeAccount(nonExistantUserName);
         System.out.println(statusmsg);
-        assertTrue(statusmsg.equals("User with id '" + invalidId + "' does not exist."));
+        assertTrue(statusmsg.equals("UserdbHandler: User " + nonExistantUserName + " not found"));
     }
 
     @Test
@@ -469,21 +468,23 @@ public class UserManagerUnitTests {
         user.getBasicUserInfo().setDeactivationDate(LocalDateTime.now().minusMinutes(2));
         // Save user with new deletion and deactivation date
         userManager.getUserdbHandler().save(user);
-        userManager.restoreAccount(user.getId());
+        userManager.restoreAccount(user.getBasicUserInfo().getUserName());
         // Check whether restore account has set relevant fields to null in database
         user = userManager.lookupAccount(user.getBasicUserInfo().getUserName());
         assertTrue(user.getBasicUserInfo().getDeactivationDate() == null);
         assertTrue(user.getBasicUserInfo().getDeletionDate() == null);
 
-        userManager.getUserdbHandler().delete(user);
+        userManager.getUserdbHandler().delete(user);    //Cleanup
     }
 
     @Test
     @Order(66)
     public void restoreInvalidAccount() {
         // Restore user with arbitrary Id that does not exist in db
+         String nonExistantUserName = user.getBasicUserInfo().getUserName();
+        userManager.getUserdbHandler().delete(user);    //Make the user not exist anymore
         Executable e = () -> {
-            userManager.restoreAccount(1337);
+            userManager.restoreAccount(nonExistantUserName);
         };
         assertThrows(UserNotFoundException.class, e);
     }
