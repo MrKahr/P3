@@ -1,133 +1,20 @@
-async function addCalendar() {
+async function loadCalendar(startDateTime, endDateTime) {
     try {//http://localhost:8080/DateBetween?startDateTime=2023-12-01T15:06:27.299631&endDateTime=2023-12-31T15:06:27.299631
-        const response = await fetch("http://localhost:8080/newplaysession?title=hej&description=test&dm=dmname&currentNumberOfPlayers=1&date=2023-12-12T10:10:00&maxNumberOfPlayers=3&moduleID=1", {
-            method: "POST",
-            mode: "cors",
-            cache: "no-cache"
-        });
-        const calendar = await response.text();
-        console.log(calendar);
-    } catch (error) {
-        console.error("Error:", error);
-    }
-}
-addCalendar();
-async function loadCalendar() {
-    try {//http://localhost:8080/DateBetween?startDateTime=2023-12-01T15:06:27.299631&endDateTime=2023-12-31T15:06:27.299631
-        const response = await fetch("http://localhost:8080/datebetween?startDateTime=2022-11-12T10:10:00&endDateTime=2024-11-12T10:10:00", {
+        const response = await fetch("http://localhost:8080/datebetween?startDateTime="+startDateTime+"&endDateTime="+endDateTime, {
             method: "GET",
             mode: "cors",
             cache: "no-cache"
         });
         const calendar = await response.text();
-        console.log(calendar);
         return calendar;
     } catch (error) {
         console.error("Error:", error);
     }
 }
-eventlist = loadCalendar();
 
 // Beautified by https://jsonformatter.org/
 // In an actual implementation this would be a GET to the server
-let eventsData = [
-    // {
-    //     "id": "2",
-    //     "title": "Cool Event På DiceNDrinks",
-    //     "maxNumberOfPlayers": 6,
-    //     "currentNumberOfPlayers": 2,
-    //     "date": "2023-11-12T10:10:00",
-    //     "state": "Not yet",
-    //     "moduleSetEvents": [],
-    //     "module": {
-    //         "name": "Dungeons And Dargons",
-    //         "description": "Module description that describes the module Dungeons And Dargons",
-    //         "levelRange": "2-10",
-    //         "addedDate": null,
-    //         "removedDate": null
-    //     }
-    // },
-    {
-        "id": "10",
-        "title": "My Sick Ass Homebrew",
-        "maxNumberOfPlayers": 6,
-        "currentNumberOfPlayers": 4,
-        "date": "2023-11-12T10:20:00",
-        "state": "Not yet",
-        "moduleSetEvents": [],
-        "module": {
-            "name": "Dimwits and Dummies",
-            "description": "Module description that describes the module Dimwits and Dummies",
-            "levelRange": "2-10",
-            "addedDate": null,
-            "removedDate": null
-        }
-    }
-    // {
-    //     "id": "11",
-    //     "title": "My Wacky Event",
-    //     "maxNumberOfPlayers": 6,
-    //     "currentNumberOfPlayers": 4,
-    //     "date": "2023-11-13T10:30:00",
-    //     "state": "Not yet",
-    //     "moduleSetEvents": [],
-    //     "module": {
-    //         "name": "Dandies and Debonairs",
-    //         "description": "Module description that describes the module Dandies and Debonairs",
-    //         "levelRange": "2-10",
-    //         "addedDate": null,
-    //         "removedDate": null
-    //     }
-    // },
-    // {
-    //     "id": "12",
-    //     "title": "kun for hundeejere",
-    //     "maxNumberOfPlayers": 6,
-    //     "currentNumberOfPlayers": 6,
-    //     "date": "2023-11-13T10:45:00",
-    //     "state": "Not yet",
-    //     "moduleSetEvents": [],
-    //     "module": {
-    //         "name": "Dudes and Doggies",
-    //         "description": "Module description that describes the module Dudes and Doggies",
-    //         "levelRange": "2-10",
-    //         "addedDate": null,
-    //         "removedDate": null
-    //     }
-    // },
-    // {
-    //     "id": "13",
-    //     "title": "Please Join Me",
-    //     "maxNumberOfPlayers": 6,
-    //     "currentNumberOfPlayers": 0,
-    //     "date": "2023-11-13T10:50:00",
-    //     "state": "Not yet",
-    //     "moduleSetEvents": [],
-    //     "module": {
-    //         "name": "Downers and Deadbeats",
-    //         "description": "Module description that describes the module Downers and Deadbeats. This description shows and example of a description that is more than a single line long.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPlease",
-    //         "levelRange": "2-10",
-    //         "addedDate": null,
-    //         "removedDate": null
-    //     }
-    // },
-    // {
-    //     "id": "1",
-    //     "title": "Name Me",
-    //     "maxNumberOfPlayers": 6,
-    //     "currentNumberOfPlayers": 3,
-    //     "date": "2023-12-13T10:10:00",
-    //     "state": "Not yet",
-    //     "moduleSetEvents": [],
-    //     "module": {
-    //         "name": "Dunkins and Donuts",
-    //         "description": "Module description that describes the module Dunkins and Donuts",
-    //         "levelRange": "2-10",
-    //         "addedDate": null,
-    //         "removedDate": null
-    //     }
-    // }
-];
+let eventsData = [];
 
 let currentDate = new Date();
 // For event color we cycle through this array
@@ -135,7 +22,16 @@ const colors = ["#add8e6", "#559374", "#fca9e0", "#84ba5e"];
 const NUMCOLORS = colors.length;
 
 async function addEventsToCalendar(events) {
-    events = await JSON.parse(await loadCalendar());
+    if (currentDate.getMonth() === 11) {
+        events = await JSON.parse(await loadCalendar(""+currentDate.getFullYear()+"-"+(currentDate.getMonth()+1)+"-01T00:01",""+(currentDate.getFullYear()+1)+"-01-01T00:01"));
+        console.log(events);
+    } else if (currentDate.getMonth() >= 9){
+        events = await JSON.parse(await loadCalendar(""+currentDate.getFullYear()+"-"+(currentDate.getMonth()+1)+"-01T00:02",""+currentDate.getFullYear()+"-"+(currentDate.getMonth()+2)+"-01T00:02"));
+        console.log(events);
+    } else {
+        events = await JSON.parse(await loadCalendar(""+currentDate.getFullYear()+"-0"+(currentDate.getMonth()+1)+"-01T00:03",""+currentDate.getFullYear()+"-0"+(currentDate.getMonth()+2)+"-01T00:03"));
+        console.log(events);
+    }
     let colorNum = 0; // Event color cycles through an array
     events.forEach(event => {
         const eventDate = new Date(event.date);
@@ -284,7 +180,7 @@ function updateCalendarHeader() {
     document.getElementById('current-month-year').innerText = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
 }
 
-function updateCalendar() {
+async function updateCalendar() {
     document.getElementById('calendar').innerHTML = generateCalendar(currentDate.getFullYear(), currentDate.getMonth() + 1);
     updateCalendarHeader();
 }
