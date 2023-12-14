@@ -289,8 +289,7 @@ public class UserManagerUnitTests {
             userManager.lookupAccount(username);
         } catch (UserNotFoundException unfe) {
             // Note that this error is thrown by findByUserName in the userdbhandler
-            assertTrue(
-                    unfe.getMessage().equals("UserdbHandler: User " + username + " not found"));
+            assertEquals(unfe.getMessage(),"UserdbHandler: User '" + username + "' not found");
         }
 
     }
@@ -358,7 +357,7 @@ public class UserManagerUnitTests {
     public void requestUpgradeUserNotInDB() {
         String statusmsg = userManager.requestMembership("Bob", "43114311", "9000", "Villavej 123", "Bob@bobmail.com",
                 "IdontExist123");
-        assertTrue(statusmsg.equals("UserdbHandler: User IdontExist123 not found"));
+        assertEquals(statusmsg,"UserdbHandler: User 'IdontExist123' not found");
     }
 
     @Test
@@ -458,7 +457,7 @@ public class UserManagerUnitTests {
         userManager.getUserdbHandler().delete(user);    //Make the user not exist anymore
         String statusmsg = userManager.removeAccount(nonExistantUserName);
         System.out.println(statusmsg);
-        assertTrue(statusmsg.equals("UserdbHandler: User " + nonExistantUserName + " not found"));
+        assertEquals(statusmsg, "UserdbHandler: User '" + nonExistantUserName + "' not found");
     }
 
     @Test

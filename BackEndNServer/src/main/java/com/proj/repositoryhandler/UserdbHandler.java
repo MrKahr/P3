@@ -62,18 +62,6 @@ public class UserdbHandler extends DbHandler<User> {
         }
     }
 
-    // TODO: Runtime O(n). This is not ideal for a login lookup!
-    public User findByUsername(String username){
-        Iterable<User> allUsers = userRepository.findAll();
-        for (User user : allUsers) {
-            if(username.equals(user.getBasicUserInfo().getUserName())){
-                return user;
-            }
-        }
-        System.out.println("UserdbHandler: User '"+username+"' not found");
-        throw new UserNotFoundException();
-    }
-
     @Override
     public User findById(Integer userID) {
         return userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(userID));
@@ -165,7 +153,7 @@ public class UserdbHandler extends DbHandler<User> {
      * @return first instance of users with given username
      */
 
-    public User findByUserName(String username) {
+    public User findByUsername(String username) {
         Iterable<User> allUsers = userRepository.findAll();
 
         for (User user : allUsers) {
@@ -173,6 +161,6 @@ public class UserdbHandler extends DbHandler<User> {
                 return user;
             }
         }
-        throw new UserNotFoundException("UserdbHandler: User " + username + " not found");
+        throw new UserNotFoundException("UserdbHandler: User '"+username+"' not found");
     }
 }

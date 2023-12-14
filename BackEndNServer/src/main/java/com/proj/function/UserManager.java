@@ -150,7 +150,7 @@ public class UserManager {
      */
 
     public User lookupAccount(String username) throws UserNotFoundException, IllegalArgumentException {
-        return userdbHandler.findByUserName(username);
+        return userdbHandler.findByUsername(username);
 
     }
 
