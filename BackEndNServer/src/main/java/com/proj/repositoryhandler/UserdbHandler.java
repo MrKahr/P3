@@ -148,6 +148,14 @@ public class UserdbHandler extends DbHandler<User> {
     }
 
     /**
+     * Caution: Use only for testing purposes!
+     */
+    public void deleteAll() {
+        userRepository.deleteAll();
+    }
+
+
+    /**
      * Quiries database for first user with given user name
      * @param username - username to lookup in database
      * @return first instance of users with given username

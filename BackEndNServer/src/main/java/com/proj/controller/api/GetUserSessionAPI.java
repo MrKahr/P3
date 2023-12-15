@@ -48,7 +48,7 @@ public class GetUserSessionAPI {
                 return new ResponseEntity<>(list, HttpStatus.OK);
             }
         }
-        list.add("null");
+        list.add("null"); // If a request is made to this endpoint but the requestparam is not true, then return null.
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }

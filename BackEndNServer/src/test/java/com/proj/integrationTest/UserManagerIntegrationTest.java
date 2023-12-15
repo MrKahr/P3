@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,7 +22,7 @@ import com.proj.model.users.RoleType;
 import com.proj.model.users.User;
 
 import com.proj.function.UserManager;
-
+import com.proj.exception.FailedValidationException;
 import com.proj.exception.UserNotFoundException;
 
 @TestMethodOrder(OrderAnnotation.class)  // IMPORTANT NOTE: Ordering tests ensures that saving users in databases does not cause conflicts between tests.
@@ -74,19 +75,21 @@ public class UserManagerIntegrationTest {
         }
     }
 
+    int hellothere = 1; // This is global since the following error occurs in the lambda expression used in this test
+                        // "Local variable i defined in an enclosing scope must be final or effectively final"
     @Test
     @Order(102)
     public void createSomeInvalidAccountAndRetrieveAll() {
         // Make 5 valid and 5 invalid accounts
-        String currentmsg;
-        for (int i = 1; i < 11; i++) {
+        
+        for (; hellothere < 11; hellothere++) {
             // The first 5 accounts are invalid
-            if (i < 6) {
-                currentmsg = userManager.createAccount("user" + i, "");
-                assertTrue(currentmsg.equals("Cannot create user because: Password is not valid"));
+            if (hellothere < 6) {
+                Executable e = () -> {userManager.createAccount("user" + hellothere, "");};
+                assertThrows(FailedValidationException.class, e);
             } else {
-                currentmsg = userManager.createAccount("user" + i, "fefoeefwe23-A" + i);
-                assertTrue(currentmsg.equals("User creation successful"));
+                Executable e = () -> {userManager.createAccount("user" + hellothere, "fefoeefwe23-A" + hellothere);};
+                assertDoesNotThrow(e);
             }
         }
 
@@ -95,11 +98,11 @@ public class UserManagerIntegrationTest {
         assertTrue(users.length == 5);
 
         // Check whether the current users have the correct user name
-        for (int i = 0; i < users.length; i++) {
+        for (hellothere = 0; hellothere < users.length; hellothere++) {
             // Get all odd numbered (and therefore valid) accounts
-            assertTrue(users[i].getBasicUserInfo().getUserName().equals("user" + (i + 6)));
+            assertTrue(users[hellothere].getBasicUserInfo().getUserName().equals("user" + (hellothere + 6)));
 
-            userManager.getUserdbHandler().delete(users[i]);    //Cleanup
+            userManager.getUserdbHandler().delete(users[hellothere]);    //Cleanup
         }
 
     }
