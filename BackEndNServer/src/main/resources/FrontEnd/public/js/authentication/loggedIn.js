@@ -32,7 +32,7 @@ function displayLoggedIn(username){
 
         // Anchor with link to a user's profile
         let anchorProfile = document.createElement("a");
-        anchorProfile.href = `/${username}`;
+        anchorProfile.href = `/profile/${username}`;
         anchorProfile.classList.add(splitClass);
     
         // The user's profile pic.
