@@ -260,9 +260,8 @@ public class PlaySession {
         if (currentModule == null) {
             throw new NullPointerException("Module doesn't exist");
         } else {
-            Module emptyModule = new Module("", "", ""); // TODO: Consider whether we want to model empty modules this way
-            this.setModule(emptyModule); // Use empty module as base
-            this.addModuleSet(emptyModule); // Module set event fixed /
+            this.setModule(null);
+            this.addModuleSet(null);
         }
     }
 

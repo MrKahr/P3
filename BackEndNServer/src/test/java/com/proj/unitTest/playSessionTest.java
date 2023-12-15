@@ -91,8 +91,9 @@ public class playSessionTest {
         Module mymodule = new Module("dnd1", "this is a session", "1-4");
         PlaySession mySession = new PlaySession("davs", "desc", "MrDM", 2, localdatetime,
                 PlaySessionStateEnum.CANCELLED, 5, mymodule);
+        mySession.removeModule();
 
-        assertTrue(!(Objects.isNull(mySession.getModule())));
+        assertNull(mySession.getModule());
     }
 
     @Test

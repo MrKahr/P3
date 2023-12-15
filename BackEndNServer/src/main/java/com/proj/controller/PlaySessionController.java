@@ -1,12 +1,17 @@
 package com.proj.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.proj.model.session.Module;
+import com.proj.model.users.RoleType;
+import com.proj.model.users.User;
+import com.proj.exception.IllegalUserOperationException;
 import com.proj.exception.NoModuleFoundException;
 import com.proj.function.ModuleManager;
 import com.proj.function.PlaySessionManager;
+import com.proj.function.UserManager;
 import com.proj.repositoryhandler.PlaySessiondbHandler;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.proj.model.session.*;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class PlaySessionController {
@@ -30,7 +36,10 @@ public class PlaySessionController {
   private PlaySessionManager playSessionManager;
   @Autowired
   private ModuleManager moduleManager;
+  @Autowired
+  private UserManager userManager;
 
+  // TODO: check credentials before creating playsession
   @PostMapping(path = "/newplaysession")
   public @ResponseBody String addNewPlaySessionResponse(@RequestParam String title,
       @RequestParam String description, @RequestParam String dm, @RequestParam Integer currentNumberOfPlayers,
@@ -50,6 +59,7 @@ public class PlaySessionController {
     return "PlaySession Created with ID: " + playSession.getId();
   }
 
+  // TODO: check credentials before updating playsession
   @PostMapping(path = "/updateplaysession") // responds to put requests with path "/UpdatePlaySession" and request
                                             // parameters, returns Successful if update is valid
   public @ResponseBody String updatePlaySessionResponse(@RequestParam Integer id, @RequestParam String title,
@@ -93,8 +103,8 @@ public class PlaySessionController {
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     PlaySession playSession = playSessiondbHandler.findById(id);
     if (!playSession.getDm().equals(authentication.getName())
-        || !playSession.getUsers().contains(authentication.getName())) { 
-          // Hide rewards if user is not part of the session
+        || !playSession.getUsers().contains(authentication.getName())) {
+      // Hide rewards if user is not part of the session
       playSession.setRewards(null);
     }
     return playSession;
@@ -113,11 +123,28 @@ public class PlaySessionController {
   public String unassignUser(@RequestParam String username, @RequestParam Integer playSessionID,
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     PlaySession playSession = playSessiondbHandler.findById(playSessionID);
-    if (authentication.getName().equals(playSession.getDm()) || authentication.getName().equals(username)) { // Can only unassign yourself, unless you're the DM
+    // Can only unassign yourself, unless you're the DM
+    if (authentication.getName().equals(playSession.getDm()) || authentication.getName().equals(username)) {
       playSession.unassignUser(username);
       playSessiondbHandler.save(playSession);
     }
-    
+
     return username + " removed from session.";
+  }
+
+  @PostMapping("/play_session/add_rewards")
+  public String addRewards(@RequestBody ArrayList<Reward> rewards, @RequestParam Integer playSessionID,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+    PlaySession playSession = playSessiondbHandler.findById(playSessionID);
+    User user = userManager.lookupAccount(authentication.getName());
+
+    // User must be the DM or an admin to set rewards
+    if (authentication.getName().equals(playSession.getDm()) || user.getAllRoles().containsKey(RoleType.ADMIN)) {
+      playSession.setRewards(rewards);
+      playSessiondbHandler.save(playSession);
+      return "Rewards added successfully";
+    } else {
+      throw new IllegalUserOperationException("User does not have the credentials to set rewards");
+    }
   }
 }
