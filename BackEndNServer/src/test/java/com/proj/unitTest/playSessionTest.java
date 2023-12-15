@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class playSessionTest {
@@ -178,5 +179,17 @@ public class playSessionTest {
             testPlaySession.setRewards(rewards);
         };
         assertThrows(AddRewardsFailedException.class, e);
+    }
+
+    @Test
+    public void addRewardsNull() {
+        Module module = new Module("moduleName", "description", "02-03");
+        LocalDateTime time = LocalDateTime.of(2024, 1, 1, 0, 0, 0, 0);
+        PlaySessionStateEnum state = PlaySessionStateEnum.CONCLUDED;
+        PlaySession testPlaySession = new PlaySession("title", "desc", "MrDM", 0, time, state, 2, module);
+
+        testPlaySession.setRewards(null);
+
+        assertNull(testPlaySession.getRewards());
     }
 }
