@@ -1,24 +1,4 @@
 /**
- * Gets username of the current user navigating the page 
- * @returns - the username of the user as text
- */
-async function getSessionUser() {
-    try {
-        const response = await fetch("/currentsessionuser", {
-            method: "GET",
-            mode: "cors",
-            cache: "no-cache"
-        })
-
-        return await response.text();
-
-    } catch (error) {
-        console.log(error);
-    }
-
-}
-
-/**
  * Get a username to query in database
  * @returns username to query 
  */

@@ -1,3 +1,4 @@
+let SIGNUP_AS_MEMBER = false;
 
 window.addEventListener("load", () => {
     //console.log("Loaded"); // TODO: disable after testing
@@ -9,9 +10,27 @@ window.addEventListener("load", () => {
  * @returns The wrapper object containing the user data. 
  */
 function gatherData(){
+
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
+    let confirmPassword = document.getElementById("confirmPassword").value;
+    let email = document.getElementById("email").value;
+    let fullName = document.getElementById("fullName").value;
+    let address = document.getElementById("address").value;
+    let phone = document.getElementById("phone").value;
+    let postalCode = document.getElementById("postalCode").value;
+    let signUpAsMember = SIGNUP_AS_MEMBER;
+    
     const userDetails = {
-        username: document.getElementById("username").value,
-        password: document.getElementById("password").value
+        username: username,
+        password: password,
+        confirmPassword: confirmPassword,
+        email: email,
+        fullName: fullName,
+        address: address,
+        phone: phone,
+        postalCode: postalCode,
+        signUpAsMember: signUpAsMember
     };
 
     console.log(userDetails);
@@ -25,24 +44,13 @@ function gatherData(){
 async function sendData(userDetails){
     let response;
 
-    // Attempt on implementing CSRF protection. MUST be done before deploying to production.
-    // const csrfName = "X-XSRF-TOKEN";
-    // const csrfToken = getCookie(csrfName);
-
-    // const headers = new Headers({
-    //     'Content-Type': 'application/json',
-    //     'XSRF-TOKEN': csrfToken,
-    // })
-
-    //console.log(headers);
-
     // Temporary replacement for CSRF protection. Do NOT omit CSRF protection when deploying to production.
     const headers = new Headers({
         'Content-Type': 'application/json'
     })
 
     try {
-        response = await fetch("/login", {
+        response = await fetch("/signup", {
             method: "POST",
             headers,
             credentials: "include",
@@ -57,8 +65,8 @@ async function sendData(userDetails){
         switch (status) {
             case 200:
                 if(response.redirected){
-                    notifyUser("Logged in successfully!");
-                    //sleep(1000);
+                    notifyUser("Signed up successfully!");
+                    //sleep(1500);
                     window.location.href = response.url;
                 } 
                 else
@@ -88,7 +96,7 @@ async function sendData(userDetails){
  * @param {string} logSeverity 
  */
 function notifyUser(message, httpStatus = "", logSeverity = "log"){
-    let loginFieldsContainer = document.getElementById("LoginContainer");
+    let loginFieldsContainer = document.getElementById("SignupContainer");
 
     // Set custom message if httpstatus is defined
     if(httpStatus !== ""){
@@ -118,29 +126,12 @@ function sleep(ms) {
 
 function setup(){
     document.getElementById("submit").addEventListener("click", (event) => {
+        
+        // TODO: Validate input before sending
         sendData(gatherData());
     })
-}
 
-/**
- * Get a cookie's token by name.
- * 
- * Courtesy of https://www.w3schools.com/js/js_cookies.asp
- * @param {string} name The name of the cookie.
- * @returns The token of the specified cookie or "" if none found.
- */
-function getCookie(name) {
-    let tempName = name + "=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let cookieArray = decodedCookie.split(';');
-    for(let i = 0; i <cookieArray.length; i++) {
-      let cookie = cookieArray[i];
-      while (cookie.charAt(0) == ' ') {
-        cookie = cookie.substring(1);
-      }
-      if (cookie.indexOf(tempName) == 0) {
-        return cookie.substring(tempName.length, cookie.length);
-      }
-    }
-    return "";
-  }
+    document.getElementById('signUpMember').addEventListener('click', (event) => {
+        SIGNUP_AS_MEMBER ? SIGNUP_AS_MEMBER = false : SIGNUP_AS_MEMBER = true;
+    })
+}

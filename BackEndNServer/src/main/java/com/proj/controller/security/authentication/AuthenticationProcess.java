@@ -25,7 +25,6 @@ import com.proj.controller.security.LoginController.LoginRequest;
 
 @Component
 public class AuthenticationProcess {
-    
     // Field
 
     // Object containing the strategy for storing the SecurityContext information against a thread.
