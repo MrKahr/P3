@@ -56,7 +56,7 @@ public class UserController {
           RoleAssigner.setRole(user, new Guest("Level 1 bard" + i));
         }
         if (i >= 2) {
-          RoleAssigner.setRole(user, new Member("Fisk", "Randomstuff", "Table", "Stringwauy", "NoEmail"));
+          RoleAssigner.setRole(user, new Member("Fisk", "1122334" + i, "9000", "Stringwauy", "NoEmail"));
         }
         if (i >= 3) {
           RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
@@ -218,5 +218,15 @@ public class UserController {
     }
 
     return "Account created and " + membershipRequestInfo;
+  }
+
+  @GetMapping(path = "/currentUser")
+  @ResponseBody
+  String getCurrentUserName(@CurrentSecurityContext(expression = "authentication") Authentication authentication){
+    try {
+      return authentication.getName();
+    } catch (Exception e) {
+      return "NA";
+    }
   }
 }

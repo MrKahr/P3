@@ -28,6 +28,7 @@
                 <div class="profile-columns">
                     <div class="column1">
                         <h1 class="username">username</h1>
+                        <button class = "activation" id = "activationButton">Deactivate Account</button>
                         <div class="scroll-box">
                             <textarea id="profileText" placeholder="Text here" rows="20" cols="52"></textarea>
                         </div>
@@ -176,6 +177,7 @@
         }
     </script>
     <script th:src="@{~/js/authentication/loggedIn.js}"></script>
+    <script th:src ="@{~/js/profilepage/profilePageSettings.js}"></script>
 </body>
 
 </html>
