@@ -1,5 +1,5 @@
 window.addEventListener("load", () => {
-    console.log("Loaded"); // TODO: disable after testing
+    //console.log("Loaded"); // TODO: disable after testing
     checkCurrentSession();
 })
 
@@ -12,7 +12,7 @@ function displayLoggedIn(username){
         let elemArray = Array.from(authenticationElements);
 
         elemArray.forEach(element => {
-            console.log(element);
+            //console.log(element);
             element.remove();
         });
     
@@ -68,7 +68,7 @@ async function checkCurrentSession(){
         let message = JSON.parse(await response.text());
 
         // Testing
-        console.log(message[0]);
+        //console.log(message[0]);
         
         // The user has logged in
         if(message[0] === "true"){
