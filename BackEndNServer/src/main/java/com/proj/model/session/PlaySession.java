@@ -276,7 +276,7 @@ public class PlaySession {
     public void assignUser(String username) throws PlaySessionFullException, UserAlreadyAssignedException {
         if (users.size() >= maxNumberOfPlayers) {
             throw new PlaySessionFullException("Could not add '" + username + "' as playsession is full");
-        } else if(users.contains(username)) {
+        } else if(users.contains(username) || dm.equals(username)) {
             throw new UserAlreadyAssignedException("Could not add '" + username + "' as they are already assigned");
         } else {
             this.users.add(username);
