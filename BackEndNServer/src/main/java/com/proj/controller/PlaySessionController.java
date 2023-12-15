@@ -104,6 +104,7 @@ public class PlaySessionController {
   public String assignUser(@RequestParam String username, @RequestParam Integer playSessionID) {
     PlaySession playSession = playSessiondbHandler.findById(playSessionID);
     playSession.assignUser(username);
+    playSessiondbHandler.save(playSession);
 
     return username + " added successfully.";
   }
@@ -114,6 +115,7 @@ public class PlaySessionController {
     PlaySession playSession = playSessiondbHandler.findById(playSessionID);
     if (authentication.getName().equals(playSession.getDm()) || authentication.getName().equals(username)) { // Can only unassign yourself, unless you're the DM
       playSession.unassignUser(username);
+      playSessiondbHandler.save(playSession);
     }
     
     return username + " removed from session.";
