@@ -153,9 +153,9 @@ function openModuleEdit() {
 
 // User functions
 
-async function requestGetUsers() {
+async function requestGetUsers(min, max) {
     try {
-        const response = await fetch("/admin/module/getAll", {
+        const response = await fetch(`/api/usersInRange/${min}-${max}`, {
             method: "GET",
             mode: "cors",
             cache: "no-cache"
@@ -164,6 +164,23 @@ async function requestGetUsers() {
     } catch (error) {
         console.error("Error:", error);
     }
+}
+
+async function requestSetRole(username, role) {
+    try {
+        const response = await fetch(`/api/setRole/${username}?newRole=${role}`, {
+            method: "PUT",
+            mode: "cors",
+            cache: "no-cache",
+        });
+        return await response.text();
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+async function requestRemoveRole(id, selectedRole) {
+
 }
 
 
@@ -180,21 +197,17 @@ async function displayUsers(users) {
                 <td></td>
                 <td></td>`
         const data = row.querySelectorAll("td");
-        data[0].innerText = user.basicUserInfo.username;
-        let role = "";
-        if (user.superAdmin) {
-            role = "Super Admin";
-        } else if (user.admin) {
-            role = "Admin";
-        } else if (user.dm) {
-            role = "DM"
-        } else if (user.member) {
-            role = "Member"
+        data[0].innerText = user.basicUserInfo.userName;
+        // https://stackoverflow.com/questions/14379274/how-to-iterate-over-a-javascript-object
+        const roleString = Object.keys(user.allRoles).join(' - ');
+
+        data[1].innerText = roleString;
+        if (user.memberInfo && user.memberInfo.lastPaymentDate) {
+            data[2].innerText = user.memberInfo.lastPaymentDate.slice(0, 10);
         } else {
-            role = "Guest"
+            data[2].innerText = "None"
         }
-        data[1].innerText = role;
-        data[2].innerText = user.member.lastPaymentDate;
+
 
         row.addEventListener("click", () => {
             let clickedRow = event.currentTarget;
@@ -249,7 +262,23 @@ document.addEventListener("click", () => document.getElementById("moduleUnsucces
 
 // User
 // Show
-document.addEventListener('DOMContentLoaded', async () => displayUsers(await requestGetUsers()));
+document.addEventListener('DOMContentLoaded', async () => displayUsers(await requestGetUsers(1,20)));
+
+// Change role
+document.getElementById("changeRoleButton").addEventListener("click", async () => {
+    // https://stackoverflow.com/questions/3301688/how-do-you-get-the-currently-selected-option-in-a-select-via-javascript
+    const roleSelect = document.getElementById("managerole");
+    const selectedRole = roleSelect.options[roleSelect.selectedIndex].value.toUpperCase();
+    const currentRoles = currentRow.querySelectorAll("td")[1].innerText;
+    const username = currentRow.querySelectorAll("td")[0].innerText;
+
+    if (currentRoles.includes(selectedRole)) {
+        await requestRemoveRole(username, selectedRole);
+    } else {
+        await requestSetRole(username, selectedRole);
+        await displayUsers(await requestGetUsers(1,20));
+    }
+});
 
 
 

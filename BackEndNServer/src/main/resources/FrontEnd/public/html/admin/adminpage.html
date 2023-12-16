@@ -38,7 +38,7 @@
                     <table id="userTable">
                         <tr>
                             <th>Username</th>
-                            <th>Role</th>
+                            <th>Roles</th>
                             <th>Last Payment</th>
                         </tr>
                     </table>
@@ -50,9 +50,8 @@
                                 <option value="member">Member</option>
                                 <option value="dm">DM</option>
                                 <option value="admin">Admin</option>
-                                <option value="superadmin">SuperAdmin</option><!-- I think this one will be removed -->
                             </select>
-                            <input type="submit" value="Save">
+                            <input type="submit" id="changeRoleButton" value="Add/Remove">
                             <button>Ban User</button>
                         </div>
                     </div>
@@ -144,16 +143,18 @@
                 <div class="modulemanage" style="overflow-x:auto;">
                     <div class="createModule">
                         <div id="createNewModule">
-                            <label for="moduleTextBox">Create module</label><br>
+                            <label for="moduleTextBox">Create Module</label><br>
                             <input type="text" id="moduleTitle" placeholder="Title goes here" style="width: 314px"><br>
+                            <p class="levelRange">Level Range</p>
                             <input type="text" id="minLevel" placeholder="Min" style="width: 25px">
                             <input type="text" id="maxLevel" placeholder="Max" style="width: 25px"><br>
                             <textarea id="moduleTextBox" placeholder="Text here" rows="10" cols="41"></textarea>
                             <input type="submit" id="submitModule" value="Add Module">
                         </div>
                         <div id="editModule" style="display: none;">
-                            <label for="moduleTextBox">Edit module</label><br>
+                            <label for="moduleTextBox">Edit Module</label><br>
                             <input type="text" id="moduleTitleEdit" placeholder="Title goes here" style="width: 314px"><br>
+                            <p class="levelRange">Level Range</p>
                             <input type="text" id="minLevelEdit" placeholder="Min" style="width: 25px">
                             <input type="text" id="maxLevelEdit" placeholder="Max" style="width: 25px"><br>
                             <textarea id="moduleTextBoxEdit" placeholder="Text here" rows="10" cols="41"></textarea>

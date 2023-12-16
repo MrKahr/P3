@@ -27,9 +27,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.proj.model.users.*;
 import com.proj.validators.MemberValidator;
 import com.proj.exception.IllegalUserOperationException;
+import com.proj.exception.InvalidInputException;
 import com.proj.exception.UserNotFoundException;
 import com.proj.function.RoleAssigner;
 import com.proj.function.UserManager;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping(path = "/api")
@@ -112,19 +114,17 @@ public class UserController {
 
   /**
    * 
-   * @param min Start ID for range of users
-   * @param max End ID for range of users
+   * @param min            Start ID for range of users
+   * @param max            End ID for range of users
    * @param authentication The authentication object for requesting user
    * @return ArrayList of sanitized user objects
    */
   @GetMapping(path = "/usersInRange/{min}-{max}")
   @ResponseBody
   ArrayList<User> getAll(@PathVariable Integer min, @PathVariable Integer max,
-    @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     try {
-      // https://stackoverflow.com/questions/371026/shortest-way-to-get-an-iterator-over-a-range-of-integers-in-java
-      Iterable<Integer> idRange = () -> IntStream.range(min, max).iterator();
-      Iterable<User> unsanitizedUsers = userManager.getUserdbHandler().findAllById(idRange);
+      User[] unsanitizedUsers = userManager.getAccountList(min, max);
       ArrayList<User> sanitizedUsers = new ArrayList<User>();
       // Check whether user has correct priviledges
       User requestingUser = userManager.lookupAccount(authentication.getName());
@@ -252,4 +252,76 @@ public class UserController {
 
     return "Account created and " + membershipRequestInfo;
   }
+
+  /**
+   * Change a user's role through the admin menu
+   * 
+   * @param id             of user to change role of
+   * @param newRole        Role object
+   * @param authentication The authentication object for requesting user
+   * @return
+   */
+  @PutMapping("/setRole/{username}")
+  public void adminSetRole(@PathVariable String username, @RequestParam String newRole,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+    Role replacementRole;
+    switch (newRole) {
+      case "GUEST":
+        replacementRole = new Guest();
+        break;
+      case "MEMBER":
+        replacementRole = new Member();
+        break;
+      case "DM":
+        replacementRole = new DM();
+        break;
+      case "ADMIN":
+        replacementRole = new Admin();
+        break;
+      default:
+        throw new InvalidInputException("Did not receive a valid role");
+    }
+
+    User requestingUser = userManager.lookupAccount(authentication.getName());
+    if (requestingUser.getAdminInfo() == null) {
+      throw new IllegalUserOperationException("Only admins are allowed to change user roles");
+    } else if (replacementRole.getRoleType().equals(RoleType.ADMIN) && requestingUser.getSuperAdminInfo() == null) {
+      throw new IllegalUserOperationException("Only superadmins are allowed to promote to admin");
+    } else {
+      User userToChange = userManager.lookupAccount(username);
+      RoleAssigner.setRole(userToChange, replacementRole);
+      userManager.getUserdbHandler().save(userToChange);
+    }
+  }
+
+  @PutMapping("/removeRole/{username}")
+  public void adminRemoveRole(@PathVariable String username, @RequestParam String role,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+    User requestingUser = userManager.lookupAccount(authentication.getName());
+    if (requestingUser.getAdminInfo() == null) {
+      throw new IllegalUserOperationException("Only admins are allowed to change user roles");
+    } else if (role.equals("ADMIN") && requestingUser.getSuperAdminInfo() == null) {
+      throw new IllegalUserOperationException("Only superadmins are allowed to demote admins");
+    } else {
+      User userToChange = userManager.lookupAccount(username);
+      switch (role) {
+        case "GUEST":
+          userToChange.setGuestInfo(null);
+          break;
+        case "MEMBER":
+          userToChange.setMemberInfo(null);
+          break;
+        case "DM":
+          userToChange.setDmInfo(null);
+          break;
+        case "ADMIN":
+          userToChange.setAdminInfo(null);
+          break;
+        default:
+          throw new InvalidInputException("Did not receive a valid role");
+      }
+
+    }
+  }
+
 }
