@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -56,7 +57,7 @@ public class UserController {
           RoleAssigner.setRole(user, new Guest("Level 1 bard" + i));
         }
         if (i >= 2) {
-          RoleAssigner.setRole(user, new Member("Fisk", "Randomstuff", "Table", "Stringwauy", "NoEmail"));
+          RoleAssigner.setRole(user, new Member("Fisk", "1122334" + i, "9000", "Stringwauy", "NoEmail"));
         }
         if (i >= 3) {
           RoleAssigner.setRole(user, new DM(new ArrayList<String>()));
@@ -119,13 +120,13 @@ public class UserController {
 
   @PutMapping(path = "/{username}/deactivate")
   @ResponseBody
-  String deactivateAccount(@PathVariable String username, @RequestParam String requestingUsername) {
+  String deactivateAccount(@PathVariable String username, @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     User user = userManager.lookupAccount(username);
-    User requestingUser = userManager.lookupAccount(requestingUsername);
+    User requestingUser = userManager.lookupAccount(authentication.getName());
 
     if (user.equals(requestingUser)) {
       userManager.deactivateAccount(user.getId());
-      return "Deactivation of" + user.getBasicUserInfo().getUserName() + " succesful";
+      return "Deactivation of " + user.getBasicUserInfo().getUserName() + " succesful";
     } else {
       throw new IllegalUserOperationException("You may only deactivate your own account!");
     }
@@ -142,34 +143,34 @@ public class UserController {
 
   @PutMapping(path = "/{username}/reactivate")
   @ResponseBody
-  String reactivateAccount(@PathVariable String username, @RequestParam String requestingUsername) {
+  String reactivateAccount(@PathVariable String username, @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     User user = userManager.lookupAccount(username);
-    User requestingUser = userManager.lookupAccount(requestingUsername);
+    User requestingUser = userManager.lookupAccount(authentication.getName());
 
     if (user.equals(requestingUser)) {
       userManager.restoreAccount(user.getBasicUserInfo().getUserName());
-      return "Reactivation of" + user.getBasicUserInfo().getUserName() + " succesful";
+      return "Reactivation of " + user.getBasicUserInfo().getUserName() + " successful";
     } else {
       throw new IllegalUserOperationException("You may only reactivate your own account!");
     }
   }
 
   /**
-   * 
+   * Edit
    * @param username 
    * @param requestingUsername
    * @param currentInfo
    * @param infoType
    * @return
    */
-  @PutMapping(path = "/{username}/editInfo")
+  @PutMapping(path = "/{username}/editMemberInfo")
   @ResponseBody
-  String editInfo(@PathVariable String username, @RequestParam String requestingUsername,
+  String editMemberInfo(@PathVariable String username, @CurrentSecurityContext(expression = "authentication") Authentication authentication,
       @RequestParam String[] currentInfo, @RequestParam String infoType) {
 
     // Create objects that can are used to check access
     User user = userManager.lookupAccount(username);
-    User requestingUser = userManager.lookupAccount(requestingUsername);
+    User requestingUser = userManager.lookupAccount(authentication.getName());
 
     if (user.equals(requestingUser)) {
       // Change info on user object according to the information changed on website
@@ -202,21 +203,28 @@ public class UserController {
     }
   }
 
-  //TODO: delete before pushing to main
-  @PutMapping(path = "/create/Account")
-  @ResponseBody
-  String createAccount(@RequestParam String username, @RequestParam String password,
-      @RequestParam String[] memberInfo) {
-    String membershipRequestInfo = "membership request not made";
-    userManager.createAccount(username, password);
+  @PutMapping(path = "/{username}/saveGuestInfo")
+  @ResponseBody 
+  String putGuestInfo(@PathVariable String username, @CurrentSecurityContext(expression = "authentication") Authentication authentication, @RequestBody Role newGuestInfo){
+    User user = userManager.lookupAccount(username);
+    User requestingUser = userManager.lookupAccount(authentication.getName());
 
-    // If the user has requested membership
-    if (memberInfo.length > 0) {
-      membershipRequestInfo = "member request made";
-      userManager.requestMembership(memberInfo[0], memberInfo[1], memberInfo[2], memberInfo[3], memberInfo[4],
-          memberInfo[5]);
+    if(user.equals(requestingUser)){
+        user.setGuestInfo((Guest)newGuestInfo);
+        userManager.getUserdbHandler().save(user);
+        return "Changes saved successfully!";
+    } else {
+      throw new IllegalUserOperationException("You may only edit your own account!");
     }
+  }
 
-    return "Account created and " + membershipRequestInfo;
+  @GetMapping(path = "/currentUser")
+  @ResponseBody
+  String getCurrentUserName(@CurrentSecurityContext(expression = "authentication") Authentication authentication){
+    try {
+      return authentication.getName();
+    } catch (Exception e) {
+      return "NA";
+    }
   }
 }

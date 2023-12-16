@@ -28,12 +28,15 @@
                 <div class="profile-columns">
                     <div class="column1">
                         <h1 class="username">username</h1>
+                        <button class = "activation" id = "activationButton">Deactivate Account</button>
+                        <div class = "Activation Message" visibility = "hidden"></div>
                         <div class="scroll-box">
                             <textarea id="profileText" placeholder="Text here" rows="20" cols="52"></textarea>
                         </div>
                         <div class="textSave">
-                            <input type="submit" value="Save changes">
+                            <input type="submit" value="Save changes" id = "guestInfoSave">
                         </div>
+                        <div class = "Save Changes Message" visibility = "hidden"></div>
                         <div class="tab">
                             <button class="tablinks" onclick="showTab(event, 'futureEvents')">Future Events</button>
                             <button class="tablinks" onclick="showTab(event, 'changePassword')">Change Password</button>
@@ -176,6 +179,7 @@
         }
     </script>
     <script th:src="@{~/js/authentication/loggedIn.js}"></script>
+    <script th:src ="@{~/js/profilepage/profilePageSettings.js}"></script>
 </body>
 
 </html>
