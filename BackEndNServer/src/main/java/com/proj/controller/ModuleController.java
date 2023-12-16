@@ -34,7 +34,7 @@ public class ModuleController {
         return addedModule;
     }
 
-    @GetMapping(path = "/dm/module/getAll")
+    @GetMapping(path = {"/dm/module/getAll", "/admin/module/getAll"})
     ArrayList<Module> getModules() {
         Iterable<Module> modules = moduleManager.getModuledbHandler().findAll();
 

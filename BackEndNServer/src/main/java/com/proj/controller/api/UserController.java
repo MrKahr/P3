@@ -10,6 +10,8 @@
 package com.proj.controller.api;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -93,18 +95,49 @@ public class UserController {
   User profile(@PathVariable String username,
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     try {
-       // Check whether user has correct priviledges
+      // Check whether user has correct priviledges
       User requestingUser = userManager.lookupAccount(authentication.getName());
-      
-      // Get user to lookup from database if they exist 
+
+      // Get user to lookup from database if they exist
       User user = userManager.lookupAccount(username);
 
       // Get user information
       User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
-      
+
       return sanitizedUser;
     } catch (NullPointerException npe) {
       throw new UserNotFoundException("Cannot lookup your credentials or cannot find the person you are looking for");
+    }
+  }
+
+  /**
+   * 
+   * @param min Start ID for range of users
+   * @param max End ID for range of users
+   * @param authentication The authentication object for requesting user
+   * @return ArrayList of sanitized user objects
+   */
+  @GetMapping(path = "/usersInRange/{min}-{max}")
+  @ResponseBody
+  ArrayList<User> getAll(@PathVariable Integer min, @PathVariable Integer max,
+    @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+    try {
+      // https://stackoverflow.com/questions/371026/shortest-way-to-get-an-iterator-over-a-range-of-integers-in-java
+      Iterable<Integer> idRange = () -> IntStream.range(min, max).iterator();
+      Iterable<User> unsanitizedUsers = userManager.getUserdbHandler().findAllById(idRange);
+      ArrayList<User> sanitizedUsers = new ArrayList<User>();
+      // Check whether user has correct priviledges
+      User requestingUser = userManager.lookupAccount(authentication.getName());
+
+      for (User user : unsanitizedUsers) {
+        // Get user information
+        User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
+
+        sanitizedUsers.add(sanitizedUser);
+      }
+      return sanitizedUsers;
+    } catch (NullPointerException npe) {
+      throw new UserNotFoundException("Cannot lookup your credentials");
     }
   }
 
@@ -156,7 +189,7 @@ public class UserController {
 
   /**
    * 
-   * @param username 
+   * @param username
    * @param requestingUsername
    * @param currentInfo
    * @param infoType
@@ -202,7 +235,7 @@ public class UserController {
     }
   }
 
-  //TODO: delete before pushing to main
+  // TODO: delete before pushing to main
   @PutMapping(path = "/create/Account")
   @ResponseBody
   String createAccount(@RequestParam String username, @RequestParam String password,
