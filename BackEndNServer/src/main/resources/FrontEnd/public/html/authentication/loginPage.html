@@ -1,82 +1,16 @@
-<!-- Custom JS Thymeleaf template -->
-
-<!-- <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
-	<head>
-		<title>Please Log In</title>
-	</head>
-	<body>
-		<h1>Please Log In</h1>
-		<div id="LoginContainer">
-			<div>
-				<input type="text" id="username" th:placeholder="${Username}"/>
-			</div>
-			<div>
-				<input type="password" id="password" placeholder="Password"/>
-			</div>
-				<input type="submit" id="submit" value="Log in"/>
-			</div>
-		</div>
-		<script th:src="@{~/js/authentication/login.js}"></script>
-	</body>
-</html> -->
-
-
-
-
-<!-- <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
-	<head>
-		<title>Please Log In</title>
-	</head>
-	<body>
-		<h1>Please Log In</h1>
-		<div th:if="${error == true}">
-			Invalid username or password.</div>
-		<div th:if="${param.logout}">
-			You have been logged out.</div>
-		<form th:action="@{/login}" method="post"></form>
-			<div>
-			<input type="text" id="username" th:placeholder="${Username}"/>
-			</div>
-			<div>
-			<input type="password" id="password" placeholder="Password"/>
-			</div>
-			<input type="submit" id="submit" value="Log in"/>
-		</form>
-		<script th:src="@{~/js/authentication/login.js}"></script>
-	</body>
-</html> -->
-
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log In</title>
-    <link rel="stylesheet" href="../css/loginpageStyle.css">
-</head>
+<head th:insert="~{/general/heads/authenticationHead :: #authenticationHead}"></head>
 
 <body>
-  <header>
-    <link rel="stylesheet" href="../css/navigatorStyle.css">
-    <nav class="topnav">
-        <a href="publichomepage"><img class="logo" alt="AalborgTableTop logo" src="../images/AalborgTableTop_Logo.png"></a>
-        <a href="publicCalendar">Calendar</a>
-        <a href="notfoundpage">CONMAR</a>
-        <a href="notfoundpage">About AT</a>
-        <a href="notfoundpage">Contact</a>
-        <a href="loginpage" class="split">Log In</a><!-- if logged in change with eventList -->
-        <a href="signuppage" class="split">Sign Up</a>
-    </nav>
-  </header>
+    <header th:insert="~{/general/topnav :: #topnav}"></header>
   
     <div class="background">
         <div id="LoginBox" class="LoginBox">
-            <img src="../images/AalborgTableTop_Logo.png" alt="AalborgTableTop logo" width="100" height="100">
+            <img th:src="@{~/images/AalborgTableTop_Logo.png}" alt="AalborgTableTop logo" width="100" height="100">
             <h2>Log In</h2>
-			<div th:if="${param.logout}">
-				You have been logged out.</div>
+            <div th:if="${param.logout}">
+                You have been logged out.</div>
 			<div id="LoginContainer">
 				<!-- <form th:action="@{/login}" method="post"> -->
 					<label for="Username">Username:</label><br>
@@ -88,57 +22,10 @@
 			</div>
 
             <p>Don't have an account?</p>
-            <p><a href="signuppage">Sign Up</a></p>
-            <p><a href="notfoundpage">Forgot Password</a></p>
+            <p><a href="/signup">Sign Up</a></p>
+            <p><a href="/notfoundpage">Forgot Password (WIP)</a></p>
         </div>
     </div>
 	<script th:src="@{~/js/authentication/login.js}"></script>
 </body>
 </html>
-
-
-<!-- Thymeleaf template 2 -->
-
-<!-- <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <title>Login page</title>
-  </head>
-  <body>
-    <h1>Login page</h1>
-    <p th:if="${loginError}" class="error">Wrong user or password</p>
-    <form th:action="@{/login}" method="post">
-      <label for="username">Username</label>:
-      <input type="text" id="username" name="username" autofocus="autofocus" /> <br />
-      <label for="password">Password</label>:
-      <input type="password" id="password" name="password" /> <br />
-      <input type="submit" value="Log in" />
-    </form>
-  </body>
-</html> -->
-
-
-<!-- Thymeleaf template 1 -->
-
-<!-- <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
-	<head>
-		<title>Please Log In</title>
-	</head>
-	<body>
-		<h1>Please Log In</h1>
-		<div th:if="${param.error}">
-			Invalid username and password.</div>
-		<div th:if="${param.logout}">
-			You have been logged out.</div>
-		<form th:action="@{/login}" method="post">
-			<div>
-			<input type="text" name="username" placeholder="Username"/>
-			</div>
-			<div>
-			<input type="password" name="password" placeholder="Password"/>
-			</div>
-			<input type="submit" value="Log in" />
-		</form>
-	</body>
-</html> -->

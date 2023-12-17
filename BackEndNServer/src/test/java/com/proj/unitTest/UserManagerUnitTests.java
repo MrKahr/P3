@@ -1,10 +1,9 @@
 package com.proj.unitTest;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,6 +48,13 @@ public class UserManagerUnitTests {
         requestingUser = new User(new BasicUserInfo("user2", "1234Hell+o"));
     }
     
+    @AfterEach
+    void after(){
+        //userManager.getUserdbHandler().delete(user);
+        userManager.getUserdbHandler().deleteAll();
+    }
+
+
     @Test
     @Order(34)
     public void sanitizeSelf() {
@@ -189,16 +195,16 @@ public class UserManagerUnitTests {
     @Test
     @Order(43)
     public void createInvalidUsernameGuestAccount() {
-        String creationResult = userManager.createAccount("", "helLo+3214");
-        assertTrue(creationResult.equals("Cannot create user because: Username is not valid"));
+        Executable e = () -> { userManager.createAccount("", "helLo+3214");};
+        assertThrows(FailedValidationException.class, e);
     }
 
     @Test
     @Order(44)
     public void createInvalidPasswordGuestAccount() {
         // Bug: User3 was already made, using arbitrary name instead
-        String creationResult = userManager.createAccount("user1234", "");
-        assertEquals(creationResult, "Cannot create user because: Password is not valid");
+        Executable e = () -> { userManager.createAccount("user1234", "");};
+        assertThrows(FailedValidationException.class, e);
     }
 
     @Test
@@ -229,21 +235,22 @@ public class UserManagerUnitTests {
     public void createAccountAlreadyInDB() {
         String username = user.getBasicUserInfo().getUserName();
         String password = user.getBasicUserInfo().getPassword();
-        userManager.createAccount(username, password);
-        String creationStatus = userManager.createAccount(username, password);
+        
+        Executable e = () -> {
+            userManager.createAccount(username, password);
+            userManager.createAccount(username, password);};
         // I am lazy - I don't have to check exact match, only that these elements are
         // part of other string -> I don't have to check for exact whitespaces
-        assertTrue(creationStatus
-                .contains("Cannot create user because: " + "Username:" + username + " is already in database"));
+        assertThrows(FailedValidationException.class, e);
         
-        userManager.getUserdbHandler().delete(userManager.lookupAccount(username)); //cleanup
+        //userManager.getUserdbHandler().delete(userManager.lookupAccount(username)); //cleanup
     }
 
     @Test
     @Order(48)
     public void createdAccountInvalidInfo() {
-        String creationResultmsg = userManager.createAccount("", "");
-        assertTrue(creationResultmsg.contains("Cannot create user because: " + "Username is not valid"));
+        Executable e = () -> { userManager.createAccount("", "");};
+        assertThrows(FailedValidationException.class, e);
     }
 
     @Test
@@ -289,15 +296,16 @@ public class UserManagerUnitTests {
             userManager.lookupAccount(username);
         } catch (UserNotFoundException unfe) {
             // Note that this error is thrown by findByUserName in the userdbhandler
-            assertTrue(
-                    unfe.getMessage().equals("UserdbHandler: User " + username + " not found"));
+            assertEquals(unfe.getMessage(),"UserdbHandler: User '" + username + "' not found");
         }
 
     }
 
-    @Test   //TODO: where does this user get added to the database?
+    @Test
     @Order(53)
     public void lookupExistingAccount() {
+        userManager.createAccount("Fisk", "123456789Fisk+");
+        User user = userManager.lookupAccount("Fisk");
         String username = user.getBasicUserInfo().getUserName();
         Executable e = () -> {
             userManager.lookupAccount(username);
@@ -318,12 +326,14 @@ public class UserManagerUnitTests {
     @Test
     @Order(55)
     public void getAccountListSwappedRange() {
+        userManager.createAccount("Fisk", "123456789Fisk+");
         userManager.createAccount("thisisauser", "123HelLo+");
         User user = userManager.lookupAccount("thisisauser");
         User[] userList = userManager.getAccountList(user.getId(), user.getId() - 1);
+        System.out.println("Num: "+userManager.getNumberOfUsers()+"| Id: "+user.getId());
         assertTrue(userList.length == 2);
 
-        userManager.getUserdbHandler().delete(user);    //cleanup
+        //userManager.getUserdbHandler().delete(user);    //cleanup
     }
 
     @Test
@@ -349,8 +359,8 @@ public class UserManagerUnitTests {
         // Check whether correct message is returned by usermanager
         assertTrue(statusMsg.equals("Membership request made and awaiting approval."));
 
-        userManager.getUserdbHandler().delete(userToUpgrade);   //cleanup
-        userManager.getRoleRequestdbHandler().delete(request);  //cleanup
+        //userManager.getUserdbHandler().delete(userToUpgrade);   //cleanup
+        //userManager.getRoleRequestdbHandler().delete(request);  //cleanup
     }
 
     @Test
@@ -358,7 +368,7 @@ public class UserManagerUnitTests {
     public void requestUpgradeUserNotInDB() {
         String statusmsg = userManager.requestMembership("Bob", "43114311", "9000", "Villavej 123", "Bob@bobmail.com",
                 "IdontExist123");
-        assertTrue(statusmsg.equals("UserdbHandler: User IdontExist123 not found"));
+        assertEquals(statusmsg,"UserdbHandler: User 'IdontExist123' not found");
     }
 
     @Test
@@ -376,7 +386,7 @@ public class UserManagerUnitTests {
                 "TheBobinator");
         assertTrue(statusmsg.equals("User with id " + userToUpgrade.getId()+  " does not fulfill the requirements for the given role."));
    
-        userManager.getUserdbHandler().delete(userToUpgrade);   //Cleanup
+        //userManager.getUserdbHandler().delete(userToUpgrade);   //Cleanup
     }
 
     @Test
@@ -398,7 +408,7 @@ public class UserManagerUnitTests {
                 "TheBobinator");
         assertTrue(statusmsg.equals("Email is not valid"));
 
-        userManager.getUserdbHandler().delete(userToUpgrade);   //Cleanup
+        //userManager.getUserdbHandler().delete(userToUpgrade);   //Cleanup
     }
 
     @Test
@@ -411,8 +421,8 @@ public class UserManagerUnitTests {
         User[] userList = userManager.getAccountList(user1.getId(), user2.getId());
         assertTrue(userList.length == 2);
 
-        userManager.getUserdbHandler().delete(user1);   //Cleanup
-        userManager.getUserdbHandler().delete(user2);   //Cleanup
+        //userManager.getUserdbHandler().delete(user1);   //Cleanup
+        //userManager.getUserdbHandler().delete(user2);   //Cleanup
     }
 
     @Test
@@ -424,7 +434,7 @@ public class UserManagerUnitTests {
         //user = userManager.lookupAccount(user.getBasicUserInfo().getUserName()); Bug here where user in not in db
         assertTrue(user.getBasicUserInfo().getDeactivationDate() != null);
 
-        userManager.getUserdbHandler().delete(user);   //Cleanup
+        //userManager.getUserdbHandler().delete(user);   //Cleanup
     }
 
     @Test
@@ -439,27 +449,27 @@ public class UserManagerUnitTests {
 
         assertThrows(NullPointerException.class, e);
 
-        userManager.getUserdbHandler().delete(dndUser);   //Cleanup
+        //userManager.getUserdbHandler().delete(dndUser);   //Cleanup
     }
 
-    @Test   //TODO: rewrite removeAccount to immediately set deletionDate to LocalDateTime.now()
+    @Test
     @Order(63)
-    public void removeValidAccount() {
-        // We have to set deletion date manually because it is hardcoded for six months
-        user.getBasicUserInfo().setDeletionDate(LocalDateTime.now().minusMinutes(2));
-        // Save user with new deletion date
-        userManager.getUserdbHandler().save(user);
-        String statusmsg = userManager.removeAccount(user.getId());
-        assertTrue(statusmsg.equals("Deletion of " + user.getBasicUserInfo().getUserName() + " successful"));
+    public void removeValidAccount() throws InterruptedException {
+        userManager.removeAccount(user.getBasicUserInfo().getUserName());
+        Thread.sleep(2000);
+        Executable e = () -> {userManager.lookupAccount(user.getBasicUserInfo().getUserName());};
+        assertThrows(UserNotFoundException.class, e);
     }
 
     @Test
     @Order(64)
-    public void removeInvalidAccount() {
-        int invalidId = 12343;
-        String statusmsg = userManager.removeAccount(invalidId);
+    public void removeInvalidAccount() throws InterruptedException {
+        String nonExistantUserName = user.getBasicUserInfo().getUserName();
+        Thread.sleep(2000);
+        userManager.getUserdbHandler().delete(user);    //Make the user not exist anymore
+        String statusmsg = userManager.removeAccount(nonExistantUserName);
         System.out.println(statusmsg);
-        assertTrue(statusmsg.equals("User with id '" + invalidId + "' does not exist."));
+        assertEquals("UserdbHandler: User '" + nonExistantUserName + "' not found", statusmsg);
     }
 
     @Test
@@ -469,21 +479,23 @@ public class UserManagerUnitTests {
         user.getBasicUserInfo().setDeactivationDate(LocalDateTime.now().minusMinutes(2));
         // Save user with new deletion and deactivation date
         userManager.getUserdbHandler().save(user);
-        userManager.restoreAccount(user.getId());
+        userManager.restoreAccount(user.getBasicUserInfo().getUserName());
         // Check whether restore account has set relevant fields to null in database
         user = userManager.lookupAccount(user.getBasicUserInfo().getUserName());
         assertTrue(user.getBasicUserInfo().getDeactivationDate() == null);
         assertTrue(user.getBasicUserInfo().getDeletionDate() == null);
 
-        userManager.getUserdbHandler().delete(user);
+        //userManager.getUserdbHandler().delete(user);    //Cleanup
     }
 
     @Test
     @Order(66)
-    public void restoreInvalidAccount() {
+    public void restoreInvalidAccount() throws InterruptedException {
         // Restore user with arbitrary Id that does not exist in db
+        String nonExistantUserName = user.getBasicUserInfo().getUserName();
+        userManager.getUserdbHandler().delete(user);    //Make the user not exist anymore
         Executable e = () -> {
-            userManager.restoreAccount(1337);
+            userManager.restoreAccount(nonExistantUserName);
         };
         assertThrows(UserNotFoundException.class, e);
     }
@@ -509,8 +521,8 @@ public class UserManagerUnitTests {
         }
         
         
-        userManager.rejectRoleRequest(requestingUser.getId(), RoleType.GUEST);  //Cleanup
-        userManager.getUserdbHandler().delete(requestingUser);  //Cleanup
+        //userManager.rejectRoleRequest(requestingUser.getId(), RoleType.GUEST);  //Cleanup
+        //userManager.getUserdbHandler().delete(requestingUser);  //Cleanup
     }
 
     @Test
@@ -529,7 +541,7 @@ public class UserManagerUnitTests {
         assertTrue(thrown.getMessage().equals(
                 "User with id " + requestingUser.getId() + " does not fulfill the requirements for the given role."));
 
-        userManager.getUserdbHandler().delete(requestingUser);  //Cleanup
+        //userManager.getUserdbHandler().delete(requestingUser);  //Cleanup
     }
 
     @Test
@@ -558,7 +570,7 @@ public class UserManagerUnitTests {
         assertTrue(
                 thrown.getMessage().contains("Request with id '" + roleRequest.getRequestId() + "' does not exist."));
 
-        userManager.getUserdbHandler().delete(requestingUser); //Cleanup
+        //userManager.getUserdbHandler().delete(requestingUser); //Cleanup
     }
 
     @Test
@@ -572,7 +584,7 @@ public class UserManagerUnitTests {
         assertTrue(thrown.getMessage()
                 .contains("No request of the given type exists for user with ID " + requestingUser.getId()));
         
-        userManager.getUserdbHandler().delete(requestingUser); //Cleanup
+        //userManager.getUserdbHandler().delete(requestingUser); //Cleanup
     }
 
     @Test
@@ -588,7 +600,7 @@ public class UserManagerUnitTests {
         assertTrue(
                 thrown.getMessage().contains("Request with id '" + roleRequest.getRequestId() + "' does not exist."));
 
-        userManager.getUserdbHandler().delete(requestingUser); //Cleanup
+        //userManager.getUserdbHandler().delete(requestingUser); //Cleanup
     }
 
     @Test
@@ -603,6 +615,6 @@ public class UserManagerUnitTests {
         assertTrue(thrown.getMessage()
                 .contains("No request of the given type exists for user with ID " + requestingUser.getId()));
 
-        userManager.getUserdbHandler().delete(requestingUser); //Cleanup        
+        //userManager.getUserdbHandler().delete(requestingUser); //Cleanup        
     }
 }

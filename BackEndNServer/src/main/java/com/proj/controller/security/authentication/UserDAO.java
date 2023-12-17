@@ -6,6 +6,7 @@ import java.util.HashSet;
 // Spring necessities
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
 
 // Spring Security
 import org.springframework.security.core.GrantedAuthority;
@@ -66,12 +67,48 @@ public class UserDAO {
 	 */
     private HashSet<GrantedAuthority> findAuthorities(User user) { 
         HashMap<RoleType, Role> roleMap = user.getAllRoles();
-		var authorities = new HashSet<GrantedAuthority>(); // "var" is a generic object type
+		HashSet<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
 
         for (var key : roleMap.keySet()) {
-            var grantedAuthority = new SimpleGrantedAuthority(key.toString());
+            SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(key.toString());
             authorities.add(grantedAuthority);
         }
         return authorities;
     }
+
+	/**
+	 * Compares the Granted Authorities of a user against a RoleType.
+	 * @param authentication The Authentication object of the user. Gathered from their Http session.
+	 * @param role The RoleType to compare Granted Authorities against.
+	 * @return True if the user has a Granted Authority matching the RoleType.
+	 * @see https://www.baeldung.com/spring-currentsecuritycontext
+	 */
+	public boolean checkAuthority(Authentication authentication, RoleType role){
+		boolean hasAuthority = false;
+		SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.toString()); // Convert the RoleType to a Granted Authority
+		var authorities = authentication.getAuthorities(); // "var" is a generic object type. Retrieve HashSet of Authorities from the Authentication object
+
+		if(authorities.contains(grantedAuthority)){
+			hasAuthority = true;
+		}
+		return hasAuthority; 
+	}
+
+	/**
+	 * Compares the Granted Authorities of a user against a RoleType.
+	 * @param authentication The Authentication object of the user. Gathered from their Http session.
+	 * @param role The role to compare Granted Authorities against.
+	 * @return True if the user has a Granted Authority matching the RoleType.
+	 * @see https://www.baeldung.com/spring-currentsecuritycontext
+	 */
+	public boolean checkAuthority(Authentication authentication, String role){
+		boolean hasAuthority = false;
+		SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.toString()); // Convert the RoleType to a Granted Authority
+		var authorities = authentication.getAuthorities(); // "var" is a generic object type. Retrieve HashSet of Authorities from the Authentication object
+
+		if(authorities.contains(grantedAuthority)){
+			hasAuthority = true;
+		}
+		return hasAuthority; 
+	}
 } 

@@ -11,7 +11,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 public class BasicUserInfo {
     //Field
     private String username;
-    private String password; //TODO: Remember to encrypt this
+    private String password;
 
     // Tells Hibernate's jackson instance to parse the date using the class provided in the jackson package 'jsr310'.
     // Should be enabled globally. See: https://stackoverflow.com/questions/37492249/how-to-configure-jackson-with-spring-globally

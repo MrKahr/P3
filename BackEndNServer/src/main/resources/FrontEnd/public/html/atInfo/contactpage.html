@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,18 +8,7 @@
 </head>
 
 <body>
-    <header>
-        <link rel="stylesheet" href="../../Styles/navigatorStyle.css">
-        <nav class="topnav">
-            <a href="../../PublicResources/publichomepage.html"><img class="logo" alt="AalborgTableTop logo" src="../../Images/AalborgTableTop_Logo.png"></a>
-            <a href="../../PublicResources/monthCalendar.html">Calendar</a>
-            <a href="../../PublicResources/conmarpage.html">CONMAR</a>
-            <a href="../../PublicResources/aboutatpage.html">About AT</a>
-            <a href="../../PublicResources/contactpage.html">Contact</a>
-            <a href="../../PublicResources/loginpage.html" class="split">Log In</a>
-            <a href="../../PublicResources/signuppage.html" class="split">Sign Up</a>
-        </nav>
-    </header>
+    <header th:insert="~{/general/topnav :: #topnav}"></header>
 
     <div class="background">
 
