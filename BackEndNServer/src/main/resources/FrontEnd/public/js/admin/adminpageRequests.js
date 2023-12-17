@@ -243,7 +243,75 @@ async function displayUsers(users) {
             currentRow = clickedRow;
         });
     });
+}
 
+async function requestGetMemberships() {
+    try {
+        const response = await fetch(`/api/get_member_requests`, {
+            method: "GET",
+            mode: "cors",
+            cache: "no-cache",
+        });
+        return await JSON.parse(await response.text());
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+// Membership requests
+async function requestHandleMembership(request, accepted) {
+    try {
+        const response = await fetch(`/api/handle_role_request?requestAccepted=${accepted}`, {
+            method: "PUT",
+            mode: "cors",
+            cache: "no-cache",
+            headers: {
+                "Content-Type": "application/json" // Set type to JSON
+            },
+            body: JSON.stringify(request)
+        });
+        return await response.text();
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+async function displayMembershipRequests(membershipRequests) {
+    const membershipRequestsTable = document.getElementById("membershipRequests").querySelector("table");
+    let i = 0;
+    const rowsToRemove = Array.from(membershipRequestsTable.querySelectorAll("tr:not(:first-child)"));
+    rowsToRemove.forEach(row => row.remove());
+    if(!membershipRequests) return;
+    membershipRequests.forEach(async request => {
+        let row = document.createElement("tr");
+        membershipRequestsTable.appendChild(row);
+        row.innerHTML = 
+            `<td>TankMcgee</td>
+            <td>Jens Jensen</td>
+            <td>Adresse</td>
+            <td>+4511111111</td>
+            <td>9000</td>
+            <td><i class="fa fa-check" style="font-size:24px" id="accept${i}"></i><i class="fa fa-minus-circle" style="font-size:24px" id="decline${i}"></i></td>`;
+        const data = row.querySelectorAll("td");
+        const user = await requestGetUsers(request.userId, request.userId)
+        data[0].innerText = user[0].basicUserInfo.userName;
+        data[1].innerText = request.roleInfo.realName;
+        data[2].innerText = request.roleInfo.address;
+        data[3].innerText = request.roleInfo.phoneNumber;
+        data[4].innerText = request.roleInfo.postalCode;
+        request.roleObject = request.roleInfo;
+        document.getElementById(`accept${i}`).addEventListener("click", async () => {
+            await requestHandleMembership(request, true)
+            await displayMembershipRequests(await requestGetMemberships());
+            await displayUsers(await requestGetUsers())
+        });
+        document.getElementById(`decline${i}`).addEventListener("click", async () => {
+            await requestHandleMembership(request, false)
+            await displayMembershipRequests(await requestGetMemberships());
+            await displayUsers(await requestGetUsers())
+        });
+        i++;
+    });
 }
 
 
@@ -307,6 +375,9 @@ document.getElementById("registerPayment").addEventListener("click", async () =>
     await requestRegisterPayment(currentRow.querySelectorAll("td")[0].innerText);
     await displayUsers(await requestGetUsers(1, 20));
 });
+
+// Membership requests
+document.addEventListener('DOMContentLoaded', async () => await displayMembershipRequests(await requestGetMemberships()));
 
 
 
