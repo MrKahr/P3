@@ -28,6 +28,9 @@ async function addEventsToCalendar(events) {
     } else if (currentDate.getMonth() >= 9){
         events = await JSON.parse(await loadCalendar(""+currentDate.getFullYear()+"-"+(currentDate.getMonth()+1)+"-01T00:02",""+currentDate.getFullYear()+"-"+(currentDate.getMonth()+2)+"-01T00:02"));
         console.log(events);
+    } else if (currentDate.getMonth() == 8){
+        events = await JSON.parse(await loadCalendar(""+currentDate.getFullYear()+"-0"+(currentDate.getMonth()+1)+"-01T00:02",""+currentDate.getFullYear()+"-"+(currentDate.getMonth()+2)+"-01T00:02"));
+        console.log(events);
     } else {
         events = await JSON.parse(await loadCalendar(""+currentDate.getFullYear()+"-0"+(currentDate.getMonth()+1)+"-01T00:03",""+currentDate.getFullYear()+"-0"+(currentDate.getMonth()+2)+"-01T00:03"));
         console.log(events);
