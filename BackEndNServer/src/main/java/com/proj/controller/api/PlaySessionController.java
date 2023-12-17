@@ -1,4 +1,4 @@
-package com.proj.controller.navigation;
+package com.proj.controller.api;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,6 +8,7 @@ import com.proj.exception.NoModuleFoundException;
 import com.proj.function.ModuleManager;
 import com.proj.function.PlaySessionManager;
 import com.proj.repositoryhandler.PlaySessiondbHandler;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.proj.model.session.*;
 
 @Controller
+@RequestMapping (path = "/api/playsession")
 public class PlaySessionController {
 
   @Autowired
@@ -65,29 +67,29 @@ public class PlaySessionController {
     return "Update Successfull";
   }
 
-  /*
-   * @GetMapping(path="/getAllPlaySessions") //returns all play sessions
-   * public @ResponseBody List<PlaySession> getAllPlaySessions() {
-   * Iterable<PlaySession> playSessions = playSessionHandler.findAll();
-   * List<PlaySession> allPlaySessions = new ArrayList<>();
-   * playSessions.forEach(allPlaySessions::add);
-   * return allPlaySessions;
-   * }
-   */
+  
+   @GetMapping(path="/getallplaysessions") //returns all play sessions
+   public @ResponseBody List<PlaySession> getAllPlaySessions() {
+   Iterable<PlaySession> playSessions = playSessiondbHandler.findAll();
+   List<PlaySession> allPlaySessions = new ArrayList<>();
+   playSessions.forEach(allPlaySessions::add);
+   return allPlaySessions;
+   }
+   
 
   @GetMapping(path = "/datebetween") // returns all play sessions between two dates
-  public @ResponseBody List<PlaySession> getPlaySessionsBetween(@RequestParam LocalDateTime startDateTime,
+  public @ResponseBody ArrayList<PlaySession> getPlaySessionsBetween(@RequestParam LocalDateTime startDateTime,
       @RequestParam LocalDateTime endDateTime) {
-    List<PlaySession> playSessions = playSessionManager.getSessions(startDateTime, endDateTime);
+    Iterable<PlaySession> playSessions = playSessiondbHandler.findByDateBetween(startDateTime, endDateTime);
     // We don't want rewards publicly accessible
+    ArrayList<PlaySession> testList = new ArrayList<PlaySession>() {
+      
+    };
     for(PlaySession playSession : playSessions) {
       playSession.setRewards(null);
+      testList.add(playSession);
     }
-    return playSessions;
+    return testList;
   }
 
-  @GetMapping(path = "/play_session/{id}") //TODO: return specific play session with or without rewards, depending on access level
-  public @ResponseBody PlaySession getPlaySession() {
-    return null;
-  }
 }

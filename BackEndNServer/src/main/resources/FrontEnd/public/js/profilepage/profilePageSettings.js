@@ -65,8 +65,7 @@ async function getUserEvents() {
 
 }
 
-async function inputUserInfo() {
-    let username = await getCurrentUserName();
+async function inputUserInfo(username) {
     let userinfo = await getUserInfo(username);
 
     // Find and place element in username 
@@ -78,6 +77,7 @@ async function inputUserInfo() {
     guestInfoContainer.innerText = userinfo.guestInfo.characterInfo;
 
     // Find and place element future events
+    //displayFutureSessions(username);
 
     // Find and place info if user is member - we don't care about strict equality also don't want an undefined user object
     if (userinfo.memberInfo != null) {
@@ -115,7 +115,6 @@ function inputMemberInfo(userinfo) {
 }
 
 async function saveGuestInfo() {
-    // Save it to a user's guest object
     let username = await getCurrentUserName();
     try {
         // Get info in infobox
@@ -136,7 +135,7 @@ async function saveGuestInfo() {
                 body: JSON.stringify(guestInfo)
             })
             let currentInfoContainer = document.getElementsByClassName("Save Changes Message");
-            currentInfoContainer[0].innerText = "Save successful";
+            currentInfoContainer[0].innerText = await response.text();
             currentInfoContainer[0].visibility = "visible";
     } catch (error) {
         console.log(error);
@@ -145,9 +144,8 @@ async function saveGuestInfo() {
 
 async function saveMemberInfo() { };
 
-function requestMembership() { };
-
 async function changeActivationStatus() {
+    let username = await getCurrentUserName();
     let currentButton = document.getElementById("activationButton");
 
     // Setup prompt to make sure user deactivates/activates account correctly
@@ -159,9 +157,9 @@ async function changeActivationStatus() {
     if (activationPrompt === "yes") {
         // Check whether button is currently an activation or deactivation button
         if (currentButton.innerText.split(" ")[0] === "Deactivate") {
-            reponseMessage = await deactivateAccount();
+            reponseMessage = await deactivateAccount(username);
         } else {
-            reponseMessage = await activateAccount();
+            reponseMessage = await activateAccount(username);
         }
 
         changeActivationButtonText(currentButton);
@@ -183,9 +181,7 @@ function changeActivationButtonText(activationButton) {
     }
 }
 
-async function deactivateAccount() {
-    let username = await getCurrentUserName();
-
+async function deactivateAccount(username) {
     try {
         const response = await fetch(`/api/${username}/deactivate`, {
             method: "PUT",
@@ -199,8 +195,7 @@ async function deactivateAccount() {
     }
 }
 
-async function activateAccount() {
-    let username = await getCurrentUserName();
+async function activateAccount(username) {
     try {
         const response = await fetch(`/api/${username}/reactivate`, {
             method: "PUT",
@@ -214,11 +209,132 @@ async function activateAccount() {
     }
 }
 
+async function getFutureSessions(username){
+    try {
+        const response = await fetch(`/api/${username}/futureEvents`, {
+            method: "GET",
+            mode: "cors",
+            cache: "no-cache"
+        });
+        // Return response once promise has been resolved 
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+}
 
-function generatePageContent() {
-    inputUserInfo();
+/* async function displayFutureSessions(username){
+    let futureSessions = await getFutureSessions(username);
+    let sessionContainer = document.getElementsByClassName("eventlist");
+
+    futureSessions.forEach(session => {
+        let newParagraph = document.createElement("p");
+        newParagraph.innerText = session;
+        sessionContainer.appendChild(newParagraph);
+        
+    });
+}
+ */
+/**
+ * This is dummy, because we don't just want to check two passwords, we also want to check whether the person remembers their own password
+ * @returns 
+ */
+async function changePassword(){
+    // TODO: implement hashing, and checking the old password with the password in the database
+    let username = await getCurrentUserName();
+    let oldPassword = document.getElementById("oldPassword");
+    let newPassword = document.getElementById("newPassword");
+    let confirmedPassword = document.getElementById("confirmPassword");
+    let statusContainer = document.getElementById("passwordChangeMessage");
+
+    if(!(newPassword.value === confirmedPassword.value)){
+        statusContainer.innerText = "Passwords do not match";
+    } else {
+        statusContainer.innerText = "";
+        try {
+            const validationResponse = await fetch(`/api/${username}/validatePassword`, {
+                method: "PUT",
+                mode: "cors",
+                cache: "no-cache",
+                headers: {
+                    "Content-Type": "application/json" // Set type to JSON
+                },
+                body: JSON.stringify(confirmedPassword)
+            })
+
+            if(validationResponse){
+                try {
+                    const savingReponse = await fetch(`/api/${username}/savePassword`, {
+                        method: "PUT",
+                        mode: "cors",
+                        cache: "no-cache",
+                        headers: {
+                            "Content-Type": "application/json" // Set type to JSON
+                        },
+                        body: JSON.stringify(confirmedPassword)
+                    })
+                    console.log(statusContainer);
+                    statusContainer.innerText = savingReponse;
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    
+}
+
+async function makeMembershipRequest(){
+    let memberfields = document.getElementsByClassName("info-column2");
+    let validFields = true;
+    let username = await getCurrentUserName();
+
+    for (const field of memberfields) {
+        if(field.children[0].value === ""){
+            validFields = false;
+        };
+    }
+
+    if(validFields){
+        let memberInfo = {
+            realName: memberfields[0].children[0].value,
+            phoneNumber: memberfields[1].children[0].value,
+            postalCode: memberfields[2].children[0].value,
+            address: memberfields[3].children[0].value,
+            email: memberfields[4].children[0].value,
+            "@class":".Member"
+        };
+        console.log(memberInfo);
+        try {
+            const response = await fetch(`/api/${username}/sendUpgradeToMemberRequest`, {
+                method: "PUT",
+                mode: "cors",
+                cache: "no-cache",
+                headers: {
+                    "Content-Type": "application/json" // Set type to JSON
+                },
+                body: JSON.stringify(memberInfo)
+            });
+            // Return response once promise has been resolved 
+            let statusContainer = document.getElementById("membershipRequestStatus");
+            statusContainer.innerText = await response.text();
+        } catch (error) {
+            console.log(error);
+        }
+        
+    }
+
+
+}
+async function generatePageContent() {
+    let username = await getCurrentUserName();
+    await inputUserInfo(username);
     document.getElementById("activationButton").addEventListener("click", changeActivationStatus);
     document.getElementById("guestInfoSave").addEventListener("click", saveGuestInfo);
+    document.getElementById("changePasswordButton").addEventListener("click", changePassword);
+    document.getElementById("requestMembershipButton").addEventListener("click", makeMembershipRequest);
 }
 
 generatePageContent();

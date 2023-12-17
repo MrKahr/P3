@@ -28,6 +28,8 @@ import org.hibernate.type.SqlTypes;
 public class PlaySession {
     // Field
 
+    //TODO: Add location field(String), allowed players field(ENUM roletype), players field (ArrayList<User>), rewards field ArrayList<String>, LevelRangeLow + LevelRangeHigh field (int)
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -260,9 +262,8 @@ public class PlaySession {
         if (currentModule == null) {
             throw new NullPointerException("Module doesn't exist");
         } else {
-            Module emptyModule = new Module("", "", ""); // TODO: Consider whether we want to model empty modules this way
-            this.setModule(emptyModule); // Use empty module as base
-            this.addModuleSet(emptyModule); // Module set event fixed /
+            this.setModule(null);
+            this.addModuleSet(null);
         }
     }
 
@@ -276,7 +277,7 @@ public class PlaySession {
     public void assignUser(String username) throws PlaySessionFullException, UserAlreadyAssignedException {
         if (users.size() >= maxNumberOfPlayers) {
             throw new PlaySessionFullException("Could not add '" + username + "' as playsession is full");
-        } else if(users.contains(username)) {
+        } else if(users.contains(username) || dm.equals(username)) {
             throw new UserAlreadyAssignedException("Could not add '" + username + "' as they are already assigned");
         } else {
             this.users.add(username);

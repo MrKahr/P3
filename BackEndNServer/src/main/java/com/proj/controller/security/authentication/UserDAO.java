@@ -88,12 +88,6 @@ public class UserDAO {
 		SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.toString()); // Convert the RoleType to a Granted Authority
 		var authorities = authentication.getAuthorities(); // "var" is a generic object type. Retrieve HashSet of Authorities from the Authentication object
 
-		// Printing for testing purposes
-		// System.out.println("\n\n\n");
-		// System.out.println("UserDAO | Principal: " + authentication.getPrincipal());
-		// System.out.println("UserDAO | Granted Authorities: " + authorities);
-		// System.out.println("\n\n\n");
-
 		if(authorities.contains(grantedAuthority)){
 			hasAuthority = true;
 		}
@@ -117,6 +111,4 @@ public class UserDAO {
 		}
 		return hasAuthority; 
 	}
-
-
 } 

@@ -14,7 +14,7 @@ public class BasicInfoValidator implements Validatable<BasicInfoValidator> {
     private static Pattern genericStringPattern = Pattern.compile("^(\\\\w)$");
     private static Pattern userNamePattern = Pattern.compile("^(\\w{4,30})$");
     private static Pattern passwordPattern = Pattern
-            .compile("^(?=.{4,30}$)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*['+-^&%¤$]).*$");
+            .compile("^(?=.{4,30}$)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*['!#()={}+\\-^&%¤$]).*$");
     private Matcher m;
 
     // Constructor
