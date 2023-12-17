@@ -8,7 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 
 @EnableJpaRepositories(basePackages={"com.proj.repositories"})
 @SpringBootApplication
-// @EnableScheduling
+@EnableScheduling
 public class Application implements CommandLineRunner {
 
 	public static void main(String[] args) {
