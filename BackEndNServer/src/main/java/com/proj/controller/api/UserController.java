@@ -9,6 +9,7 @@
 
 package com.proj.controller.api;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.stream.IntStream;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -119,7 +121,7 @@ public class UserController {
    * @param authentication The authentication object for requesting user
    * @return ArrayList of sanitized user objects
    */
-  @GetMapping(path = "/usersInRange/{min}-{max}")
+  @GetMapping(path = "/users_in_range/{min}-{max}")
   @ResponseBody
   ArrayList<User> getAll(@PathVariable Integer min, @PathVariable Integer max,
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
@@ -261,25 +263,33 @@ public class UserController {
    * @param authentication The authentication object for requesting user
    * @return
    */
-  @PutMapping("/setRole/{username}")
+  @PutMapping("/set_role/{username}")
   public void adminSetRole(@PathVariable String username, @RequestParam String newRole,
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     Role replacementRole;
-    switch (newRole) {
-      case "GUEST":
-        replacementRole = new Guest();
-        break;
-      case "MEMBER":
-        replacementRole = new Member();
-        break;
-      case "DM":
-        replacementRole = new DM();
-        break;
-      case "ADMIN":
-        replacementRole = new Admin();
-        break;
-      default:
-        throw new InvalidInputException("Did not receive a valid role");
+    User userToChange = userManager.lookupAccount(username);
+    try {
+      // Check if user has previously had this role, to reuse role info from history
+      Role roleFromHistory = userToChange.getRoleBackups().getBackupByType(RoleType.valueOf(newRole));
+      if(roleFromHistory != null) {
+        replacementRole = roleFromHistory;
+      } else {
+        throw new NullPointerException();
+      }
+    } catch (NullPointerException npe) {
+      switch (newRole) {
+        case "MEMBER":
+          replacementRole = new Member();
+          break;
+        case "DM":
+          replacementRole = new DM();
+          break;
+        case "ADMIN":
+          replacementRole = new Admin();
+          break;
+        default:
+          throw new InvalidInputException("Did not receive a valid role");
+      }
     }
 
     User requestingUser = userManager.lookupAccount(authentication.getName());
@@ -288,13 +298,12 @@ public class UserController {
     } else if (replacementRole.getRoleType().equals(RoleType.ADMIN) && requestingUser.getSuperAdminInfo() == null) {
       throw new IllegalUserOperationException("Only superadmins are allowed to promote to admin");
     } else {
-      User userToChange = userManager.lookupAccount(username);
       RoleAssigner.setRole(userToChange, replacementRole);
       userManager.getUserdbHandler().save(userToChange);
     }
   }
 
-  @PutMapping("/removeRole/{username}")
+  @DeleteMapping("/remove_role/{username}")
   public void adminRemoveRole(@PathVariable String username, @RequestParam String role,
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     User requestingUser = userManager.lookupAccount(authentication.getName());
@@ -305,9 +314,6 @@ public class UserController {
     } else {
       User userToChange = userManager.lookupAccount(username);
       switch (role) {
-        case "GUEST":
-          userToChange.setGuestInfo(null);
-          break;
         case "MEMBER":
           userToChange.setMemberInfo(null);
           break;
@@ -320,8 +326,25 @@ public class UserController {
         default:
           throw new InvalidInputException("Did not receive a valid role");
       }
-
+      userManager.getUserdbHandler().save(userToChange);
     }
   }
 
+  /**
+   * Register a membership payment for a user
+   * 
+   * @param username       username of the paying user
+   * @param authentication of the admin confirming the payment
+   */
+  @PutMapping("/register_payment/{username}")
+  public void putMethodName(@PathVariable String username,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+    User requestingUser = userManager.lookupAccount(authentication.getName());
+    if (requestingUser.getAdminInfo() == null) {
+      throw new IllegalUserOperationException("Only admins are allowed to change user roles");
+    }
+    User payingUser = userManager.lookupAccount(username);
+    payingUser.getMemberInfo().setLasPaymentDate(LocalDateTime.now());
+    userManager.getUserdbHandler().save(payingUser);
+  }
 }

@@ -155,7 +155,7 @@ function openModuleEdit() {
 
 async function requestGetUsers(min, max) {
     try {
-        const response = await fetch(`/api/usersInRange/${min}-${max}`, {
+        const response = await fetch(`/api/users_in_range/${min}-${max}`, {
             method: "GET",
             mode: "cors",
             cache: "no-cache"
@@ -168,7 +168,7 @@ async function requestGetUsers(min, max) {
 
 async function requestSetRole(username, role) {
     try {
-        const response = await fetch(`/api/setRole/${username}?newRole=${role}`, {
+        const response = await fetch(`/api/set_role/${username}?newRole=${role}`, {
             method: "PUT",
             mode: "cors",
             cache: "no-cache",
@@ -179,8 +179,30 @@ async function requestSetRole(username, role) {
     }
 }
 
-async function requestRemoveRole(id, selectedRole) {
+async function requestRemoveRole(username, selectedRole) {
+    try {
+        const response = await fetch(`/api/remove_role/${username}?role=${selectedRole}`, {
+            method: "DELETE",
+            mode: "cors",
+            cache: "no-cache",
+        });
+        return await response.text();
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
 
+async function requestRegisterPayment(username) {
+    try {
+        const response = await fetch(`/api/register_payment/${username}`, {
+            method: "PUT",
+            mode: "cors",
+            cache: "no-cache",
+        });
+        return await response.text();
+    } catch (error) {
+        console.error("Error:", error);
+    }
 }
 
 
@@ -207,7 +229,6 @@ async function displayUsers(users) {
         } else {
             data[2].innerText = "None"
         }
-
 
         row.addEventListener("click", () => {
             let clickedRow = event.currentTarget;
@@ -262,7 +283,7 @@ document.addEventListener("click", () => document.getElementById("moduleUnsucces
 
 // User
 // Show
-document.addEventListener('DOMContentLoaded', async () => displayUsers(await requestGetUsers(1,20)));
+document.addEventListener('DOMContentLoaded', async () => displayUsers(await requestGetUsers(1, 20)));
 
 // Change role
 document.getElementById("changeRoleButton").addEventListener("click", async () => {
@@ -274,10 +295,17 @@ document.getElementById("changeRoleButton").addEventListener("click", async () =
 
     if (currentRoles.includes(selectedRole)) {
         await requestRemoveRole(username, selectedRole);
+        await displayUsers(await requestGetUsers(1, 20));
     } else {
         await requestSetRole(username, selectedRole);
-        await displayUsers(await requestGetUsers(1,20));
+        await displayUsers(await requestGetUsers(1, 20));
     }
+});
+
+// Register payment
+document.getElementById("registerPayment").addEventListener("click", async () => {
+    await requestRegisterPayment(currentRow.querySelectorAll("td")[0].innerText);
+    await requestGetUsers(1, 20);
 });
 
 
