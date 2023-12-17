@@ -1,4 +1,4 @@
-package com.proj.controller;
+package com.proj.controller.navigation;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

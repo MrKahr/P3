@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -9,18 +9,8 @@
 </head>
 
 <body>
-    <header>
-        <link rel="stylesheet" href="../css/navigatorStyle.css">
-        <nav class="topnav">
-            <a href="/"><img class="logo" alt="AalborgTableTop logo" src="../images/AalborgTableTop_Logo.png"></a>
-            <a href="publiccalendar">Calendar</a>
-            <a href="notfoundpage">CONMAR</a>
-            <a href="notfoundpage">About AT</a>
-            <a href="notfoundpage">Contact</a>
-            <a href="/login" class="split">Log In</a>
-            <a href="/signup" class="split">Sign Up</a>
-        </nav>
-    </header>
+    <header th:insert="~{/general/topnav :: #topnav}"></header>
+    
     <div class="background">
         <h1>Calendar</h1>
         <div id="calendar-header" class="calendar-header">
@@ -30,29 +20,10 @@
         </div>
     </div>
     <div id="calendar"></div>
-    <div class="footer">
-        <link rel="stylesheet" type="text/css" href="../css/footerStyle.css">
-        <div class="footer-navbox">
-            <img class="footer-logo" alt="AalborgTableTop logo" src="../images/AalborgTableTop_Logo.png">
-            <!--Mangler links-->
-            <div class="footer-links">
-                <div class="footer-item">Hvad er AL?</div>
-                <div class="footer-item">Facebook</div>
-                <div class="footer-item">Discord</div>
-                <div class="footer-item">Kontakt</div>
-                <div class="footer-item">Om AT</div>
-            </div>
-        </div>
-        <div class="footer-content"></div>
-        <div class="disclaimer">Disclaimer
-            This website is not affiliated with, endorsed,
-            sponsored, or specifically approved by Wizards of the Coast LLC. This website may use the trademarks and other intellectual property of
-            Wizards of the Coast LLC, which is permitted under Wizards’ Fan Site Policy. For example, Dungeons & Dragons® is a
-            trademark[s] of Wizards of the Coast. For more information about Wizards of the Coast or any of Wizards
-            trademarks or other intellectual property, please visit their website at (www.wizards.com)</div>
-    </div>
-    <script src="../js/calendarRequests.js"></script>
 
+    <div th:insert="~{/general/footer :: #footer}"></div>
+    
+    <script th:src="@{~/js/calendarRequests.js}"></script>
+    <script th:src="@{~/js/authentication/loggedIn.js}"></script>
 </body>
-
 </html>

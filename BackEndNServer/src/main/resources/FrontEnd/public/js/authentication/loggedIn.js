@@ -1,8 +1,13 @@
 window.addEventListener("load", () => {
-    console.log("Loaded"); // TODO: disable after testing
+    //console.log("Loaded"); // TODO: disable after testing
     checkCurrentSession();
 })
 
+/**
+ * Removes all elements with the "split" class, i.e authentication related elements 
+ * and replaces them with corresponding elements telling the user they're logged in. 
+ * @param {string} username 
+ */
 function displayLoggedIn(username){
     let splitClass = "split";
     let logoClass = "logo";
@@ -12,7 +17,6 @@ function displayLoggedIn(username){
         let elemArray = Array.from(authenticationElements);
 
         elemArray.forEach(element => {
-            console.log(element);
             element.remove();
         });
     
@@ -48,9 +52,38 @@ function displayLoggedIn(username){
     } catch (error) {
         console.error(error);
     }
-
 }
 
+/**
+ * Cleans up any hardcoded HTML elements with the "split" class, i.e. authentication related elements. 
+ */
+function cleanUpDisplay(){
+    let splitClass = "split";
+
+    let authenticationElements = document.getElementsByClassName(splitClass);
+    let elemArray = Array.from(authenticationElements);
+    elemArray.forEach(element => {
+        element.remove();
+    });
+
+    let signup = document.createElement("a");
+    let login = document.createElement("a");
+
+    signup.href = "/signup";
+    signup.text = "Sign Up"
+    signup.classList.add(splitClass)
+
+    login.href = "/login";
+    login.text = "Log In";
+    login.classList.add(splitClass);
+
+    let topNav = document.getElementsByClassName("topnav")[0];
+    topNav.append(login, signup);
+}
+
+/**
+ * Requests the server for the user's session to determine if they're logged in or not.
+ */
 async function checkCurrentSession(){
     let response;
     
@@ -66,9 +99,6 @@ async function checkCurrentSession(){
         });
 
         let message = JSON.parse(await response.text());
-
-        // Testing
-        console.log(message[0]);
         
         // The user has logged in
         if(message[0] === "true"){
@@ -76,7 +106,7 @@ async function checkCurrentSession(){
         }
         // The user has NOT logged in
         else if(message[0] === "false"){
-            // Possible to do stuff here
+            cleanUpDisplay();
         }
 
     } catch (error) {

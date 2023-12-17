@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -17,8 +17,7 @@
     <br>
     <div id="calendar"></div>
 
-    <script src="../js/calendarRequests.js"></script>
-
+    <script th:src="@{~/js/calendarRequests.js}"></script>
+    <script th:src="@{~/js/authentication/loggedIn.js}"></script>
 </body>
-
 </html>

@@ -85,12 +85,13 @@ public class SecurityFilters {
 	 @Bean
 	 @Order(-1)
 	 public SecurityFilterChain testFilter(HttpSecurity http) throws Exception {
-	 http
-	 .csrf((csrf) -> csrf.disable())
-	 .authorizeHttpRequests((authorize) -> authorize // All requests most be authorized 
-	 .anyRequest().permitAll() /* Allow anything */
-	 );
-	 return http.build();
+		http
+		.csrf((csrf) -> csrf.disable())
+		.authorizeHttpRequests((authorize) -> authorize // All requests most be authorized 
+			.anyRequest().permitAll() /* Allow anything */
+		);
+	 
+	 	return http.build();
 	 }
 
 	/**
@@ -126,12 +127,12 @@ public class SecurityFilters {
 	@Order(2)
 	public SecurityFilterChain denyFilter(HttpSecurity http) throws Exception {
 		http
-				.securityMatcher("/private/**") /* All Http requests matching these paths will trigger this filter */
-				.csrf((csrf) -> csrf.disable())
-				.authorizeHttpRequests((authorize) -> authorize /* All requests most be authorized */
-						.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll() /* A request is actually a dispatch. Always allow these types of dispatches */
-						.anyRequest().denyAll() /* Deny anything */
-				);
+		.securityMatcher("/private/**") /* All Http requests matching these paths will trigger this filter */
+		.csrf((csrf) -> csrf.disable())
+		.authorizeHttpRequests((authorize) -> authorize /* All requests most be authorized */
+			.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll() /* A request is actually a dispatch. Always allow these types of dispatches */
+			.anyRequest().denyAll() /* Deny anything */
+		);
 
 		return http.build();
 	}
@@ -166,20 +167,20 @@ public class SecurityFilters {
 
 		// Authorization
 		http
-				.authorizeHttpRequests((authorize) -> authorize /* All requests most be authorized */
-						.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll() /* A request is actually a dispatch. Always allow these types of dispatches */
-						.requestMatchers("/user/**").permitAll() // TODO: For testing purposes
-						.anyRequest().authenticated() /* All requests require login */
-				);
+		.authorizeHttpRequests((authorize) -> authorize /* All requests most be authorized */
+			.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll() /* A request is actually a dispatch. Always allow these types of dispatches */
+			.requestMatchers("/user/**").permitAll() // TODO: For testing purposes
+			.anyRequest().authenticated() /* All requests require login */
+		);
 
 		// Login
 		http
-				.formLogin(form -> form /* Login is of type FormLogin */
-						.loginPage("/login") /* Specify endpoint for login page. Spring Security will redirect to this. */
-						// .loginProcessingUrl("/login")
-						// .defaultSuccessUrl("/", true)
-						.permitAll() /* Always allow requests to login */
-				);
+		.formLogin(form -> form /* Login is of type FormLogin */
+			.loginPage("/login") /* Specify endpoint for login page. Spring Security will redirect to this. */
+			// .loginProcessingUrl("/login")
+			// .defaultSuccessUrl("/", true)
+			.permitAll() /* Always allow requests to login */
+		);
 
 		// Logout
 		http
@@ -192,10 +193,10 @@ public class SecurityFilters {
 
 		// Session management
 		http
-				.sessionManagement(session -> session /* Customize session management (login session) */
-						.maximumSessions(1) /* Specify number of concurrent login sessions (how many times can a user be logged in?) */
-						.maxSessionsPreventsLogin(true) /* Should exceeding maximumSessions prevent a new login attempt? */
-				);
+		.sessionManagement(session -> session /* Customize session management (login session) */
+			.maximumSessions(1) /* Specify number of concurrent login sessions (how many times can a user be logged in?) */
+			.maxSessionsPreventsLogin(true) /* Should exceeding maximumSessions prevent a new login attempt? */
+		);
 		return http.build();
 	}
 
@@ -215,23 +216,23 @@ public class SecurityFilters {
 	public SecurityFilterChain adminFilter(HttpSecurity http) throws Exception {
 		// RequestCache nullRequestCache = new NullRequestCache(); // Do not save the original request, if authentication is required.
 		http
-				.securityMatcher("/admin/**") /* All Http requests matching these paths will trigger this filter */
-				.csrf((csrf) -> csrf.disable())
-				.authorizeHttpRequests((authorize) -> authorize /* All requests most be authorized */
-						.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll() /* A request is actually a dispatch. Always allow these types of dispatches */
-						.requestMatchers("/admin/**").hasAnyAuthority(RoleType.ADMIN.toString(),
-								RoleType.SUPERADMIN.toString()) /* All http requests matching these paths must have the required role(s) to proceed */
-						.anyRequest().denyAll() /* Deny anything */
-				);
+		.securityMatcher("/admin/**") /* All Http requests matching these paths will trigger this filter */
+		.csrf((csrf) -> csrf.disable())
+		.authorizeHttpRequests((authorize) -> authorize /* All requests most be authorized */
+			.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll() /* A request is actually a dispatch. Always allow these types of dispatches */
+			.requestMatchers("/admin/**").hasAnyAuthority(RoleType.ADMIN.toString(),
+					RoleType.SUPERADMIN.toString()) /* All http requests matching these paths must have the required role(s) to proceed */
+			.anyRequest().denyAll() /* Deny anything */
+		);
 
 		// Login
 		http
-				.formLogin(form -> form /* Login is of type FormLogin */
-						.loginPage("/login") /* Specify endpoint for login page. Spring Security will redirect to this. */
-						// .loginProcessingUrl("/login")
-						// .defaultSuccessUrl("/", true)
-						.permitAll() /* Always allow requests to login */
-				);
+		.formLogin(form -> form /* Login is of type FormLogin */
+			.loginPage("/login") /* Specify endpoint for login page. Spring Security will redirect to this. */
+			// .loginProcessingUrl("/login")
+			// .defaultSuccessUrl("/", true)
+			.permitAll() /* Always allow requests to login */
+		);
 
 		// Logout
 		http
@@ -244,10 +245,10 @@ public class SecurityFilters {
 
 		// Session management
 		http
-				.sessionManagement(session -> session /* Customize session management (login session) */
-						.maximumSessions(1) /* Specify number of concurrent login sessions (how many times can a user be logged in?) */
-						.maxSessionsPreventsLogin(true) /* Should exceeding maximumSessions prevent a new login attempt? */
-				);
+		.sessionManagement(session -> session /* Customize session management (login session) */
+			.maximumSessions(1) /* Specify number of concurrent login sessions (how many times can a user be logged in?) */
+			.maxSessionsPreventsLogin(true) /* Should exceeding maximumSessions prevent a new login attempt? */
+		);
 
 		return http.build();
 	}
@@ -257,13 +258,13 @@ public class SecurityFilters {
 	public SecurityFilterChain dmFilter(HttpSecurity http) throws Exception {
 		// Match all sites with addresses starting with /dm/
 		http
-				.securityMatcher("/dm/**")
-				.csrf((csrf) -> csrf.disable()) // Disable csrf
-				.authorizeHttpRequests((authorize) -> authorize // Authorize user
-						.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll() /* Allow all dispatches of the correct type */
-						.requestMatchers("/dm/**").hasAnyAuthority(RoleType.DM.toString())
-						.anyRequest().denyAll() // Deny requests from users that do not have the necessary authorization
-				);
+		.securityMatcher("/dm/**")
+		.csrf((csrf) -> csrf.disable()) // Disable csrf
+		.authorizeHttpRequests((authorize) -> authorize // Authorize user
+			.dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll() /* Allow all dispatches of the correct type */
+			.requestMatchers("/dm/**").hasAnyAuthority(RoleType.DM.toString())
+			.anyRequest().denyAll() // Deny requests from users that do not have the necessary authorization
+		);
 
 		return http.build();
 	}
