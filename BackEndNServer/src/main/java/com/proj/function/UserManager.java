@@ -251,6 +251,9 @@ public class UserManager {
             String email, String username) {
         try {
             User requestingUser = lookupAccount(username);
+            if(requestingUser.getAllRoles().containsKey(RoleType.MEMBER)){
+                return "User is already member!";
+            }
             Role member = new Member(realName, phoneNumber, postalCode, address, email);
             MemberValidator validator = new MemberValidator((Member) member);
             validator.ValidateAddress() // if none of these throw, we create the request

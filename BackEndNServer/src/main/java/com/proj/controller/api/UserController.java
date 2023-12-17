@@ -9,7 +9,9 @@
 
 package com.proj.controller.api;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,10 +28,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.proj.model.session.PlaySession;
 import com.proj.model.users.*;
+import com.proj.validators.BasicInfoValidator;
 import com.proj.validators.MemberValidator;
+import com.proj.exception.FailedValidationException;
 import com.proj.exception.IllegalUserOperationException;
 import com.proj.exception.UserNotFoundException;
+import com.proj.function.PlaySessionManager;
 import com.proj.function.RoleAssigner;
 import com.proj.function.UserManager;
 
@@ -38,6 +44,8 @@ import com.proj.function.UserManager;
 public class UserController {
   @Autowired
   private UserManager userManager;
+  @Autowired
+  private PlaySessionManager playSessionManager;
 
   // TODO: FOR TESTING PURPOSES!!!!!
   ArrayList<Integer> ids = new ArrayList<Integer>();
@@ -46,8 +54,8 @@ public class UserController {
    * Generates users for testing - Delete if found after completing UserController
    * TODO: delete after compleing UserController
    * 
-   * @param number
-   * @return
+   * @param number - the number of users you want to create
+   * @return - the sanitized user object
    */
   @RequestMapping(path = "/create/{number}")
   @ResponseBody
@@ -97,15 +105,15 @@ public class UserController {
   User profile(@PathVariable String username,
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     try {
-       // Check whether user has correct priviledges
+      // Check whether user has correct priviledges
       User requestingUser = userManager.lookupAccount(authentication.getName());
-      
-      // Get user to lookup from database if they exist 
+
+      // Get user to lookup from database if they exist
       User user = userManager.lookupAccount(username);
 
       // Get user information
       User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
-      
+
       return sanitizedUser;
     } catch (NullPointerException npe) {
       throw new UserNotFoundException("Cannot lookup your credentials or cannot find the person you are looking for");
@@ -123,7 +131,8 @@ public class UserController {
 
   @GetMapping(path = "/{username}/deactivate")
   @ResponseBody
-  String deactivateAccount(@PathVariable String username, @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+  String deactivateAccount(@PathVariable String username,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     User user = userManager.lookupAccount(username);
     User requestingUser = userManager.lookupAccount(authentication.getName());
 
@@ -147,7 +156,8 @@ public class UserController {
 
   @PutMapping(path = "/{username}/reactivate")
   @ResponseBody
-  String reactivateAccount(@PathVariable String username, @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+  String reactivateAccount(@PathVariable String username,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     User user = userManager.lookupAccount(username);
     User requestingUser = userManager.lookupAccount(authentication.getName());
 
@@ -160,8 +170,8 @@ public class UserController {
   }
 
   /**
-   * Edit
-   * @param username 
+   * 
+   * @param username
    * @param requestingUsername
    * @param currentInfo
    * @param infoType
@@ -169,7 +179,8 @@ public class UserController {
    */
   @PutMapping(path = "/{username}/editMemberInfo")
   @ResponseBody
-  String editMemberInfo(@PathVariable String username, @CurrentSecurityContext(expression = "authentication") Authentication authentication,
+  String editMemberInfo(@PathVariable String username,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication,
       @RequestParam String[] currentInfo, @RequestParam String infoType) {
 
     // Create objects that can are used to check access
@@ -207,24 +218,137 @@ public class UserController {
     }
   }
 
+  /**
+   * Saves guestinfo to database - note jackson requires me to send an instance of
+   * the superclass "role" rather than the child "guest"
+   * https://stackoverflow.com/questions/31665620/is-jacksons-jsonsubtypes-still-necessary-for-polymorphic-deserialization
+   * 
+   * @param username       the username of the person to save user info for
+   * @param authentication the authentication object of the person requesting new
+   *                       info
+   * @param newGuestInfo   the new info tosave
+   * @return status messasge of the reponse
+   */
   @PutMapping(path = "/{username}/saveGuestInfo")
-  @ResponseBody 
-  String putGuestInfo(@PathVariable String username, @CurrentSecurityContext(expression = "authentication") Authentication authentication, @RequestBody Role newGuestInfo){
+  @ResponseBody
+  String putGuestInfo(@PathVariable String username,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication,
+      @RequestBody Role newGuestInfo) {
     User user = userManager.lookupAccount(username);
     User requestingUser = userManager.lookupAccount(authentication.getName());
 
-    if(user.equals(requestingUser)){
-        user.setGuestInfo((Guest)newGuestInfo);
-        userManager.getUserdbHandler().save(user);
-        return "Changes saved successfully!";
+    if (user.equals(requestingUser)) {
+      // Typecast due to jackson
+      user.setGuestInfo((Guest) newGuestInfo);
+      userManager.getUserdbHandler().save(user);
+      return "Changes saved successfully!";
     } else {
       throw new IllegalUserOperationException("You may only edit your own account!");
     }
   }
 
+  /**
+   * Finds all future events between 2 minutes from now and 100 years into the
+   * future for a user
+   * 
+   * @param username       - the username of the person to find future events for
+   * @param authentication - the authentication object used to determine user
+   *                       identity
+   * @return - list of future playsessions for the user
+   */
+  // TODO: ask for help using this API to generate sessions to test this function
+  @GetMapping(path = "{username}/futureEvents")
+  @ResponseBody
+  List<PlaySession> getFutureEvents(@PathVariable String username,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+    User user = userManager.lookupAccount(username);
+    User requestingUser = userManager.lookupAccount(authentication.getName());
+    boolean userInSession = false;
+
+    if (user.equals(requestingUser)) {
+      LocalDateTime currentTime = LocalDateTime.now();
+      // Get all playSessions starting in a minute and the 100 years forward - these
+      // are future sessions
+      List<PlaySession> futureSessions = playSessionManager.getSessions(currentTime.plusMinutes(1),
+          currentTime.plusYears(100));
+
+      // Loop through each of the current playsessions and check whether our user is
+      // assigned. If not, remove from list
+      for (int i = futureSessions.size(); i > 0; i--) {
+        for (String assigneduser : futureSessions.get(i).getUsers()) {
+          if (assigneduser.equals(user.getBasicUserInfo().getUserName())) {
+            userInSession = true;
+          }
+        }
+        if (!userInSession) {
+          futureSessions.remove(i);
+        }
+      }
+      return futureSessions;
+    } else {
+      throw new IllegalUserOperationException("You may only edit your own account!");
+    }
+  }
+
+  @PutMapping(path = "/{username}/savePassword")
+  @ResponseBody
+  String changePassword(@PathVariable String username,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication,
+      @RequestBody String Password) {
+    // TODO: Ask for help putting hashing this password
+    User user = userManager.lookupAccount(username);
+    User requestingUser = userManager.lookupAccount(authentication.getName());
+
+    if (user.equals(requestingUser)) {
+      user.getBasicUserInfo().setPassword(Password);
+      userManager.getUserdbHandler().save(user);
+      return "Changes saved successfully!";
+    } else {
+      throw new IllegalUserOperationException("You may only edit your own account!");
+    }
+  }
+
+  @GetMapping(path = "/{username}/validatePassword")
+  @ResponseBody
+  boolean validatePassword(@PathVariable String username,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication,
+      @RequestBody String password) {
+    boolean isValidPassword = false;
+
+    User user = userManager.lookupAccount(username);
+    User requestingUser = userManager.lookupAccount(authentication.getName());
+
+    if (user.equals(requestingUser)) {
+      BasicInfoValidator validator = new BasicInfoValidator(new BasicUserInfo(user.getBasicUserInfo().getUserName(),password));
+      return validator.ValidatePassword() instanceof BasicInfoValidator;
+    } else {
+      throw new IllegalUserOperationException("You may only edit your own account!");
+    }
+  }
+
+  @PutMapping(path = "/{username}/sendUpgradeToMemberRequest")
+  @ResponseBody
+  String requestMembershipOnFrontend(@PathVariable String username, @CurrentSecurityContext(expression = "authentication") Authentication authentication,
+      @RequestBody Member memberInfo){
+         User user = userManager.lookupAccount(username);
+         User requestingUser = userManager.lookupAccount(authentication.getName());
+    if (user.equals(requestingUser)) {
+      return userManager.requestMembership(memberInfo.getRealName(), memberInfo.getPhoneNumber(), memberInfo.getPostalCode(), memberInfo.getAddress(), memberInfo.getEmail(), user.getBasicUserInfo().getUserName());
+    } else {
+      throw new IllegalUserOperationException("You may only edit your own account!");
+    }
+      }
+
+  /**
+   * Gets the username of the user that is currently logged in on the site
+   * 
+   * @param authentication - authentication object that is used to check that user
+   *                       has correct credentials
+   * @return - name of the current user
+   */
   @GetMapping(path = "/currentUser")
   @ResponseBody
-  String getCurrentUserName(@CurrentSecurityContext(expression = "authentication") Authentication authentication){
+  String getCurrentUserName(@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     try {
       return authentication.getName();
     } catch (Exception e) {
