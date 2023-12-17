@@ -1,6 +1,6 @@
 async function loadCalendar(startDateTime, endDateTime) {
-    try {//http://localhost:8080/DateBetween?startDateTime=2023-12-01T15:06:27.299631&endDateTime=2023-12-31T15:06:27.299631
-        const response = await fetch("http://localhost:8080/datebetween?startDateTime="+startDateTime+"&endDateTime="+endDateTime, {
+    try {
+        const response = await fetch("/api/playsession/datebetween?startDateTime="+startDateTime+"&endDateTime="+endDateTime, {
             method: "GET",
             mode: "cors",
             cache: "no-cache"

@@ -1,6 +1,6 @@
 async function getEvents() {
-    try {//http://localhost:8080/DateBetween?startDateTime=2023-12-01T15:06:27.299631&endDateTime=2023-12-31T15:06:27.299631
-        const response = await fetch("http://localhost:8080/getAllPlaySessions", {
+    try {
+        const response = await fetch("api/playsession/getallplaysessions", {
             method: "GET",
             mode: "cors",
             cache: "no-cache"

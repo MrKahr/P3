@@ -55,7 +55,7 @@ public class LoginController {
 		Authentication authentication = authenticationProcess.authenticate(loginRequest, request, response); // Authenticates the user
 
 		// If login is successful, return this.
-		return new ModelAndView(new RedirectView("/userhomepage", true));
+		return new ModelAndView(new RedirectView("/", true));
 	}
 
 	/**

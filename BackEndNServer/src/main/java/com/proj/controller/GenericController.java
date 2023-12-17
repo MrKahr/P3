@@ -11,9 +11,4 @@ public class GenericController {
     public String showHomePage(){
         return "index";
     }
-    // Show the front page
-    @GetMapping("/userhomepage")
-    public String showUserHomePage(){
-        return "userhomepage";
-    }
 }

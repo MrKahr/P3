@@ -1,6 +1,6 @@
 async function addCalendar(title, location, description, date, maxNumberOfPlayers) {
-    try {//http://localhost:8080/DateBetween?startDateTime=2023-12-01T15:06:27.299631&endDateTime=2023-12-31T15:06:27.299631
-        const response = await fetch("http://localhost:8080/newplaysession?title="+title+"&description=Location: "+location+" Description: "+description+"&dm=test&currentNumberOfPlayers=0&date="+date+"&maxNumberOfPlayers="+maxNumberOfPlayers+"&moduleID=1", {
+    try {
+        const response = await fetch("/api/playsession/newplaysession?title="+title+"&description=Location: "+location+" Description: "+description+"&dm=test&currentNumberOfPlayers=0&date="+date+"&maxNumberOfPlayers="+maxNumberOfPlayers+"&moduleID=1", {
             method: "POST",
             mode: "cors",
             cache: "no-cache"

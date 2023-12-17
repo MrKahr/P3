@@ -1,4 +1,4 @@
-package com.proj.controller;
+package com.proj.controller.api;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.proj.model.session.*;
 
 @Controller
+@RequestMapping (path = "/api/playsession")
 public class PlaySessionController {
 
   @Autowired
@@ -67,7 +68,7 @@ public class PlaySessionController {
   }
 
   
-   @GetMapping(path="/getAllPlaySessions") //returns all play sessions
+   @GetMapping(path="/getallplaysessions") //returns all play sessions
    public @ResponseBody List<PlaySession> getAllPlaySessions() {
    Iterable<PlaySession> playSessions = playSessiondbHandler.findAll();
    List<PlaySession> allPlaySessions = new ArrayList<>();
@@ -91,8 +92,4 @@ public class PlaySessionController {
     return testList;
   }
 
-  @GetMapping(path = "/play_session") //TODO: return specific play session with or without rewards, depending on access level
-  public @ResponseBody PlaySession getPlaySession(@RequestParam int id) {
-    return playSessiondbHandler.findById(id);
-  }
 }
