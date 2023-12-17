@@ -24,21 +24,21 @@ const NUMCOLORS = colors.length;
 async function addEventsToCalendar(events) {
     if (currentDate.getMonth() === 11) {
         events = await JSON.parse(await loadCalendar(""+currentDate.getFullYear()+"-"+(currentDate.getMonth()+1)+"-01T00:01",""+(currentDate.getFullYear()+1)+"-01-01T00:01"));
-        console.log(events);
+        //console.log(events);
     } else if (currentDate.getMonth() >= 9){
         events = await JSON.parse(await loadCalendar(""+currentDate.getFullYear()+"-"+(currentDate.getMonth()+1)+"-01T00:02",""+currentDate.getFullYear()+"-"+(currentDate.getMonth()+2)+"-01T00:02"));
-        console.log(events);
+        //console.log(events);
     } else if (currentDate.getMonth() == 8){
         events = await JSON.parse(await loadCalendar(""+currentDate.getFullYear()+"-0"+(currentDate.getMonth()+1)+"-01T00:02",""+currentDate.getFullYear()+"-"+(currentDate.getMonth()+2)+"-01T00:02"));
-        console.log(events);
+        //console.log(events);
     } else {
         events = await JSON.parse(await loadCalendar(""+currentDate.getFullYear()+"-0"+(currentDate.getMonth()+1)+"-01T00:03",""+currentDate.getFullYear()+"-0"+(currentDate.getMonth()+2)+"-01T00:03"));
-        console.log(events);
+        //console.log(events);
     }
     let colorNum = 0; // Event color cycles through an array
     events.forEach(event => {
         const eventDate = new Date(event.date);
-        console.log(event.id);
+        //console.log(event.id);
         if (event.module === null) {
             event.module = {
                 "name": "",

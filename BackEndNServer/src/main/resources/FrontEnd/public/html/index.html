@@ -7,13 +7,16 @@
     <header th:insert="~{/general/topnav :: #topnav}"></header>
 
     <div class="content">
-        <h1 class="title">Velkommen til Aalborg Tabletop</h1>
-        <!--/* posts not implemented */-->
-        <div class="posts">
-            <h3 class="poststitle">Posts from AT</h3>
-            <h5 class="postssubtitle">News About The Newest New</h5>
-            <div class="post">This post is intentionally left blanck</div>
+        <div class="content-left">
+            <h1 class="title">Velkommen til Aalborg Tabletop</h1>
+            <!--/* posts not implemented */-->
+            <div class="posts">
+                <h3 class="poststitle">Posts from AT</h3>
+                <h5 class="postssubtitle">News About The Newest New</h5>
+                <div class="post">This post is intentionally left blanck</div>
+            </div>
         </div>
+        <div th:replace="~{/general/profileMenu :: #profileMenu}"></div>
     </div>
     <div class="events" id="Upcoming events">
         <div class="event">upcoming event 1</div>

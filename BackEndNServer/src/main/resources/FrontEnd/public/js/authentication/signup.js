@@ -1,7 +1,6 @@
 let SIGNUP_AS_MEMBER = false;
 
 window.addEventListener("load", () => {
-    //console.log("Loaded"); // TODO: disable after testing
     setup();
 })
 
@@ -33,7 +32,7 @@ function gatherData(){
         signUpAsMember: signUpAsMember
     };
 
-    console.log(userDetails);
+    //console.log(userDetails);
     return userDetails;
 }
 

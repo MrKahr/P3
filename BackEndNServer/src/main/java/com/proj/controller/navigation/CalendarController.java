@@ -9,6 +9,6 @@ public class CalendarController{
     //The calendar we should use.
     @GetMapping("/calendar")
     public String showCalendar(){
-    return "usercalendar";
+    return "calendar";
     }
 }

@@ -1,6 +1,5 @@
 
 window.addEventListener("load", () => {
-    //console.log("Loaded"); // TODO: disable after testing
     setup();
 })
 

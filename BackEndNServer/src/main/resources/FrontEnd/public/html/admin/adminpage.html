@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="..\css\adminpagestyle.css">
-    <link rel="stylesheet" href="..\css\dummyStyle.css">
+    <!--/* CSS file naming is fucked. Yes, we're using calendar's CSS on the admin page */-->
+    <link rel="stylesheet" href="..\css\calendar.css">
     <!--/* This library imports html icon list */-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Adminpage</title>
@@ -193,17 +194,7 @@
                 </div>
             </div>
         </div>
-        <div class="content-right">
-            <link rel="stylesheet" href="../css/navigatorStyle.css">
-            <aside class="ProfileMenu" id="ProfileMenu" style="display: block;">
-                <ul>
-                    <li><a href="eventlistpage">My Events</a></li>
-                    <li><a href="profilesettingspage">Profile Settings</a></li>
-                    <li><div class="MenuSpace"></div></li>
-                    <li><a href="adminpage" class="MenuLine">Admin Menu</a></li>
-                </ul>
-            </aside>
-        </div>
+        <div th:replace="~{/general/profileMenu :: #profileMenu}"></div>
     </div>
 
     <script>
@@ -327,5 +318,6 @@
             })
         })
     </script>
+    <script th:src="@{~/js/authentication/loggedIn.js}"></script>
 </body>
 </html>

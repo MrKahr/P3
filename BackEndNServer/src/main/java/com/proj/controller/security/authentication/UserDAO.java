@@ -1,5 +1,6 @@
 package com.proj.controller.security.authentication;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -61,7 +62,6 @@ public class UserDAO {
 
 	/**
 	 * Finds the granted authorities for the supplied user and stores them in a HashMap.
-	 * Used for authentication in Spring Security.
 	 * @param user A user object.
 	 * @return A HashSet of granted authoritíes.
 	 */
@@ -75,6 +75,23 @@ public class UserDAO {
         }
         return authorities;
     }
+
+	/**
+	 * Finds a user's roles for the supplied user using their authentication object and stores them in an ArrayList.
+	 * @param user A user object.
+	 * @return ArrayList containing a user's roles.
+	 */
+    public ArrayList<String> findRoles(Authentication authentication) { 
+		String username = authentication.getName().toString();
+		User user = userdbHandler.findByUsername(username);
+		HashMap<RoleType, Role> roleMap = user.getAllRoles();
+		ArrayList<String> authorities = new ArrayList<String>();
+
+        for (var key : roleMap.keySet()) {
+            authorities.add(key.toString());
+        }
+        return authorities;
+    }	
 
 	/**
 	 * Compares the Granted Authorities of a user against a RoleType.
