@@ -28,6 +28,8 @@ import org.hibernate.type.SqlTypes;
 public class PlaySession {
     // Field
 
+    //TODO: Add location field(String), allowed players field(ENUM roletype), players field (ArrayList<User>), rewards field ArrayList<String>, LevelRangeLow + LevelRangeHigh field (int)
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

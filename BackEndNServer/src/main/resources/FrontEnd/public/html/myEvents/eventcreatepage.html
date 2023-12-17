@@ -8,23 +8,24 @@
     <link rel="stylesheet" href="../../css/eventpageStyle.css">
     <div class="content">
         <div class="content-left">
-            <h1 class="eventName"><input type="text" id="eventTitle" placeholder="Event Title"></h1>
+            <h1 class="eventName"><input type="text" id="eventTitle" placeholder="Event Title" name="title"></h1>
             <div class="eventColumns">
                 <div class="column1">
                     <div class="eventTimeBox"><!-- TIME BOX -->
                         <p>Event Time</p>
-                        <input type="date" id="eventDate" placeholder="Date">
-                        <input type="time" id="eventTime" placeholder="Time">
+                        <input type="datetime-local" id="eventDate" placeholder="Date" name="date">
                         <br>
                     </div>
 
                     <div class="eventLocationBox"><!-- LOCATION BOX -->
                         <p>Event Location</p>
-                        <input type="text" id="eventLocation" placeholder="Location">
+                        <input type="text" id="eventLocation" placeholder="Location" name="location">
                         <br>
                     </div>
 
                     <div class="eventPlayersBox"><!-- PLAYERS BOX -->
+                        <p>Max Player count</p>
+                        <input type="number" id="eventMaxNumberOfPlayers" name="maxnumberofplayers">
                         <p>Allowed Event Players</p>
                         <select id="eventPlayers" name="players">
                             <option value="Guest">Guest</option>
@@ -37,7 +38,7 @@
                     <div class="eventDescriptionBox"><!-- DESCRIPTION BOX -->
                         <p>Event Description</p>
                         <div class="eventTextarea">
-                            <textarea id="descriptionText" placeholder="Text here" rows="5" cols="60"></textarea>
+                            <textarea id="eventDescription" placeholder="Text here" rows="5" cols="60"></textarea>
                         </div>
                         <br>
                     </div>
@@ -56,13 +57,14 @@
                         <br>
                     </div>
                     <div class="createEventButton"><!-- CREATE EVENT BUTTON -->
-                        <input type="submit" value="Create Event">
+                        <input type="button" value="Create Event" id="createEventButton">
                     </div>
                 </div>
                 <div class="column3">
                     <div class="eventRewards"><!-- REWARDS BOX -->
                         <p>Rewards</p>
                         <div class="eventTextarea">
+                            <!--TODO: make these a list of inputs, or separate rewards with regular expression statement-->
                             <textarea id="RewardsText" placeholder="*Add these after the event is concluded (no spoilers)*" rows="10" cols="25"></textarea>
                         </div>
                         <br>

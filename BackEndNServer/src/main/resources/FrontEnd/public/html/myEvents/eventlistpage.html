@@ -23,7 +23,7 @@
                       <th>Players</th>
                       <th>State</th>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                       <td>Mines of Phandelver</td>
                       <td>1-25-2023</td>
                       <td>08:00</td>
@@ -139,7 +139,7 @@
                         <td>Morgenfrue</td>
                         <td>TankMcgee</td>
                         <td>Rewards Released</td>
-                    </tr>
+                    </tr> -->
                 </table>
                 <div class="editEventsButton" id="editEventsButton">
                     <a class="editButton" href="eventeditpage">Edit</a>
@@ -160,31 +160,6 @@
 
     <div th:insert="~{/general/footer :: #footer}"></div>
 
-    <script>
-        window.addEventListener("click", function() {
-            let eventTable = document.getElementById("eventTable");
-            if(eventTable.contains(event.target)){
-                let tablerows = document.querySelectorAll('tr');
-                Array.from(tablerows).forEach((tablerow, index) =>{
-                    if (tablerow.rowIndex != 0) {
-                        tablerow.addEventListener('click', () => {
-                            let clickedRow = event.currentTarget;
-                            let editEventsButton = document.getElementById("editEventsButton");
-                            let positionclickedRow = clickedRow.getBoundingClientRect();
-                            let buttonTop = positionclickedRow.top + window.scrollY;
-                            let buttonLeft = positionclickedRow.right + window.scrollX + 1;
-
-                            editEventsButton.style.top = buttonTop + 'px';
-                            editEventsButton.style.left = buttonLeft + 'px';
-                            editEventsButton.style.display = "block";
-                        })
-                    }
-                })
-            } else {
-                editEventsButton.style.display = "none";
-            }
-        })
-
-    </script>
+    <script src="../../js/eventlistpage.js"></script>
 </body>
 </html>
