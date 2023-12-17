@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,16 +29,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.proj.model.events.RoleRequest;
 import com.proj.model.session.PlaySession;
 import com.proj.model.users.*;
 import com.proj.validators.BasicInfoValidator;
 import com.proj.validators.MemberValidator;
 import com.proj.exception.FailedValidationException;
 import com.proj.exception.IllegalUserOperationException;
+import com.proj.exception.InvalidInputException;
 import com.proj.exception.UserNotFoundException;
 import com.proj.function.PlaySessionManager;
 import com.proj.function.RoleAssigner;
 import com.proj.function.UserManager;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping(path = "/api")
@@ -121,6 +125,35 @@ public class UserController {
   }
 
   /**
+   * 
+   * @param min            Start ID for range of users
+   * @param max            End ID for range of users
+   * @param authentication The authentication object for requesting user
+   * @return ArrayList of sanitized user objects
+   */
+  @GetMapping(path = "/users_in_range/{min}-{max}")
+  @ResponseBody
+  ArrayList<User> getAll(@PathVariable Integer min, @PathVariable Integer max,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+    try {
+      User[] unsanitizedUsers = userManager.getAccountList(min, max);
+      ArrayList<User> sanitizedUsers = new ArrayList<User>();
+      // Check whether user has correct priviledges
+      User requestingUser = userManager.lookupAccount(authentication.getName());
+
+      for (User user : unsanitizedUsers) {
+        // Get user information
+        User sanitizedUser = userManager.sanitizeDBLookup(user, requestingUser);
+
+        sanitizedUsers.add(sanitizedUser);
+      }
+      return sanitizedUsers;
+    } catch (NullPointerException npe) {
+      throw new UserNotFoundException("Cannot lookup your credentials");
+    }
+  }
+
+  /**
    * Deactivates a user with the given username
    * 
    * @param username           - the username of the account to deactivate
@@ -140,8 +173,9 @@ public class UserController {
       userManager.deactivateAccount(user.getId());
       return "Deactivation of " + user.getBasicUserInfo().getUserName() + " succesful";
     } else {
-        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You may only deactivate your own account!");
-        //throw new IllegalUserOperationException("You may only deactivate your own account!");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You may only deactivate your own account!");
+      // throw new IllegalUserOperationException("You may only deactivate your own
+      // account!");
     }
   }
 
@@ -319,7 +353,8 @@ public class UserController {
     User requestingUser = userManager.lookupAccount(authentication.getName());
 
     if (user.equals(requestingUser)) {
-      BasicInfoValidator validator = new BasicInfoValidator(new BasicUserInfo(user.getBasicUserInfo().getUserName(),password));
+      BasicInfoValidator validator = new BasicInfoValidator(
+          new BasicUserInfo(user.getBasicUserInfo().getUserName(), password));
       return validator.ValidatePassword() instanceof BasicInfoValidator;
     } else {
       throw new IllegalUserOperationException("You may only edit your own account!");
@@ -328,16 +363,19 @@ public class UserController {
 
   @PutMapping(path = "/{username}/sendUpgradeToMemberRequest")
   @ResponseBody
-  String requestMembershipOnFrontend(@PathVariable String username, @CurrentSecurityContext(expression = "authentication") Authentication authentication,
-      @RequestBody Member memberInfo){
-         User user = userManager.lookupAccount(username);
-         User requestingUser = userManager.lookupAccount(authentication.getName());
+  String requestMembershipOnFrontend(@PathVariable String username,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication,
+      @RequestBody Member memberInfo) {
+    User user = userManager.lookupAccount(username);
+    User requestingUser = userManager.lookupAccount(authentication.getName());
     if (user.equals(requestingUser)) {
-      return userManager.requestMembership(memberInfo.getRealName(), memberInfo.getPhoneNumber(), memberInfo.getPostalCode(), memberInfo.getAddress(), memberInfo.getEmail(), user.getBasicUserInfo().getUserName());
+      return userManager.requestMembership(memberInfo.getRealName(), memberInfo.getPhoneNumber(),
+          memberInfo.getPostalCode(), memberInfo.getAddress(), memberInfo.getEmail(),
+          user.getBasicUserInfo().getUserName());
     } else {
       throw new IllegalUserOperationException("You may only edit your own account!");
     }
-      }
+  }
 
   /**
    * Gets the username of the user that is currently logged in on the site
@@ -354,5 +392,125 @@ public class UserController {
     } catch (Exception e) {
       return "NA";
     }
+  }
+
+  /**
+   * Change a user's role through the admin menu
+   * 
+   * @param id             of user to change role of
+   * @param newRole        Role object
+   * @param authentication The authentication object for requesting user
+   * @return
+   */
+  @PutMapping("/set_role/{username}")
+  @ResponseBody
+  public User adminSetRole(@PathVariable String username, @RequestParam String newRole,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+    Role replacementRole;
+    User userToChange = userManager.lookupAccount(username);
+    try {
+      // Check if user has previously had this role, to reuse role info from history
+      Role roleFromHistory = userToChange.getRoleBackups().getBackupByType(RoleType.valueOf(newRole));
+      if (roleFromHistory != null) {
+        replacementRole = roleFromHistory;
+      } else {
+        throw new NullPointerException();
+      }
+    } catch (NullPointerException npe) {
+      switch (newRole) {
+        case "MEMBER":
+          replacementRole = new Member();
+          break;
+        case "DM":
+          replacementRole = new DM();
+          break;
+        case "ADMIN":
+          replacementRole = new Admin();
+          break;
+        default:
+          throw new InvalidInputException("Did not receive a valid role");
+      }
+    }
+
+    User requestingUser = userManager.lookupAccount(authentication.getName());
+    if (requestingUser.getAdminInfo() == null) {
+      throw new IllegalUserOperationException("Only admins are allowed to change user roles");
+    } else if (replacementRole.getRoleType().equals(RoleType.ADMIN) && requestingUser.getSuperAdminInfo() == null) {
+      throw new IllegalUserOperationException("Only superadmins are allowed to promote to admin");
+    } else {
+      RoleAssigner.setRole(userToChange, replacementRole);
+      userManager.getUserdbHandler().save(userToChange);
+      return userManager.sanitizeDBLookup(userManager.lookupAccount(username), requestingUser);
+    }
+  }
+
+  @DeleteMapping("/remove_role/{username}")
+  @ResponseBody
+  public User adminRemoveRole(@PathVariable String username, @RequestParam String role,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+    User requestingUser = userManager.lookupAccount(authentication.getName());
+    if (requestingUser.getAdminInfo() == null) {
+      throw new IllegalUserOperationException("Only admins are allowed to change user roles");
+    } else if (role.equals("ADMIN") && requestingUser.getSuperAdminInfo() == null) {
+      throw new IllegalUserOperationException("Only superadmins are allowed to demote admins");
+    } else {
+      User userToChange = userManager.lookupAccount(username);
+      switch (role) {
+        case "MEMBER":
+          RoleAssigner.setRole(userToChange, new Member());
+          userToChange.setMemberInfo(null);
+          break;
+        case "DM":
+          RoleAssigner.setRole(userToChange, new DM());
+          userToChange.setDmInfo(null);
+          break;
+        case "ADMIN":
+          RoleAssigner.setRole(userToChange, new Admin());
+          userToChange.setAdminInfo(null);
+          break;
+        default:
+          throw new InvalidInputException("Did not receive a valid role");
+      }
+      userManager.getUserdbHandler().save(userToChange);
+      return userManager.sanitizeDBLookup(userManager.lookupAccount(username), requestingUser);
+    }
+  }
+
+  /**
+   * Register a membership payment for a user
+   * 
+   * @param username       username of the paying user
+   * @param authentication of the admin confirming the payment
+   */
+  @PutMapping("/register_payment/{username}")
+  @ResponseBody
+  public User registerPayment(@PathVariable String username,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) throws Exception {
+    User requestingUser = userManager.lookupAccount(authentication.getName());
+    if (requestingUser.getAdminInfo() == null) {
+      throw new IllegalUserOperationException("Only admins are allowed to change user roles");
+    }
+    User payingUser = userManager.lookupAccount(username);
+    Member memberInfo = payingUser.getMemberInfo();
+    memberInfo.setLasPaymentDate(LocalDateTime.now());
+    // Really weird work-around because Spring Boot seems to cache data unless it is
+    // more obvious that it has been changed, e.g. saving the attribute as null
+    payingUser.setMemberInfo(null);
+    userManager.getUserdbHandler().save(payingUser);
+
+    payingUser.setMemberInfo(memberInfo);
+    userManager.getUserdbHandler().save(payingUser);
+    return userManager.sanitizeDBLookup(userManager.getUserdbHandler().findById(payingUser.getId()), requestingUser);
+  }
+
+  @PutMapping("/handle_role_request")
+  @ResponseBody
+  public String putMethodName(@RequestBody RoleRequest roleRequest, @RequestParam boolean requestAccepted,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+    User authenticatingUser = userManager.lookupAccount(authentication.getName());
+    if (authenticatingUser.getAdminInfo() == null) {
+      throw new IllegalUserOperationException("Only admins can handle role requests");
+    }
+    return userManager.handleRoleRequest(roleRequest, requestAccepted);
   }
 }
