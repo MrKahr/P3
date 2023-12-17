@@ -159,3 +159,6 @@ textarea {
 .moduleTable {
     width: 50%;
 }
+.levelRange {
+    font-size: small;
+}

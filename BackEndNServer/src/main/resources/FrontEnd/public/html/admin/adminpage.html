@@ -26,33 +26,25 @@
             
             <div class="tabcontent" id="manageUsers" style="display: none;">
                 <div style="overflow-x:auto;">
-                    <table>
+                    <table id="userTable">
                         <tr>
                             <th>Username</th>
-                            <th>Role</th>
-                            <th>Has paid?</th>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
+                            <th>Roles</th>
+                            <th>Last Payment</th>
                         </tr>
                     </table>
                     <div class="manageUsersButtons" id="manageUsersButtons">
-                        <form>
+                        <div>
                             <label for="managerole"></label>
                             <select id="managerole" name="Role">
-                                <option value="guest">Guest</option>
                                 <option value="member">Member</option>
                                 <option value="dm">DM</option>
                                 <option value="admin">Admin</option>
-                                <option value="superadmin">SuperAdmin</option><!-- I think this one will be removed -->
                             </select>
-                            <input type="submit" value="Save">
-                            <button>Ban User</button>
-                        </form>
+                            <input type="submit" id="changeRoleButton" value="Add/Remove">
+                            <button id="banUser">Ban User</button>
+                            <button id="registerPayment">Register Payment</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -141,30 +133,42 @@
             <div class="tabcontent" id="manageModules" style="display: none">
                 <div class="modulemanage" style="overflow-x:auto;">
                     <div class="createModule">
-                        <form>
-                            <label for="moduleTextBox">Create module</label><br>
+                        <div id="createNewModule">
+                            <label for="moduleTextBox">Create Module</label><br>
                             <input type="text" id="moduleTitle" placeholder="Title goes here" style="width: 314px"><br>
+                            <p class="levelRange">Level Range</p>
+                            <input type="text" id="minLevel" placeholder="Min" style="width: 25px">
+                            <input type="text" id="maxLevel" placeholder="Max" style="width: 25px"><br>
                             <textarea id="moduleTextBox" placeholder="Text here" rows="10" cols="41"></textarea>
-                            <input type="submit" value="Add Module">
-                        </form>
+                            <input type="submit" id="submitModule" value="Add Module">
+                        </div>
+                        <div id="editModule" style="display: none;">
+                            <label for="moduleTextBox">Edit Module</label><br>
+                            <input type="text" id="moduleTitleEdit" placeholder="Title goes here" style="width: 314px"><br>
+                            <p class="levelRange">Level Range</p>
+                            <input type="text" id="minLevelEdit" placeholder="Min" style="width: 25px">
+                            <input type="text" id="maxLevelEdit" placeholder="Max" style="width: 25px"><br>
+                            <textarea id="moduleTextBoxEdit" placeholder="Text here" rows="10" cols="41"></textarea>
+                            <input type="submit" id="submitModuleEdit" value="Save Changes">
+                            <input type="submit" id="cancelModuleEdit" value="Cancel">
+                            <div id="idModuleEdit" style="display: none;"></div>
+                        </div>
+                        <p id="moduleUnsuccessful" style="display: none">Could not save</p>
                     </div>
                     <div class="moduleTable">
-                        <table>
+                        <table id="moduleTable">
                             <tr>
                                 <th>Title</th>
-                            </tr>
-                            <tr>
-                                <td></td>
-                            </tr>
-                            <tr>
+                                <th>Level Range</th>
+                                <th>Date Added</th>
                             </tr>
                         </table>
                     </div>
                     <div class="manageModulesButtons" id="manageModulesButtons">
-                        <form>
-                            <button>Edit</button>
-                            <button>Delete</button>
-                        </form>
+                        <div>
+                            <button id="editModuleButton">Edit</button>
+                            <button id="deleteModuleButton">Delete</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -197,127 +201,7 @@
         <div th:replace="~{/general/profileMenu :: #profileMenu}"></div>
     </div>
 
-    <script>
-        function showTab(event, manageTab) {
-            let tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-            
-            document.getElementById('manageUsers').style.display = "none";
-            document.getElementById('manageEvents').style.display = "none";
-            document.getElementById('blogPosts').style.display = "none";
-            document.getElementById('manageModules').style.display = "none";
-            document.getElementById('membershipRequests').style.display = "none";
-            
-            document.getElementById(manageTab).style.display = "block";
-            event.currentTarget.className += " active";
-        }
-
-        let tablerows = document.querySelectorAll('tr');
-        Array.from(tablerows).forEach((tablerow, index) =>{
-            tablerow.addEventListener('click', () => {
-                let clickedRow = event.currentTarget;
-                let manageUsersButtons = document.getElementById("manageUsersButtons");
-                let manageEventsButtons = document.getElementById("manageEventsButtons");
-                let blogPostsButtons = document.getElementById("blogPostsButtons");
-                let manageModulesButtons = document.getElementById("manageModulesButtons");
-                let positionclickedRow = clickedRow.getBoundingClientRect();
-                let buttonTop = positionclickedRow.top + window.scrollY;
-                let buttonLeft = positionclickedRow.right + window.scrollX + 1;
-
-                manageUsersButtons.style.top = buttonTop + 'px';
-                manageUsersButtons.style.left = buttonLeft + 'px';
-                manageUsersButtons.style.display = "block";
-
-                manageEventsButtons.style.top = buttonTop + 'px';
-                manageEventsButtons.style.left = buttonLeft + 'px';
-                manageEventsButtons.style.display = "block";
-
-                blogPostsButtons.style.top = buttonTop + 'px';
-                blogPostsButtons.style.left = buttonLeft + 'px';
-                blogPostsButtons.style.display = "block";
-
-                manageModulesButtons.style.top = buttonTop + 'px';
-                manageModulesButtons.style.left = buttonLeft + 'px';
-                manageModulesButtons.style.display = "block";
-            })
-        })
-
-        document.getElementById('modifyButton').addEventListener('click', function() {
-            let editTitle = document.getElementById("editTitle");
-            let editDate = document.getElementById("editDate");
-            let editTime = document.getElementById("editTime");
-            let editLocation = document.getElementById("editLocation");
-            let editDm = document.getElementById("editDm");
-            let editPlayers = document.getElementById("editPlayers");
-            let editState = document.getElementById("editState");
-            if(editTitle.style.display == "none" && editDate.style.display == "none" && editTime.style.display == "none" && editLocation.style.display == "none" && editDm.style.display == "none" && editPlayers.style.display == "none" && editState.style.display == "none") {
-                editTitle.style.display = "block";
-                editDate.style.display = "block";
-                editTime.style.display = "block";
-                editLocation.style.display = "block";
-                editDm.style.display = "block";
-                editPlayers.style.display = "block";
-                editState.style.display = "block";
-            } else {
-                editTitle.style.display = "none";
-                editDate.style.display = "none";
-                editTime.style.display = "none";
-                editLocation.style.display = "none";
-                editDm.style.display = "none";
-                editPlayers.style.display = "none";
-                editState.style.display = "none";
-            }
-
-            Array.from(tablerows).forEach((tablerow, index) =>{
-                if (tablerow.rowIndex != 0) {
-                    tablerow.addEventListener('click', function editPlacement() {
-                        let clickedRow = event.currentTarget;
-                        let editEventInput = document.getElementById("editEventInput");
-                        let editTitleInput = document.getElementById("editTitleInput");
-                        let editDateInput = document.getElementById("editDateInput");
-                        let editTimeInput = document.getElementById("editTimeInput");
-                        let editLocationInput = document.getElementById("editLocationInput");
-                        let editDmInput = document.getElementById("editDmInput");
-                        let editPlayersInput = document.getElementById("editPlayersInput");
-                        let editStateInput = document.getElementById("editStateInput");
-                        let editFinished = document.getElementById("editFinished");
-                        let editCancelled = document.getElementById("editCancelled");
-
-                        let editTitlePlace = clickedRow.cells[0];
-                        editTitlePlace.appendChild(editTitleInput);
-
-                        let editDatePlace = clickedRow.cells[1];
-                        editDatePlace.appendChild(editDateInput);
-
-                        let editTimePlace = clickedRow.cells[2];
-                        editTimePlace.appendChild(editTimeInput);
-
-                        let editLocationPlace = clickedRow.cells[3];
-                        editLocationPlace.appendChild(editLocationInput);
-
-                        let editDmPlace = clickedRow.cells[4];
-                        editDmPlace.appendChild(editDmInput);
-
-                        let editPlayersPlace = clickedRow.cells[5];
-                        editPlayersPlace.appendChild(editPlayersInput);
-
-                        let editStatePlace = clickedRow.cells[6];
-                        editStatePlace.appendChild(editStateInput);
-
-                        let editFinishedPlace = clickedRow.cells[6];
-                        editFinishedPlace.appendChild(editFinished);
-
-                        let editCancelledPlace = clickedRow.cells[6];
-                        editCancelledPlace.appendChild(editCancelled);
-
-                        editEventInput.style.display = "block";
-                    }, { once: true })/* Fix this when solution is found */
-                }
-            })
-        })
-    </script>
+    <script src="../../js/admin/adminpageRequests.js"></script>
     <script th:src="@{~/js/authentication/loggedIn.js}"></script>
 </body>
 </html>
