@@ -305,7 +305,7 @@ document.getElementById("changeRoleButton").addEventListener("click", async () =
 // Register payment
 document.getElementById("registerPayment").addEventListener("click", async () => {
     await requestRegisterPayment(currentRow.querySelectorAll("td")[0].innerText);
-    await requestGetUsers(1, 20);
+    await displayUsers(await requestGetUsers(1, 20));
 });
 
 

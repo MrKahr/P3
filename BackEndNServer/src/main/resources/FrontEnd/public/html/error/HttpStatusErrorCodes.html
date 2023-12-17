@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en"></html>
+<head th:insert="~{/general/heads/errorHead :: #errorHead}"></head>
+
+<body>
+    <header th:insert="~{/general/topnav :: #topnav}"></header>
+
+    <div class="background">
+        <div id="NotFoundBox" class="NotFoundBox">
+            <h2 th:text="${statusCode}">Uh, oh. Something went wrong!</h2>
+            <h4 th:each="line : ${#strings.arraySplit(reason, T(org.apache.commons.lang3.StringUtils).LF)}"
+                th:text="${line}">Seems like the server exploded.
+            </h4>
+            <p>Return to the <a href="/">front page</a></p>
+        </div>
+    </div>
+    <script th:src="@{~/js/authentication/loggedIn.js}"></script>
+</body>
+</html>

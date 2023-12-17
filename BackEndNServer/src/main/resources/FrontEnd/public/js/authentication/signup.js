@@ -96,6 +96,14 @@ async function sendData(userDetails){
  * @param {string} logSeverity 
  */
 function notifyUser(message, httpStatus = "", logSeverity = "log"){
+    let messageID = "messageDiv";
+    
+    // If a message has already been created, do not create another.
+    if(document.getElementById(messageID)){
+        logger(message, logSeverity);
+        return; 
+    }
+
     let loginFieldsContainer = document.getElementById("SignupContainer");
 
     // Set custom message if httpstatus is defined
@@ -106,12 +114,18 @@ function notifyUser(message, httpStatus = "", logSeverity = "log"){
     let messageDiv = document.createElement("div");
     let messageNode = document.createTextNode(message);
 
-    messageDiv.id = "messageDiv";
+    messageDiv.id = messageID;
 
     messageDiv.appendChild(messageNode);
     loginFieldsContainer.appendChild(messageDiv);
+}
 
-    // Console logging
+/**
+ * Standard console logging.
+ * @param {string} message Message to log.
+ * @param {string} logSeverity Severity of logging. Defaults to "log".
+ */
+function logger(message, logSeverity = "log"){
     if(logSeverity === "error")
         console.error(message);
     else if(logSeverity === "log")

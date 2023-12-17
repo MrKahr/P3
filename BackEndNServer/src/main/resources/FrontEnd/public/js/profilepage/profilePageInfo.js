@@ -46,7 +46,6 @@ async function displayProfileInfo() {
     let userinfo = await getUserInfo(username);
 
     // Get appropriate element and put user information in text field of element 
-    console.log(userinfo);
     let profileContainer = document.querySelector(".profile-container");
 
     try {

@@ -2,7 +2,7 @@ package com.proj.controller.security;
 
 // Spring necessities
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+
 // Spring Security
 import org.springframework.security.core.Authentication;
 
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -37,7 +36,7 @@ public class LoginController {
 	 * Serves the login page when receiving a GET request to the login endpoint. 
 	 * @return
 	 */
-	@GetMapping("/loginpage")
+	@GetMapping("/login")
 	public String showLoginPage(){
 		return "authentication/loginPage";
 	} 
@@ -54,7 +53,7 @@ public class LoginController {
 		Authentication authentication = authenticationProcess.authenticate(loginRequest, request, response); // Authenticates the user
 
 		// If login is successful, return this.
-		return new ModelAndView(new RedirectView("/userhomepage", true));
+		return new ModelAndView(new RedirectView("/", true));
 	}
 
 	/**
