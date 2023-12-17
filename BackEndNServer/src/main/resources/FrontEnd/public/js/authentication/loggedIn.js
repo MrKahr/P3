@@ -42,8 +42,7 @@ function displayLoggedIn(username){
         // The user's profile pic.
         let profilePic = document.createElement("img");
         profilePic.classList.add(logoClass);
-        
-        //profilePic.src = "../images/AalborgTableTop_Logo.png" // TODO: Placeholder pic. Should be user profile pic.
+        profilePic.src = "../images/AalborgTableTop_Logo.png" // TODO: Placeholder pic. Should be user profile pic.
         
         anchorProfile.appendChild(profilePic)
         divProfile.appendChild(anchorProfile);
@@ -100,9 +99,6 @@ async function checkCurrentSession(){
         });
 
         let message = JSON.parse(await response.text());
-
-        // Testing
-        //console.log(message[0]);
         
         // The user has logged in
         if(message[0] === "true"){

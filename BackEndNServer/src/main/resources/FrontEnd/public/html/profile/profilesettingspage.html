@@ -1,26 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyProfile</title>
-    <link rel="stylesheet" th:href="@{~/css/navigatorStyle.css}">
-    <link rel="stylesheet" th:href="@{~/css/splitpageStyle.css}">
-</head>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<head th:insert="~{/general/heads/profileHead :: #profileHead}"></head>
 
 <body>
-    <header>
-        <link rel="stylesheet" th:href="@{~/css/navigatorStyle.css}">
-        <nav class="topnav">
-            <a href="/"><img class="logo" alt="AalborgTableTop logo" th:src="@{~/images/AalborgTableTop_Logo.png}"></a>
-            <a href="usercalendar">Calendar</a>
-            <a href="usernotfoundpage">CONMAR</a>
-            <a href="usernotfoundpage">About AT</a>
-            <a href="usernotfoundpage">Contact</a>
-            <div class="split"><a href="profilepage"><img class="logo" alt="AalborgTableTop logo" th:src="@{~/images/AalborgTableTop_Logo.png}"></a></div>
-            <a href="/" class="split">Log Out</a>
-        </nav>
-    </header>
+    <header th:insert="~{/general/topnav :: #topnav}"></header>
+
     <link rel="stylesheet" href="../../css/userprofileStyle.css">
     <div class="content">
         <div class="content-left">
@@ -141,27 +125,7 @@
         </div>
     </div>
 
-    <div class="footer">
-        <link rel="stylesheet" href="../../css/footerStyle.css">
-        <div class="footer-navbox">
-            <img class="footer-logo" alt="AalborgTableTop logo" th:src="@{~/images/AalborgTableTop_Logo.png}">
-            <!--Mangler links-->
-            <div class="footer-links">
-                <div class="footer-item">Hvad er AL?</div>
-                <div class="footer-item">Facebook</div>
-                <div class="footer-item">Discord</div>
-                <div class="footer-item">Kontakt</div>
-                <div class="footer-item">Om AT</div>
-            </div>
-        </div>
-        <div class="footer-content"></div>
-        <div class="disclaimer">Disclaimer
-            This website is not affiliated with, endorsed,
-            sponsored, or specifically approved by Wizards of the Coast LLC. This website may use the trademarks and other intellectual property of
-            Wizards of the Coast LLC, which is permitted under Wizards’ Fan Site Policy. For example, Dungeons & Dragons® is a
-            trademark[s] of Wizards of the Coast. For more information about Wizards of the Coast or any of Wizards
-            trademarks or other intellectual property, please visit their website at (www.wizards.com)</div>
-    </div>
+    <div th:insert="~{/general/footer :: #footer}"></div>
 
     <script>
         function showTab(event, manageTab) {

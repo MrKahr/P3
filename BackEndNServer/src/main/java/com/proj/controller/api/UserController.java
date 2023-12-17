@@ -12,6 +12,8 @@ package com.proj.controller.api;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.proj.model.users.*;
 import com.proj.validators.MemberValidator;
@@ -118,7 +121,7 @@ public class UserController {
    * @return string message indicating that the deactivation is successful
    */
 
-  @PutMapping(path = "/{username}/deactivate")
+  @GetMapping(path = "/{username}/deactivate")
   @ResponseBody
   String deactivateAccount(@PathVariable String username, @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     User user = userManager.lookupAccount(username);
@@ -128,7 +131,8 @@ public class UserController {
       userManager.deactivateAccount(user.getId());
       return "Deactivation of " + user.getBasicUserInfo().getUserName() + " succesful";
     } else {
-      throw new IllegalUserOperationException("You may only deactivate your own account!");
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You may only deactivate your own account!");
+        //throw new IllegalUserOperationException("You may only deactivate your own account!");
     }
   }
 
