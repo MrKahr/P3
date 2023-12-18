@@ -1,3 +1,19 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.background {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url("/images/AT_background.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-color: red;
+
+}
+
 .logo{
     height: 50px;
     width: 50px;
@@ -25,21 +41,26 @@
 .filler{
     flex-grow: 1;
 }
+
 .content{
-    position: relative;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
     font-family: Arial, sans-serif;
-    background-image: url("../images/AT_background.jpg");
+    background-image: url("/images/AT_background.jpg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
     background-color: red;
-    outline: black solid 1px;
-    width: 100%;
-    height: 70%;
-    max-height: 400px;
-    display: flex;
-    flex-direction: column;
+    min-height: 1000px;
 }
+.content-left{
+    width: 85%;
+}
+.content-right{
+    width: 15%;
+}
+
 .title{
     text-align: center;
 }
@@ -47,10 +68,17 @@
     align-self: center;
     background-color: white;
     outline: black solid 1px;
-    margin: 20px;
+    margin: auto;
+    padding: 10px;
     width: 70%;
     height: 300px;
 }
+.post{
+    padding: 5px;
+    margin: 10px;
+    background-color: blanchedalmond;
+}
+
 .events{
     display: flex;
     flex-direction: column;

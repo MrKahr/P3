@@ -71,21 +71,6 @@ h1 {
     padding-right: 5px;
 }
 
-/* For line breaks in div */
-div {
-
-}
-.background {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-image: url("/images/AT_background.jpg");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    background-color: red;
-
-}
-
 .content{
     display: flex;
     flex-direction: row;
