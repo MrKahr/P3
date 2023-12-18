@@ -9,6 +9,7 @@
 
 package com.proj.controller.api;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +35,14 @@ import com.proj.model.session.PlaySession;
 import com.proj.model.users.*;
 import com.proj.validators.BasicInfoValidator;
 import com.proj.validators.MemberValidator;
+
+import jakarta.servlet.http.HttpSessionAttributeListener;
+
 import com.proj.exception.FailedValidationException;
 import com.proj.exception.IllegalUserOperationException;
 import com.proj.exception.InvalidInputException;
 import com.proj.exception.UserNotFoundException;
+import com.proj.function.BanHandler;
 import com.proj.function.PlaySessionManager;
 import com.proj.function.RoleAssigner;
 import com.proj.function.UserManager;
@@ -546,4 +551,25 @@ public class UserController {
     return (ArrayList<RoleRequest>) userManager.getRoleRequestdbHandler().findAll();
   }
 
+  // TODO: add int as day to ban
+  @PutMapping(path = "/{username}/ban/{days}")
+  @ResponseBody
+  String banUserOnFrontend(@PathVariable String username, @PathVariable Integer days,
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+
+    User requestingUser = userManager.lookupAccount(authentication.getName());
+
+    if (requestingUser.getAllRoles().containsKey(RoleType.ADMIN)) {
+      try{
+        // Conversion to local date time 
+        LocalDateTime enddate = LocalDateTime.now().plusDays(days);
+        BanHandler.banUser(requestingUser, enddate);
+        return "User " + username + " banned for " + days + " days"; 
+      } catch(IllegalArgumentException iae){
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+      }
+    } else {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+    }
+  }
 }

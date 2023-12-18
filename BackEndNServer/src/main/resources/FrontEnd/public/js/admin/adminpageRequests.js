@@ -495,3 +495,24 @@ document.getElementById('modifyButton').addEventListener('click', function () {
         }
     })
 })
+
+async function banUser(username) {
+    let days = prompt("Enter duration of ban in days");
+    days = parseInt(days);
+    console.log(days);
+    try {
+        const response = await fetch(`/api/${username}/ban/${days}`, {
+            method: "PUT",
+            mode: "cors",
+            cache: "no-cache",
+        });
+        let message = await response.text();
+        alert(message);
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+document.getElementById("banUser").addEventListener("click", async () => {
+    await banUser(currentRow.querySelectorAll("td")[0].innerText);
+})
