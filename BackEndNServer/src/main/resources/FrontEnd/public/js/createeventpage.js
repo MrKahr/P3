@@ -22,9 +22,9 @@ createEventButton.addEventListener('click', () => {
   const description = document.querySelector('#eventDescription').value;
   if (description == null || description == ""){alert("please add a desciption to your event, this can be changed later")};
   const date = document.querySelector('#eventDate').value;
-  if (date == null || date == ""){alert("please add a date to your event, this can be changed later")};
+  if (date == null || date == "" || date < Date.now()){alert("please add a valid date to your event, this can be changed later")};
   const maxNumberOfPlayers = document.querySelector('#eventMaxNumberOfPlayers').value;
-  if (maxNumberOfPlayers == null || maxNumberOfPlayers == ""){alert("please add a player maximum to your event, this can be changed later")};
+  if (maxNumberOfPlayers == null || maxNumberOfPlayers == "" || maxNumberOfPlayers > 7){alert("please add a player maximum (max 7) to your event, this can be changed later")};
   
   if (title != null && location != null && description != null && date != null && maxNumberOfPlayers != null && title != "" && location != "" && description != "" && date != "" && maxNumberOfPlayers != "") {
     try {
