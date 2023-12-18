@@ -9,7 +9,7 @@
     <div class="content">
         <div class="content-left">
             <!--should be hidden unless user is DM/Admin-->
-            <a class="create-event-button" href="eventcreatepage">create event</a>
+            <a class="create-event-button" href="/eventcreatepage">create event</a>
 
             <div class="table-container">
                 <!--should have additional row with "edit" buttons for each event user has edit access to, but no row if the user has none-->
@@ -23,143 +23,18 @@
                       <th>Players</th>
                       <th>State</th>
                     </tr>
-                    <!-- <tr>
-                      <td>Mines of Phandelver</td>
-                      <td>1-25-2023</td>
-                      <td>08:00</td>
-                      <td>DiceNDrinks</td>
-                      <td>Morgenfrue</td>
-                      <td>TankMcgee</td>
-                      <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr>
-                    <tr>
-                        <td>Mines of Phandelver</td>
-                        <td>1-25-2023</td>
-                        <td>08:00</td>
-                        <td>DiceNDrinks</td>
-                        <td>Morgenfrue</td>
-                        <td>TankMcgee</td>
-                        <td>Rewards Released</td>
-                    </tr> -->
                 </table>
                 <div class="editEventsButton" id="editEventsButton">
-                    <a class="editButton" href="eventeditpage">Edit</a>
+                    <a class="editButton" href="/eventeditpage">Edit</a>
                 </div>
             </div>
         </div>
-        <div class="content-right">
-            <aside class="ProfileMenu" id="ProfileMenu" style="display: block;">
-                <ul>
-                    <li><p>My Events</p></li>
-                    <li><a href="profilesettingspage">Profile Settings</a></li>
-                    <li><div class="MenuSpace"></div></li>
-                    <li><a href="adminpage" class="MenuLine">Admin Menu</a></li>
-                </ul>
-            </aside>
-        </div>
+        <div th:replace="~{/general/profileMenu :: #profileMenu}"></div>
     </div>
 
     <div th:insert="~{/general/footer :: #footer}"></div>
-
-    <script src="../../js/eventlistpage.js"></script>
+    
+    <script th:src="@{~/js/eventlistpage.js}"></script>
+    <script th:src="@{~/js/authentication/loggedIn.js}"></script>
 </body>
 </html>

@@ -273,7 +273,7 @@ async function changePassword(){
                         },
                         body: JSON.stringify(confirmedPassword)
                     })
-                    console.log(statusContainer);
+                    //console.log(statusContainer);
                     statusContainer.innerText = savingReponse;
                 } catch (error) {
                     console.log(error);
@@ -306,7 +306,7 @@ async function makeMembershipRequest(){
             email: memberfields[4].children[0].value,
             "@class":".Member"
         };
-        console.log(memberInfo);
+        //console.log(memberInfo);
         try {
             const response = await fetch(`/api/${username}/sendUpgradeToMemberRequest`, {
                 method: "PUT",

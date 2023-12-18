@@ -39,7 +39,6 @@ body {
     background-color: #f2f2f2;
 }
 
-
 .event {
     background-color: #add8e6;
     padding: 10px;
@@ -79,7 +78,7 @@ div {
 .background {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-image: url("../images/AT_background.jpg");
+    background-image: url("/images/AT_background.jpg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -92,11 +91,12 @@ div {
     flex-direction: row;
     margin: 0;
     font-family: Arial, sans-serif;
-    background-image: url("../images/AT_background.jpg");
+    background-image: url("/images/AT_background.jpg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
     background-color: red;
+    min-height: 1000px;
 }
 .content-left{
     width: 85%;

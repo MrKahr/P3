@@ -25,10 +25,10 @@ public class ExceptionController implements ErrorController {
         String reason;
 
         // TODO: We might remove the if-statement and keep the else-clause.
-        if(cause != null && cause.getCause() != null && cause.getCause().getMessage() != null) {
-            reason = cause.getCause().getMessage();
-        }
-        else { // The default error message if none is provided with the throwable.
+        // if(cause != null && cause.getCause() != null && cause.getCause().getMessage() != null) {
+        //     reason = cause.getCause().getMessage();
+        // }
+        // else { // The default error message if none is provided with the throwable.
             reason = "Uh, oh. Something went wrong!\n";
 
             // The default error message is then customized using this switch.
@@ -43,7 +43,7 @@ public class ExceptionController implements ErrorController {
                     reason += "Seems like the server exploded.";    
                     break;
             }  
-        }
+        // }
 
         ModelAndView model = new ModelAndView("/error/HttpStatusErrorCodes");
 

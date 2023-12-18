@@ -22,7 +22,7 @@ const stateEnum = {
 async function addEventsToTable() {
     events = [];
     events = await JSON.parse(await getEvents());
-    console.log(events);
+    //console.log(events);
     const table = document.getElementById("eventTable");
 
     table.addEventListener("click", function() {

@@ -33,8 +33,8 @@ public class GetUserSessionAPI {
      */
     @GetMapping(path = "/user")
     public ResponseEntity<?> getUserSession(@RequestParam boolean getLoginSession, @CurrentSecurityContext(expression = "authentication") Authentication authentication){
+        ArrayList<Object> list = new ArrayList<Object>();
         
-        ArrayList<String> list = new ArrayList<String>();
         if(getLoginSession){
             if(userDAO.checkAuthority(authentication, "ROLE_ANONYMOUS")){
                 list.add("false");
@@ -43,6 +43,7 @@ public class GetUserSessionAPI {
             else{
                 list.add("true");
                 list.add(authentication.getName().toString());
+                list.add(userDAO.findRoles(authentication));
                 return new ResponseEntity<>(list, HttpStatus.OK);
             }
         }

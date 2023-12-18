@@ -36,7 +36,7 @@
     overflow-y: scroll;
 }
 .footer-content{
-    background-image: url("../images/AT_background.jpg");
+    background-image: url("/images/AT_background.jpg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;

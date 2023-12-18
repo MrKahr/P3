@@ -5,7 +5,7 @@
 <body>
     <header th:insert="~{/general/topnav :: #topnav}"></header>
 
-    <link rel="stylesheet" href="../../css/userprofileStyle.css">
+    <link rel="stylesheet" th:src="@{~/css/userprofileStyle.css}">
     <div class="content">
         <div class="content-left">
             <div class="profile-container">
@@ -111,20 +111,11 @@
                     <div class="column2">
                         <img class="profile-picture" alt="AalborgTableTop logo" th:src="@{~/images/AalborgTableTop_Logo.png}">
                     </div>
-                    <a href="usernotfoundpage">Change profile picture</a>
+                    <a href="/usernotfoundpage">Change profile picture</a>
                 </div>
             </div>
         </div>
-        <div class="content-right">
-            <aside class="ProfileMenu" id="ProfileMenu" style="display: block;">
-                <ul>
-                    <li><a href="eventlistpage">My Events</a></li>
-                    <li><a href="notfoundpage">Profile Settings</a></li>
-                    <li><div class="MenuSpace"></div></li>
-                    <li><a href="adminpage" class="MenuLine">Admin Menu</a></li>
-                </ul>
-            </aside>
-        </div>
+        <div th:replace="~{/general/profileMenu :: #profileMenu}"></div>
     </div>
 
     <div th:insert="~{/general/footer :: #footer}"></div>
