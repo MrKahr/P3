@@ -301,14 +301,14 @@ async function displayMembershipRequests(membershipRequests) {
         data[4].innerText = request.roleInfo.postalCode;
         request.roleObject = request.roleInfo;
         document.getElementById(`accept${i}`).addEventListener("click", async () => {
-            await requestHandleMembership(request, true)
+            await requestHandleMembership(request, true);
             await displayMembershipRequests(await requestGetMemberships());
-            await displayUsers(await requestGetUsers())
+            await displayUsers(await requestGetUsers(1, 20));
         });
         document.getElementById(`decline${i}`).addEventListener("click", async () => {
-            await requestHandleMembership(request, false)
+            await requestHandleMembership(request, false);
             await displayMembershipRequests(await requestGetMemberships());
-            await displayUsers(await requestGetUsers())
+            await displayUsers(await requestGetUsers(1, 20));
         });
         i++;
     });
@@ -364,9 +364,11 @@ document.getElementById("changeRoleButton").addEventListener("click", async () =
     if (currentRoles.includes(selectedRole)) {
         await requestRemoveRole(username, selectedRole);
         await displayUsers(await requestGetUsers(1, 20));
-    } else {
+    } else if(selectedRole != "MEMBER"){
         await requestSetRole(username, selectedRole);
         await displayUsers(await requestGetUsers(1, 20));
+    } else {
+        alert("User needs to submit a membership request.");
     }
 });
 
