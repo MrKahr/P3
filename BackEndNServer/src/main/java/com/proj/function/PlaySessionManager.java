@@ -27,8 +27,6 @@ public class PlaySessionManager {
     @Autowired
     private ModuledbHandler moduledbHandler;
     
-
-
     /**
      * 
      * @param playSession object to be saved
@@ -41,8 +39,6 @@ public class PlaySessionManager {
             throw new FailedValidationException("Session add error");
         }
     }
-
-
 
     /**
      * Updates the playSession in the database by resetting the playSession info.
@@ -72,8 +68,6 @@ public class PlaySessionManager {
             throw new FailedValidationException("Session update error");
         }
     }
-
-
 
     /**
      * Validates the playSession with If statement.
@@ -122,8 +116,6 @@ public class PlaySessionManager {
         }
     }
 
-
-
     /**
      * LookupPlaySession is used by validationPlaySession and updatePlaySession to find the playSession and see if it exists in the database.
      * @param id of playSession that is requested.
@@ -141,8 +133,6 @@ public class PlaySessionManager {
         return result;
     }
 
-
-
     /**
      * LookModule is used by validationPlaySession to find the module and see if it exists in the database.
      * @param moduleID is the id for the playSession that is requested.
@@ -159,8 +149,6 @@ public class PlaySessionManager {
         return result;
     }
     
-
-
     /**
      * getSessions retrieve playSessions from the database within the time period requested the default time period is a month.
      * @param startDate is the date that the user reqests the method starts retrieving playSessions.

@@ -14,6 +14,7 @@ import com.proj.exception.UserAlreadyAssignedException;
 import com.proj.model.events.DescriptionChanged;
 import com.proj.model.events.ModuleSet;
 import com.proj.model.events.RewardsGiven;
+import com.proj.model.users.RoleType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -62,6 +63,10 @@ public class PlaySession {
 
     private String dm;
 
+    private String location;
+
+    private RoleType requiredRole;
+
     @JdbcTypeCode(SqlTypes.JSON)
     private RewardsGiven rewardsGiven;
 
@@ -97,6 +102,40 @@ public class PlaySession {
         this.description = description;
         this.dm = dm;
         this.descriptionChanges = new ArrayList<DescriptionChanged>();
+    }
+
+    /**
+     * Creates a play session for players to attend
+     * 
+     * @param title                  - Use to show correct session on frontend
+     * @param description            - string describing the event itself
+     * @param dm                     - username of the dm hosting the playsession
+     * @param currentNumberOfPlayers - number of players associated with the current
+     *                               OlaySession
+     * @param date                   - date that the PlaySession will be held
+     * @param state                  - status of the current PlaySession e.g. full
+     *                               or cancelled.
+     * @param maxNumberOfPlayers     - current maximal number of players allowed in
+     *                               a session
+     * @param module                 - the module associated with the playsession or null
+     * @param location               - The location of the event.
+     * @param requiredRole           - User must have this RoleType to see this playsession.
+     */
+    public PlaySession(String title, String description, String dm, Integer currentNumberOfPlayers, LocalDateTime date, PlaySessionStateEnum state,
+            Integer maxNumberOfPlayers, Module module, String location, RoleType requiredRole) {
+        this.title = title;
+        this.currentNumberOfPlayers = currentNumberOfPlayers;
+        this.date = date;
+        this.state = state.toString();
+        this.maxNumberOfPlayers = maxNumberOfPlayers;
+        this.moduleSetEvents = new ArrayList<ModuleSet>();
+        this.module = module;
+        this.users = new ArrayList<String>();
+        this.description = description;
+        this.dm = dm;
+        this.descriptionChanges = new ArrayList<DescriptionChanged>();
+        this.location = location;
+        this.requiredRole = requiredRole;
     }
 
     public PlaySession() {
@@ -157,6 +196,14 @@ public class PlaySession {
 
     public RewardsGiven getRewardsGiven() {
         return rewardsGiven;
+    }
+
+    public RoleType getRequiredRole(){
+        return requiredRole;
+    }
+
+    public String getLocation(){
+        return location;
     }
 
     public void setTitle(String title) {
