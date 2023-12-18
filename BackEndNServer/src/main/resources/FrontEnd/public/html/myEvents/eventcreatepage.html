@@ -5,7 +5,7 @@
 <body>
     <header th:insert="~{/general/topnav :: #topnav}"></header>
 
-    <link rel="stylesheet" href="../../css/eventpageStyle.css">
+    <link rel="stylesheet" href="../../css/events/eventpageStyle.css">
     <div class="content">
         <div class="content-left">
             <h1 class="eventName"><input type="text" id="eventTitle" placeholder="Event Title" name="title"></h1>
@@ -28,8 +28,8 @@
                         <input type="number" id="eventMaxNumberOfPlayers" name="maxnumberofplayers">
                         <p>Allowed Event Players</p>
                         <select id="eventPlayers" name="players">
-                            <option value="Guest">Guest</option>
-                            <option value="Member">Member</option>
+                            <option value="Everyone">Everyone</option>
+                            <option value="Member">Members</option>
                         </select>
                         <br>
                     </div>

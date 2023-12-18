@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.proj.model.session.Module;
+import com.proj.model.users.RoleType;
+import com.proj.controller.security.authentication.UserDAO;
 import com.proj.exception.NoModuleFoundException;
 import com.proj.function.ModuleManager;
 import com.proj.function.PlaySessionManager;
@@ -11,8 +13,8 @@ import com.proj.repositoryhandler.PlaySessiondbHandler;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,25 +35,37 @@ public class PlaySessionController {
   private PlaySessionManager playSessionManager;
   @Autowired
   private ModuleManager moduleManager;
+  @Autowired
+  private UserDAO userDAO;
 
   // TODO: Atm. everyone can create a playsession. Make sure this does NOT continue!
   @PostMapping(path = "/newplaysession")
   public @ResponseBody String addNewPlaySessionResponse(@RequestParam String title,
-      @RequestParam String description, @RequestParam String dm, @RequestParam Integer currentNumberOfPlayers,
-      @RequestParam LocalDateTime date,
-      @RequestParam Integer maxNumberOfPlayers, @RequestParam Integer moduleID) {
-    Module module;
-    try {
-      module = moduleManager.getModuledbHandler().findById(moduleID);
-    } catch (NoModuleFoundException nmfe) {
-      module = null;
-    }
+      @RequestParam String description, @RequestParam String dm, @RequestParam String location,
+      @RequestParam LocalDateTime date, @RequestParam Integer maxNumberOfPlayers, @RequestParam Integer moduleID,
+      @RequestParam String requiredRole) {
+      
+      Module module = null;
+      RoleType requiredRoleType;
+      Integer currentNumberOfPlayers = 0;
 
-    PlaySession playSession = new PlaySession(title, description, dm, currentNumberOfPlayers, date,
-        PlaySessionStateEnum.PLANNED,
-        maxNumberOfPlayers, module);
-    playSessionManager.addNewPlaySession(playSession);
-    return "PlaySession Created with ID: " + playSession.getId();
+      // try {
+      //   module = moduleManager.getModuledbHandler().findById(moduleID);
+      // } catch (NoModuleFoundException nmfe) {
+      //   module = null;
+      // }
+
+      if(requiredRole.equals("Member")){
+        requiredRoleType = RoleType.MEMBER;
+      }
+      else {
+        requiredRoleType = null;
+      }
+
+      PlaySession playSession = new PlaySession(title, description, dm, currentNumberOfPlayers, date,
+                                                PlaySessionStateEnum.PLANNED, maxNumberOfPlayers, module, location, requiredRoleType);
+      playSessionManager.addNewPlaySession(playSession);
+      return "PlaySession Created with ID: " + playSession.getId();
   }
 
   // TODO: Atm. everyone can update a playsession. Make sure this does NOT continue!
@@ -61,44 +75,57 @@ public class PlaySessionController {
       @RequestParam String description,
       @RequestParam LocalDateTime date, @RequestParam String stateString,
       @RequestParam Integer maxNumberOfPlayers, Integer moduleID) {
-    Module module;
-    try {
-      module = moduleManager.getModuledbHandler().findById(moduleID);
-    } catch (NoModuleFoundException nmfe) {
-      module = null;
-    }
-    PlaySessionStateEnum state = PlaySessionStateEnum.valueOf(stateString);
-    playSessionManager.updatePlaySession(id, title, description, maxNumberOfPlayers, date, state, module);
-    return "Update Successfull";
+      
+      Module module;
+      try {
+        module = moduleManager.getModuledbHandler().findById(moduleID);
+      } catch (NoModuleFoundException nmfe) {
+        module = null;
+      }
+      PlaySessionStateEnum state = PlaySessionStateEnum.valueOf(stateString);
+      playSessionManager.updatePlaySession(id, title, description, maxNumberOfPlayers, date, state, module);
+      return "Update Successfull";
   }
 
-  // TODO: Ensure that only user with correct access level can get certain playsessions
    @GetMapping(path="/getallplaysessions") //returns all play sessions
-   public @ResponseBody List<PlaySession> getAllPlaySessions() {
-   Iterable<PlaySession> playSessions = playSessiondbHandler.findAll();
-   List<PlaySession> allPlaySessions = new ArrayList<>();
-   playSessions.forEach(allPlaySessions::add);
-   return allPlaySessions;
-   }
-   
-  // TODO: Ensure that only user with correct access level can get certain playsessions
-  @GetMapping(path = "/datebetween") // returns all play sessions between two dates
-  public @ResponseBody ArrayList<PlaySession> getPlaySessionsBetween(@RequestParam LocalDateTime startDateTime,
-      @RequestParam LocalDateTime endDateTime) {
-    Iterable<PlaySession> playSessions = playSessiondbHandler.findByDateBetween(startDateTime, endDateTime);
-    // We don't want rewards publicly accessible
-    ArrayList<PlaySession> testList = new ArrayList<PlaySession>() {
+   public @ResponseBody List<PlaySession> getAllPlaySessions(@CurrentSecurityContext(expression = "authentication") Authentication authentication) {
       
-    };
-    for(PlaySession playSession : playSessions) {
-      playSession.setRewards(null);
-      testList.add(playSession);
+      Iterable<PlaySession> playSessions = playSessiondbHandler.findAll();
+      return processPlaySessions(playSessions, authentication);
     }
-    return testList;
+
+  @GetMapping(path = "/datebetween") // returns all play sessions between two dates
+  public @ResponseBody ArrayList<PlaySession> getPlaySessionsBetween(@RequestParam LocalDateTime startDateTime, @RequestParam LocalDateTime endDateTime,
+   @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+      
+      Iterable<PlaySession> playSessions = playSessiondbHandler.findByDateBetween(startDateTime, endDateTime);
+      return processPlaySessions(playSessions, authentication);
   }
-    @GetMapping(path = "/play_session/{id}")
-    public @ResponseBody PlaySession getPlaySession(@PathVariable Integer id,
-      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+
+  /**
+   * Ensures that the user can only get playsessions they have the required role for.
+   * @param playSessionList The list of playsessions to process.
+   * @param authentication The user's authentication object.
+   * @return
+   */
+  private ArrayList<PlaySession> processPlaySessions(Iterable<PlaySession> playSessionList, Authentication authentication){
+    ArrayList<PlaySession> playSessions = new ArrayList<PlaySession>();
+    
+    for(PlaySession playSession : playSessionList) {
+        if(playSession.getRequiredRole() != null){
+          if(!userDAO.checkAuthority(authentication, playSession.getRequiredRole())){
+            continue;
+          }
+        }
+        playSession.setRewards(null); // We don't want rewards publicly accessible
+        playSessions.add(playSession);
+      }
+      return playSessions;
+  }
+  
+  @GetMapping(path = "/play_session/{id}")
+  public @ResponseBody PlaySession getPlaySession(@PathVariable Integer id,
+    @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     PlaySession playSession = playSessiondbHandler.findById(id);
     if (!playSession.getDm().equals(authentication.getName())
         || !playSession.getUsers().contains(authentication.getName())) { 
