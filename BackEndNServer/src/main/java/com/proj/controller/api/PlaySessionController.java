@@ -139,7 +139,6 @@ public class PlaySessionController {
   public String assignUser(@RequestParam String username, @RequestParam Integer playSessionID) {
     PlaySession playSession = playSessiondbHandler.findById(playSessionID);
     playSession.assignUser(username);
-
     return username + " added successfully.";
   }
 
