@@ -507,7 +507,7 @@ async function banUser(username) {
             cache: "no-cache",
         });
         let message = await response.text();
-        console.warn(message);
+        alert(message);
     } catch (error) {
         console.error("Error:", error);
     }
