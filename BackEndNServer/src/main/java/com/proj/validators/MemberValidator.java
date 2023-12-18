@@ -16,11 +16,11 @@ public class MemberValidator implements Validatable<MemberValidator> {
     // https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html
     // Make pattern to match and initialize variable to get matcher.
     private static Pattern genericStringPattern = Pattern.compile("^(\\\\w)$");
-    private static Pattern emailPattern = Pattern.compile("^([\\w-]{1,})(\\w[@]\\w{1,})([.]\\w{2,4}$)");
+    private static Pattern emailPattern = Pattern.compile("^\"^\\\\w{2,}+@+\\\\w{1,}+.\\\\w{2,4}$\"");
     private static Pattern phoneNumberPattern = Pattern.compile("^(\\d{8,10})$");
     private static Pattern postcodePattern = Pattern.compile("^(\\d{4})$"); // currently, only danish postcodes are
                                                                            // considered valid
-    private static Pattern addressPattern = Pattern.compile("^(\\w{2,})([ ].\\w{1,})$");
+    private static Pattern addressPattern = Pattern.compile("^\\w{2,}+[ ].\\d{1,}$");
     private Matcher m;
 
     // Constructor
