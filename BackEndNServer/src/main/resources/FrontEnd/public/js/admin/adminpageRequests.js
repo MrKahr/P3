@@ -243,6 +243,10 @@ async function displayUsers(users) {
             currentRow = clickedRow;
         });
     });
+    userTableRows = document.getElementById("userTable").querySelectorAll("tr");
+    if (userTableRows.length >= 20) {
+        document.getElementById("loadMoreUsers").style.display = "block";
+    }
 }
 
 async function requestGetMemberships() {
@@ -281,11 +285,11 @@ async function displayMembershipRequests(membershipRequests) {
     let i = 0;
     const rowsToRemove = Array.from(membershipRequestsTable.querySelectorAll("tr:not(:first-child)"));
     rowsToRemove.forEach(row => row.remove());
-    if(!membershipRequests) return;
+    if (!membershipRequests) return;
     membershipRequests.forEach(async request => {
         let row = document.createElement("tr");
         membershipRequestsTable.appendChild(row);
-        row.innerHTML = 
+        row.innerHTML =
             `<td>TankMcgee</td>
             <td>Jens Jensen</td>
             <td>Adresse</td>
@@ -364,7 +368,7 @@ document.getElementById("changeRoleButton").addEventListener("click", async () =
     if (currentRoles.includes(selectedRole)) {
         await requestRemoveRole(username, selectedRole);
         await displayUsers(await requestGetUsers(1, 20));
-    } else if(selectedRole != "MEMBER"){
+    } else if (selectedRole != "MEMBER") {
         await requestSetRole(username, selectedRole);
         await displayUsers(await requestGetUsers(1, 20));
     } else {
@@ -376,6 +380,12 @@ document.getElementById("changeRoleButton").addEventListener("click", async () =
 document.getElementById("registerPayment").addEventListener("click", async () => {
     await requestRegisterPayment(currentRow.querySelectorAll("td")[0].innerText);
     await displayUsers(await requestGetUsers(1, 20));
+});
+
+// Load more users
+let userTableRows = document.getElementById("userTable").querySelectorAll("tr");
+document.getElementById("loadMoreUsers").addEventListener("click", async () => {
+    await displayUsers(await requestGetUsers(1, userTableRows.length + 20));
 });
 
 // Membership requests
