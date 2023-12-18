@@ -256,8 +256,8 @@ public class UserManager {
             }
             Role member = new Member(realName, phoneNumber, postalCode, address, email);
             MemberValidator validator = new MemberValidator((Member) member);
-            validator.ValidateAddress() // if none of these throw, we create the request
-                    .ValidateEmail()
+            validator//.ValidateAddress() // if none of these throw, we create the request // TODO: remove commenting out
+                    //.ValidateEmail()
                     .ValidatePhoneNumber()
                     .ValidatePostCode();
             this.createRoleRequest(requestingUser.getId(), member); // we have to use "this", since createRoleRequest
