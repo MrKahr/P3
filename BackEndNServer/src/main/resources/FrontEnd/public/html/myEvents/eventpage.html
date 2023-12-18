@@ -8,26 +8,27 @@
     <link rel="stylesheet" href="../../css/eventpageStyle.css">
     <div class="content">
         <div class="content-left">
-            <h1 class="eventName">Event Title</h1>
+            <h1 class="eventName" id="eventTitleContent">Event Title</h1>
             <div class="eventColumns">
                 <div class="column1">
                     <div class="eventTimeBox"><!-- TIME BOX -->
                         <p>Event Time</p>
-                        
+                        <p id="eventTimeContent"></p>
                         <br>
                     </div>
 
                     <div class="eventLocationBox"><!-- LOCATION BOX -->
                         <p>Event Location</p>
-                        
+                        <p id="eventLocationContent"></p>
                         <br>
                     </div>
 
                     <div class="eventPlayersBox"><!-- PLAYERS BOX -->
-                        <p>Players</p>
                         
+                        <p id="eventPlayercountContent">Players</p>
+                        <p id="eventPlayersContent"></p>
                         <p>DM</p>
-                        
+                        <p id="eventDMContent"></p>
                         <br>
                     </div>
                     <div class="createEventButton"><!-- SAVE CHANGES BUTTON -->
@@ -37,12 +38,14 @@
                 <div class="column2">
                     <div class="eventDescriptionBox"><!-- DESCRIPTION BOX -->
                         <p>Event Description</p>
+                        <p id="eventDescriptionContent"></p>
                         
                         <br>
                     </div>
                     <div class="eventModule"><!-- MODULE BOX -->
                         <div class="moduleHeader">
                             <p>Module Description </p>
+                            <p id="eventModuleDescriptionContent"></p>
                         </div>
                     </div>
                     <div class="createEventButton"><!-- SAVE CHANGES BUTTON -->
@@ -53,6 +56,7 @@
                 <div class="column3">
                     <div class="eventRewards"><!-- REWARDS BOX -->
                         <p>Rewards</p>
+                        <p id="eventRewardsContent"></p>
                         
                         <br>
                     </div>
@@ -60,10 +64,10 @@
             </div>
             <br><br>
         </div>
-        <div th:insert="~{/general/footer :: #footer}"></div>
+        <div th:replace="~{/general/profileMenu :: #profileMenu}"></div>
     </div>
     <div th:insert="~{/general/footer :: #footer}"></div>
-
+    <script th:src="@{~/js/eventpage.js}"></script>
     <script th:src="@{~/js/authentication/loggedIn.js}"></script>
 </body>
 </html>

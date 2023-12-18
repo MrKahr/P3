@@ -2,6 +2,8 @@ package com.proj.controller.navigation;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class EventController{
@@ -20,15 +22,11 @@ public class EventController{
     public String showEventEditPage(){
         return "myEvents/eventeditpage";
     }
-    // event page
-    @GetMapping("/eventpage")
-    public String showEventPage(){
+    // // event page
+    @GetMapping(path = "/eventpage/{eventID}")
+    public String showEventPage(@PathVariable int eventID){
+        System.out.println(eventID);
         return "myEvents/eventpage";
-    }
-    // public event page
-    @GetMapping("/publiceventpage")
-    public String showPublicEventPage(){
-        return "myEvents/publiceventpage";
     }
 
 }

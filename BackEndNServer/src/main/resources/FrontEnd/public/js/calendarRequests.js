@@ -123,7 +123,7 @@ function addModal(event, eventElement) {
 
     // Link to event or 404
     const link = document.createElement('a');
-    link.href = `events/eventPage/${event.id}.html`;
+    link.href = `/eventpage/${event.id}`;
     link.innerText = "Go to event";
     modalContent.appendChild(link);
 
