@@ -508,9 +508,26 @@ public class UserController {
   public String putMethodName(@RequestBody RoleRequest roleRequest, @RequestParam boolean requestAccepted,
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     User authenticatingUser = userManager.lookupAccount(authentication.getName());
-    if (authenticatingUser.getAdminInfo() == null) {
+    if (authenticatingUser.getSuperAdminInfo() == null) {
       throw new IllegalUserOperationException("Only admins can handle role requests");
     }
-    return userManager.handleRoleRequest(roleRequest, requestAccepted);
+    if(requestAccepted) {
+      userManager.fulfillRoleRequest(roleRequest.getUserId(), RoleType.MEMBER);
+    } else {
+      userManager.rejectRoleRequest(roleRequest.getUserId(), RoleType.MEMBER);
+    }
+    return "Successfully promoted user";
   }
+
+  @GetMapping("/get_member_requests")
+  @ResponseBody
+  public ArrayList<RoleRequest> getRoleRequests(
+      @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
+    User requestingUser = userManager.lookupAccount(authentication.getName());
+    if (requestingUser.getSuperAdminInfo() == null) {
+      throw new IllegalUserOperationException("Only super admins can handle role requests");
+    }
+    return (ArrayList<RoleRequest>) userManager.getRoleRequestdbHandler().findAll();
+  }
+
 }
