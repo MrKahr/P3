@@ -73,20 +73,11 @@
             </div>
             <br><br>
         </div>
-
-        <div class="content-right">
-            <aside class="ProfileMenu" id="ProfileMenu" style="display: block;">
-                <ul>
-                    <li><a href="eventlistpage">My Events</a></li>
-                    <li><a href="profilesettingspage">Profile Settings</a></li>
-                    <li><div class="MenuSpace"></div></li>
-                    <li><a href="adminpage" class="MenuLine">Admin Menu</a></li>
-                </ul>
-            </aside>
-        </div>
+        <div th:replace="~{/general/profileMenu :: #profileMenu}"></div>
     </div>
-
     <div th:insert="~{/general/footer :: #footer}"></div>
+
     <script th:src="@{~/js/createeventpage.js}"></script>
+    <script th:src="@{~/js/authentication/loggedIn.js}"></script>
 </body>
 </html>

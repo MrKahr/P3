@@ -55,7 +55,7 @@ function showProfileMenu(username, authorities){
     let profileEventsLink = document.getElementById("profileEvents").firstElementChild;
     let profileSettingsLink = document.getElementById("profileSettings").firstElementChild;
 
-    profileEventsLink.href = `/eventpage`; // TODO: Add event link after merging event pages.
+    profileEventsLink.href = `/eventlistpage`; // TODO: Add event link after merging event pages.
     profileSettingsLink.href = `/profile/${username}/settings`;
 }
 

@@ -51,7 +51,7 @@ public class playSessionManagerTest {
     public void invalidMaxNumberOfPlayers() {
         // test if maxNumber is capped by global max, assert throws
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession testPlaySession = new PlaySession("testtitle", "desc", "MrDM", 0, LocalDateTime.now(),
+        PlaySession testPlaySession = new PlaySession("testtitle", "desc", "MrDM", 0, LocalDateTime.now().plusMinutes(1),
                 PlaySessionStateEnum.CANCELLED, 20, testModule);
         Executable e = () -> {
             testPlaySessionManager.validatePlaySession(testPlaySession, true);
@@ -64,7 +64,7 @@ public class playSessionManagerTest {
     public void invalidCurrentNumberOfPlayers() {
         // test if current number is capped by max, assert throws
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession testPlaySession = new PlaySession("testtitle", "desc", "MrDM", 8, LocalDateTime.now(),
+        PlaySession testPlaySession = new PlaySession("testtitle", "desc", "MrDM", 8, LocalDateTime.now().plusMinutes(1),
                 PlaySessionStateEnum.CANCELLED, 7, testModule);
         Executable e = () -> {
             testPlaySessionManager.validatePlaySession(testPlaySession, true);
@@ -78,7 +78,7 @@ public class playSessionManagerTest {
     public void validSession() {
         // test assert true
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession testPlaySession = new PlaySession("testtitle", "desc", "MrDM", 5, LocalDateTime.now(),
+        PlaySession testPlaySession = new PlaySession("testtitle", "desc", "MrDM", 5, LocalDateTime.now().plusMinutes(1),
                 PlaySessionStateEnum.CANCELLED, 7, testModule);
         assertTrue(testPlaySessionManager.validatePlaySession(testPlaySession, true));
     }
@@ -88,7 +88,7 @@ public class playSessionManagerTest {
     public void addInvalidPlaySession() {
         // example invalid currentMax
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession playSession = new PlaySession("testtitle", "desc", "MrDM", 8, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED,
+        PlaySession playSession = new PlaySession("testtitle", "desc", "MrDM", 8, LocalDateTime.now().plusMinutes(1), PlaySessionStateEnum.CANCELLED,
                 7, testModule);
         Executable e = () -> {
             testPlaySessionManager.addNewPlaySession(playSession);
@@ -100,7 +100,7 @@ public class playSessionManagerTest {
     @Test
     public void addValidPlaySession() {
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession testPlaySession = new PlaySession("testtitle", "desc", "MrDM", 5, LocalDateTime.now(),
+        PlaySession testPlaySession = new PlaySession("testtitle", "desc", "MrDM", 5, LocalDateTime.now().plusMinutes(1),
                 PlaySessionStateEnum.CANCELLED, 7, testModule);
         testPlaySessionManager.addNewPlaySession(testPlaySession);
 
@@ -111,7 +111,7 @@ public class playSessionManagerTest {
     @Test // Same test as addNewPlaySession
     public void invalidPlaySessionUpdate() {
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession playSession = new PlaySession("testtitle2", "desc", "MrDM", 8, LocalDateTime.now(), PlaySessionStateEnum.CANCELLED,
+        PlaySession playSession = new PlaySession("testtitle2", "desc", "MrDM", 8, LocalDateTime.now().plusMinutes(1), PlaySessionStateEnum.CANCELLED,
                 7, testModule);
         Executable e = () -> {
             testPlaySessionManager.addNewPlaySession(playSession);
@@ -123,10 +123,10 @@ public class playSessionManagerTest {
     @Test
     public void validPlaySessionUpdate() {
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession testPlaySession = new PlaySession("testtitle2", "desc", "MrDM", 5, LocalDateTime.now(),
+        PlaySession testPlaySession = new PlaySession("testtitle2", "desc", "MrDM", 5, LocalDateTime.now().plusMinutes(1),
                 PlaySessionStateEnum.CANCELLED, 7, testModule);
         testPlaySessionManager.addNewPlaySession(testPlaySession);
-        testPlaySessionManager.updatePlaySession(testPlaySession.getId(), "testtitle2", "testdescription", 7, LocalDateTime.now(),
+        testPlaySessionManager.updatePlaySession(testPlaySession.getId(), "testtitle2", "testdescription", 7, LocalDateTime.now().plusMinutes(1),
                 PlaySessionStateEnum.CANCELLED, null);
         PlaySession foundPlaySession = testPlaySessiondbHandler.findById(testPlaySession.getId());
 
@@ -139,22 +139,22 @@ public class playSessionManagerTest {
     @Test
     public void getSessionsTest() {// Not to sure how to test this - same, vi hører lige emil imorgen
         Module testModule = new Module("MinesOfPhandelver", "hej", "0-3");
-        PlaySession testPlaySession1 = new PlaySession("testtitle1", "desc", "MrDM", 5, LocalDateTime.now(),
+        PlaySession testPlaySession1 = new PlaySession("testtitle1", "desc", "MrDM", 5, LocalDateTime.now().plusMinutes(1),
                 PlaySessionStateEnum.CANCELLED, 7, testModule);
-        PlaySession testPlaySession2 = new PlaySession("testtitle2", "desc", "MrDM", 5, LocalDateTime.of(2020, 10, 1, 0, 0),
+        PlaySession testPlaySession2 = new PlaySession("testtitle2", "desc", "MrDM", 5, LocalDateTime.of(2025, 10, 1, 0, 0),
                 PlaySessionStateEnum.CANCELLED, 7, testModule);
         testPlaySessionManager.addNewPlaySession(testPlaySession1);
         testPlaySessionManager.addNewPlaySession(testPlaySession2);
 
-        List<PlaySession> playSessions = testPlaySessionManager.getSessions(LocalDateTime.of(2021, 1, 1, 0, 0, 0),
-                LocalDateTime.of(2024, 1, 1, 0, 0, 0));
+        List<PlaySession> playSessions = testPlaySessionManager.getSessions(LocalDateTime.of(2024, 1, 1, 0, 0, 0),
+                LocalDateTime.of(2026, 1, 1, 0, 0, 0));
 
         boolean contains = false;
         for (PlaySession playSession : playSessions) {
-            if (playSession.getTitle().equals("testtitle1")) {
+            if (playSession.getTitle().equals("testtitle2")) {
                 contains = true;
             }
-            if (playSession.getTitle().equals("testtile2")) {
+            if (playSession.getTitle().equals("testtile1")) {
                 fail("PlaySession 2 found, but was not supposed to");
             }
         }

@@ -69,10 +69,10 @@ tr:nth-child(odd) {
 td:last-child {
     text-align: right;
 }
+
 td i{
     float: left;
 }
-
 
 .manageUsersButtons {
     position: absolute;

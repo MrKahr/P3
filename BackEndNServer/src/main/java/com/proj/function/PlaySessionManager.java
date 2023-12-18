@@ -109,7 +109,11 @@ public class PlaySessionManager {
         //Evt kan vi også tjekke om specifikke state conditions er opfyldt her.
         else if(!state.equals(PlaySessionStateEnum.PLANNED.toString()) && !state.equals(PlaySessionStateEnum.CANCELLED.toString()) && !state.equals(PlaySessionStateEnum.CONCLUDED.toString()) && !state.equals(PlaySessionStateEnum.REWARDSRELEASED.toString())){
             throw new FailedValidationException("Session state invalid");
-        }//module - Module ID found in database - Done
+        }
+        else if(LocalDateTime.now().isAfter(playSession.getDate())){
+            throw new FailedValidationException("The session cannot be in the past");
+        }
+        //module - Module ID found in database - Done
         //else if(lookupModuleID(playSession.getModule().getId()) == false){
         //    return false;
         //} 

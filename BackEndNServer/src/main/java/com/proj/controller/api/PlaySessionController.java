@@ -31,6 +31,7 @@ public class PlaySessionController {
   @Autowired
   private ModuleManager moduleManager;
 
+  // TODO: Atm. everyone can create a playsession. Make sure this does NOT continue!
   @PostMapping(path = "/newplaysession")
   public @ResponseBody String addNewPlaySessionResponse(@RequestParam String title,
       @RequestParam String description, @RequestParam String dm, @RequestParam Integer currentNumberOfPlayers,
@@ -50,6 +51,7 @@ public class PlaySessionController {
     return "PlaySession Created with ID: " + playSession.getId();
   }
 
+  // TODO: Atm. everyone can update a playsession. Make sure this does NOT continue!
   @PostMapping(path = "/updateplaysession") // responds to put requests with path "/UpdatePlaySession" and request
                                             // parameters, returns Successful if update is valid
   public @ResponseBody String updatePlaySessionResponse(@RequestParam Integer id, @RequestParam String title,
@@ -67,7 +69,7 @@ public class PlaySessionController {
     return "Update Successfull";
   }
 
-  
+  // TODO: Ensure that only user with correct access level can get certain playsessions
    @GetMapping(path="/getallplaysessions") //returns all play sessions
    public @ResponseBody List<PlaySession> getAllPlaySessions() {
    Iterable<PlaySession> playSessions = playSessiondbHandler.findAll();
@@ -76,7 +78,7 @@ public class PlaySessionController {
    return allPlaySessions;
    }
    
-
+  // TODO: Ensure that only user with correct access level can get certain playsessions
   @GetMapping(path = "/datebetween") // returns all play sessions between two dates
   public @ResponseBody ArrayList<PlaySession> getPlaySessionsBetween(@RequestParam LocalDateTime startDateTime,
       @RequestParam LocalDateTime endDateTime) {
@@ -91,5 +93,4 @@ public class PlaySessionController {
     }
     return testList;
   }
-
 }

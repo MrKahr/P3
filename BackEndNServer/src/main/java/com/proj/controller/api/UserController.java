@@ -120,7 +120,8 @@ public class UserController {
 
       return sanitizedUser;
     } catch (NullPointerException npe) {
-      throw new UserNotFoundException("Cannot lookup your credentials or cannot find the person you are looking for");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      //throw new UserNotFoundException("Cannot lookup your credentials or cannot find the person you are looking for");
     }
   }
 
@@ -149,7 +150,8 @@ public class UserController {
       }
       return sanitizedUsers;
     } catch (NullPointerException npe) {
-      throw new UserNotFoundException("Cannot lookup your credentials");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      //throw new UserNotFoundException("Cannot lookup your credentials");
     }
   }
 
@@ -162,7 +164,7 @@ public class UserController {
    * @return string message indicating that the deactivation is successful
    */
 
-  @GetMapping(path = "/{username}/deactivate")
+  @PutMapping(path = "/{username}/deactivate")
   @ResponseBody
   String deactivateAccount(@PathVariable String username,
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
@@ -199,7 +201,8 @@ public class UserController {
       userManager.restoreAccount(user.getBasicUserInfo().getUserName());
       return "Reactivation of " + user.getBasicUserInfo().getUserName() + " successful";
     } else {
-      throw new IllegalUserOperationException("You may only reactivate your own account!");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You may only reactivate your own account!");
+      //throw new IllegalUserOperationException("You may only reactivate your own account!");
     }
   }
 
@@ -248,7 +251,8 @@ public class UserController {
       }
       return "Changes saved succesfully!";
     } else {
-      throw new IllegalUserOperationException("You may only edit your own account!");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You may only edit your own account!");
+      //throw new IllegalUserOperationException("You may only edit your own account!");
     }
   }
 
@@ -277,7 +281,8 @@ public class UserController {
       userManager.getUserdbHandler().save(user);
       return "Changes saved successfully!";
     } else {
-      throw new IllegalUserOperationException("You may only edit your own account!");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You may only edit your own account!");
+      //throw new IllegalUserOperationException("You may only edit your own account!");
     }
   }
 
@@ -320,7 +325,8 @@ public class UserController {
       }
       return futureSessions;
     } else {
-      throw new IllegalUserOperationException("You may only edit your own account!");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You may only edit your own account!");
+      //throw new IllegalUserOperationException("You may only edit your own account!");
     }
   }
 
@@ -338,7 +344,8 @@ public class UserController {
       userManager.getUserdbHandler().save(user);
       return "Changes saved successfully!";
     } else {
-      throw new IllegalUserOperationException("You may only edit your own account!");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You may only edit your own account!");
+      //throw new IllegalUserOperationException("You may only edit your own account!");
     }
   }
 
@@ -357,7 +364,8 @@ public class UserController {
           new BasicUserInfo(user.getBasicUserInfo().getUserName(), password));
       return validator.ValidatePassword() instanceof BasicInfoValidator;
     } else {
-      throw new IllegalUserOperationException("You may only edit your own account!");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You may only edit your own account!");
+      //throw new IllegalUserOperationException("You may only edit your own account!");
     }
   }
 
@@ -373,11 +381,12 @@ public class UserController {
           memberInfo.getPostalCode(), memberInfo.getAddress(), memberInfo.getEmail(),
           user.getBasicUserInfo().getUserName());
     } else {
-      throw new IllegalUserOperationException("You may only edit your own account!");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You may only edit your own account!");
+      //throw new IllegalUserOperationException("You may only edit your own account!");
     }
   }
 
-  /**
+  /** TODO: Remove this in favor og GetUserSessionAPI
    * Gets the username of the user that is currently logged in on the site
    * 
    * @param authentication - authentication object that is used to check that user
@@ -434,9 +443,11 @@ public class UserController {
 
     User requestingUser = userManager.lookupAccount(authentication.getName());
     if (requestingUser.getAdminInfo() == null) {
-      throw new IllegalUserOperationException("Only admins are allowed to change user roles");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+      //throw new IllegalUserOperationException("Only admins are allowed to change user roles");
     } else if (replacementRole.getRoleType().equals(RoleType.ADMIN) && requestingUser.getSuperAdminInfo() == null) {
-      throw new IllegalUserOperationException("Only superadmins are allowed to promote to admin");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+      //throw new IllegalUserOperationException("Only superadmins are allowed to promote to admin");
     } else {
       RoleAssigner.setRole(userToChange, replacementRole);
       userManager.getUserdbHandler().save(userToChange);
@@ -450,9 +461,11 @@ public class UserController {
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     User requestingUser = userManager.lookupAccount(authentication.getName());
     if (requestingUser.getAdminInfo() == null) {
-      throw new IllegalUserOperationException("Only admins are allowed to change user roles");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+      //throw new IllegalUserOperationException("Only admins are allowed to change user roles");
     } else if (role.equals("ADMIN") && requestingUser.getSuperAdminInfo() == null) {
-      throw new IllegalUserOperationException("Only superadmins are allowed to demote admins");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+      //throw new IllegalUserOperationException("Only superadmins are allowed to demote admins");
     } else {
       User userToChange = userManager.lookupAccount(username);
       switch (role) {
@@ -488,7 +501,8 @@ public class UserController {
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) throws Exception {
     User requestingUser = userManager.lookupAccount(authentication.getName());
     if (requestingUser.getAdminInfo() == null) {
-      throw new IllegalUserOperationException("Only admins are allowed to change user roles");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+      //throw new IllegalUserOperationException("Only admins are allowed to change user roles");
     }
     User payingUser = userManager.lookupAccount(username);
     Member memberInfo = payingUser.getMemberInfo();
@@ -509,7 +523,8 @@ public class UserController {
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     User authenticatingUser = userManager.lookupAccount(authentication.getName());
     if (authenticatingUser.getSuperAdminInfo() == null) {
-      throw new IllegalUserOperationException("Only admins can handle role requests");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+      //throw new IllegalUserOperationException("Only admins can handle role requests");
     }
     if(requestAccepted) {
       userManager.fulfillRoleRequest(roleRequest.getUserId(), RoleType.MEMBER);
@@ -525,7 +540,8 @@ public class UserController {
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     User requestingUser = userManager.lookupAccount(authentication.getName());
     if (requestingUser.getSuperAdminInfo() == null) {
-      throw new IllegalUserOperationException("Only super admins can handle role requests");
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+      //throw new IllegalUserOperationException("Only super admins can handle role requests");
     }
     return (ArrayList<RoleRequest>) userManager.getRoleRequestdbHandler().findAll();
   }

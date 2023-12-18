@@ -96,6 +96,7 @@ div {
     background-position: center;
     background-size: cover;
     background-color: red;
+    min-height: 1000px;
 }
 .content-left{
     width: 85%;

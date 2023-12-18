@@ -82,17 +82,16 @@ public class SecurityFilters {
 	 * @return
 	 * @throws Exception
 	 */
-	 @Bean
-	 @Order(-1)
-	 public SecurityFilterChain testFilter(HttpSecurity http) throws Exception {
-		http
-		.csrf((csrf) -> csrf.disable())
-		.authorizeHttpRequests((authorize) -> authorize // All requests most be authorized 
-			.anyRequest().permitAll() /* Allow anything */
-		);
-	 
-	 	return http.build();
-	 }
+	//  @Bean
+	//  @Order(-1)
+	//  public SecurityFilterChain testFilter(HttpSecurity http) throws Exception {
+	// 	http
+	// 	.csrf((csrf) -> csrf.disable())
+	// 	.authorizeHttpRequests((authorize) -> authorize // All requests most be authorized 
+	// 		.anyRequest().permitAll() /* Allow anything */
+	// 	);
+	//  	return http.build();
+	//  }
 
 	/**
 	 * Allows all requests matching this filter. This must only be used on resources
@@ -106,7 +105,7 @@ public class SecurityFilters {
 	@Order(1)
 	public SecurityFilterChain allowFilter(HttpSecurity http) throws Exception {
 		http
-		.securityMatcher("/css/**", "/login/**", "/signup/**", "/", "/api/**", "/js/**", "/images/**", "/favicon.ico", "/error") /* All Http requests matching these paths will trigger this filter */
+		.securityMatcher("/css/**", "/login/**", "/calendar", "/conmar", "/about", "/contact", "/signup/**", "/", "/api/**", "/js/**", "/images/**", "/favicon.ico", "/error") /* All Http requests matching these paths will trigger this filter */
 		.csrf((csrf) -> csrf.disable())
 		.authorizeHttpRequests((authorize) -> authorize /* All requests most be authorized */
 			.anyRequest().permitAll() /* Allow anything */
