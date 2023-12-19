@@ -85,10 +85,6 @@ public class PlaySessionManager {
         int maxNumberOfPlayers = playSession.getMaxNumberOfPlayers();
         int currentNumberOfPlayers = playSession.getCurrentNumberOfPlayers();
         String state = playSession.getState();
-        //Module module = playSession.getModule();
-        //int moduleID = module.getId();//this line is the problem - NullPointerException - kommer stadig ikke ned til notnull7 for some reason
-        // tests kører ikke breakpoints iirc, så skal finde ud af hvor nullpointerexceptionen kommer fra
-        //Validation Logic - If statment that searches for errors in the playSession info.
         if(title.length() > maxTitleLength){
             throw new FailedValidationException("title exceeds maximum lenght");
         } else if(title.length() <= 0) {
@@ -107,10 +103,6 @@ public class PlaySessionManager {
         else if(LocalDateTime.now().isAfter(playSession.getDate())){
             throw new FailedValidationException("The session cannot be in the past");
         }
-        //module - Module ID found in database - Done
-        //else if(lookupModuleID(playSession.getModule().getId()) == false){
-        //    return false;
-        //} 
         else{
             return true;//If validation is passed it will return true.
         }
