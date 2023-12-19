@@ -105,7 +105,7 @@ public class SecurityFilters {
 	@Order(1)
 	public SecurityFilterChain allowFilter(HttpSecurity http) throws Exception {
 		http
-		.securityMatcher("/css/**", "/login/**", "/calendar", "/conmar", "/about", "/contact", "/signup/**", "/", "/api/**", "/js/**", "/images/**", "/favicon.ico", "/error") /* All Http requests matching these paths will trigger this filter */
+		.securityMatcher("/css/**", "/login/**", "/calendar", "/conmar", "/profile/**", "/about", "/contact", "/signup/**", "/", "/api/**", "/js/**", "/images/**", "/favicon.ico", "/error") /* All Http requests matching these paths will trigger this filter */
 		.csrf((csrf) -> csrf.disable())
 		.authorizeHttpRequests((authorize) -> authorize /* All requests most be authorized */
 			.anyRequest().permitAll() /* Allow anything */
