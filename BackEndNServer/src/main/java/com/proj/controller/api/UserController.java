@@ -470,15 +470,12 @@ public class UserController {
       User userToChange = userManager.lookupAccount(username);
       switch (role) {
         case "MEMBER":
-          RoleAssigner.setRole(userToChange, new Member());
           userToChange.setMemberInfo(null);
           break;
         case "DM":
-          RoleAssigner.setRole(userToChange, new DM());
           userToChange.setDmInfo(null);
           break;
         case "ADMIN":
-          RoleAssigner.setRole(userToChange, new Admin());
           userToChange.setAdminInfo(null);
           break;
         default:
