@@ -328,7 +328,9 @@ public class PlaySession {
             throw new UserAlreadyAssignedException("Could not add '" + username + "' as they are already assigned");
         } else {
             this.users.add(username);
+            System.out.println("Users:"+ this.users);
             this.currentNumberOfPlayers = users.size();
+            System.out.println("current number of players:"+currentNumberOfPlayers);
         }
     }
 

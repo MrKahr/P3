@@ -56,12 +56,12 @@ async function joinEvent() {
     try {
         console.log("4");
         // fetch call on path to usercontroller
-        fetch("/api/playsession/play_session/assign?username="+currentUser+"&playSessionID="+eventID+"", {
+        await fetch("/api/playsession/play_session/assign?username="+currentUser+"&playSessionID="+eventID+"", {
             method: "POST",
             mode: "cors",
             cache: "no-cache"
         });
-
+        loadEventInfo();
     } catch (error) {
         console.log(error);
     }
@@ -73,6 +73,8 @@ async function loadEventInfo(){
     eventTitleDiv.innerHTML = eventInfo.title;
     let eventTimeDiv = document.getElementById("eventTimeContent");
     eventTimeDiv.innerHTML = eventInfo.date;
+    let eventPlayersDiv = document.getElementById("eventPlayersContent");
+    eventPlayersDiv.innerHTML = eventInfo.users;
     let eventPlayercountDiv = document.getElementById("eventPlayercountContent");
     eventPlayercountDiv.innerHTML = "Players: "+eventInfo.currentNumberOfPlayers+"/"+eventInfo.maxNumberOfPlayers+"";
     let eventDMDiv = document.getElementById("eventDMContent");

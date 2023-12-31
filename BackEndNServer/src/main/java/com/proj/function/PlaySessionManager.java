@@ -154,4 +154,14 @@ public class PlaySessionManager {
         playSessions.forEach(playSessionPeriod::add);
         return playSessionPeriod;
     }
+
+    public void assignUserToPlaySession(PlaySession playSession, String username) throws FailedValidationException{
+        if (validatePlaySession(playSession, true)){
+            playSession.assignUser(username);
+            playSessiondbHandler.save(playSession);
+        } else {
+            throw new FailedValidationException("Session assign error");
+        }
+    }
+
 }

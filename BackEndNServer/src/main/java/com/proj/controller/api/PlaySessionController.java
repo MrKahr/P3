@@ -136,14 +136,14 @@ public class PlaySessionController {
   }
 
   @PostMapping("/play_session/assign")
-  public String assignUser(@RequestParam String username, @RequestParam Integer playSessionID) {
+  public @ResponseBody String assignUser(@RequestParam String username, @RequestParam Integer playSessionID) {
     PlaySession playSession = playSessiondbHandler.findById(playSessionID);
-    playSession.assignUser(username);
-    return username + " added successfully.";
+    playSessionManager.assignUserToPlaySession(playSession, username);
+    return username + " assigned successfully.";
   }
 
   @PostMapping("/play_session/unassign")
-  public String unassignUser(@RequestParam String username, @RequestParam Integer playSessionID,
+  public @ResponseBody String unassignUser(@RequestParam String username, @RequestParam Integer playSessionID,
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     PlaySession playSession = playSessiondbHandler.findById(playSessionID);
     if (authentication.getName().equals(playSession.getDm()) || authentication.getName().equals(username)) { // Can only unassign yourself, unless you're the DM
