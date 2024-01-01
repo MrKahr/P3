@@ -64,3 +64,6 @@ tr:nth-child(even) {
 tr:nth-child(odd) {
     background-color: #ffffff;
 }
+.content{
+    min-height: 380px;
+}

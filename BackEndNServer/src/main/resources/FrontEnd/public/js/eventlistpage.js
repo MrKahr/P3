@@ -51,7 +51,10 @@ async function addEventsToTable() {
     events.forEach(event => {
         const tr = table.insertRow();
         const titleCell = tr.insertCell();
-        titleCell.textContent = event.title;
+        const link = document.createElement('a');
+        link.href = `/eventpage/${event.id}`;
+        link.textContent = event.title;
+        titleCell.appendChild(link);
 
         const [date,time] = event.date.split("T");
         const dateCell = tr.insertCell();
