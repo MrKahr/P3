@@ -60,6 +60,13 @@ h1 input[type="text"] {
 .createEventButton{
     text-align: center;
 }
+.joinEventButton{
+    text-align: center;
+}
+.editEventButton{
+    text-align: center;
+    display: none;
+}
 
 textarea {
     width: auto;

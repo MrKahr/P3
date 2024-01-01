@@ -7,6 +7,11 @@ async function getQueriedEventID() {
     return eventID;
 }
 
+async function linkEventPage() {
+    eventID = await getQueriedEventID();
+    window.location.href= "/eventeditpage/"+eventID;
+}
+
 
 
 async function getEventInfo() {
@@ -104,6 +109,12 @@ async function loadEventInfo(){
         joinEventButton.addEventListener('click',joinEvent);
         console.log("does not include");
     }
+
+    const editEventButton = document.getElementById("editEventButton");
+    if (eventInfo.dm == currentUser) {
+        editEventButton.style.display = "block";
+        editEventButton.addEventListener('click', linkEventPage);
+    }    
     
     let eventTitleDiv = document.getElementById("eventTitleContent");
     eventTitleDiv.innerHTML = eventInfo.title;
@@ -119,11 +130,11 @@ async function loadEventInfo(){
     eventLocationDiv.innerHTML = eventInfo.location;
     let eventDescriptionDiv = document.getElementById("eventDescriptionContent");
     eventDescriptionDiv.innerHTML = eventInfo.description;
-    console.log(eventInfo);
 }
 
 const joinEventButton = document.getElementById("joinEventButton");
 joinEventButton.addEventListener('click', joinEvent);
+
 
 document.addEventListener('DOMContentLoaded', loadEventInfo);
 document.addEventListener('DOMContentLoaded', () => { console.log("loaded")});

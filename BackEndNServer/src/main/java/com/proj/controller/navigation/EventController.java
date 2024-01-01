@@ -18,8 +18,8 @@ public class EventController{
         return "myEvents/eventcreatepage";
     }
     // event edit page
-    @GetMapping("/eventeditpage")
-    public String showEventEditPage(){
+    @GetMapping("/eventeditpage/{eventID}")
+    public String showEventEditPage(@PathVariable int eventID){
         return "myEvents/eventeditpage";
     }
     // // event page
