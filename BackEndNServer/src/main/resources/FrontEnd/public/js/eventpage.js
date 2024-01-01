@@ -48,24 +48,31 @@ async function getCurrentUser() {
 }
 
 async function joinEvent() {
-    console.log("1");
+    eventInfo = await getEventInfo();
     eventID = await getQueriedEventID();
-    console.log("2");
     let currentUser = await getCurrentUser();
-    console.log("3"+currentUser);
-    try {
-        console.log("4");
-        // fetch call on path to usercontroller
-        await fetch("/api/playsession/play_session/assign?username="+currentUser+"&playSessionID="+eventID+"", {
-            method: "POST",
-            mode: "cors",
-            cache: "no-cache"
-        });
-        loadEventInfo();
-    } catch (error) {
-        console.log(error);
+    if (eventInfo.currentNumberOfPlayers >= eventInfo.maxNumberOfPlayers) {
+        alert("Session is full");
+    } else if(eventInfo.dm == currentUser) {
+        alert("cannot sign up as player to your own session");
+    } else if(eventInfo.users.includes(currentUser)){
+        alert("Already Signed up to session");
+    }
+    else{
+        try {
+            // fetch call on path to usercontroller
+            await fetch("/api/playsession/play_session/assign?username="+currentUser+"&playSessionID="+eventID+"", {
+                method: "POST",
+                mode: "cors",
+                cache: "no-cache"
+            });
+            loadEventInfo();
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
+
 
 async function loadEventInfo(){
     eventInfo = await getEventInfo();
