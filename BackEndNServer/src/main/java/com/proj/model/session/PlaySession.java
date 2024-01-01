@@ -341,6 +341,7 @@ public class PlaySession {
     public void unassignUser(String username) throws NoSuchElementException{
         if (users.contains(username)) {
             users.remove(username);
+            this.currentNumberOfPlayers = users.size();
         } else {
             throw new NoSuchElementException("User '" + username + "' not found in playsession");
         }
