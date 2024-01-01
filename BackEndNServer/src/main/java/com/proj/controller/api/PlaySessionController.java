@@ -147,7 +147,7 @@ public class PlaySessionController {
       @CurrentSecurityContext(expression = "authentication") Authentication authentication) {
     PlaySession playSession = playSessiondbHandler.findById(playSessionID);
     if (authentication.getName().equals(playSession.getDm()) || authentication.getName().equals(username)) { // Can only unassign yourself, unless you're the DM
-      playSession.unassignUser(username);
+      playSessionManager.unassignUserFromPlaySession(playSession, username);
     }
     
     return username + " removed from session.";

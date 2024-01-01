@@ -163,5 +163,13 @@ public class PlaySessionManager {
             throw new FailedValidationException("Session assign error");
         }
     }
+    public void unassignUserFromPlaySession(PlaySession playSession, String username) throws FailedValidationException{
+        if (validatePlaySession(playSession, true)){
+            playSession.unassignUser(username);
+            playSessiondbHandler.save(playSession);
+        } else {
+            throw new FailedValidationException("Session assign error");
+        }
+    }
 
 }

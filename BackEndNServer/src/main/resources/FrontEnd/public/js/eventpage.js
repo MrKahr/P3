@@ -72,10 +72,39 @@ async function joinEvent() {
         }
     }
 }
-
+async function leaveEvent() {
+    eventID = await getQueriedEventID();
+    let currentUser = await getCurrentUser();
+    try {
+        // fetch call on path to usercontroller
+        await fetch("/api/playsession/play_session/unassign?username="+currentUser+"&playSessionID="+eventID+"", {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache"
+        });
+        loadEventInfo();
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 async function loadEventInfo(){
-    eventInfo = await getEventInfo();
+    console.log("load");
+    let joinEventButton = document.getElementById("joinEventButton");
+    let eventInfo = await getEventInfo();
+    let currentUser = await getCurrentUser();
+    if (eventInfo.users.includes(currentUser)) {
+        console.log("includes");
+        joinEventButton.innerHTML = '<input type="submit" value="Leave Event"></input>';
+        joinEventButton.removeEventListener('click',joinEvent);
+        joinEventButton.addEventListener('click',leaveEvent);
+    } else if(eventInfo.dm != currentUser){
+        joinEventButton.innerHTML = '<input type="submit" value="Join Event"></input>';
+        joinEventButton.removeEventListener('click',leaveEvent);
+        joinEventButton.addEventListener('click',joinEvent);
+        console.log("does not include");
+    }
+    
     let eventTitleDiv = document.getElementById("eventTitleContent");
     eventTitleDiv.innerHTML = eventInfo.title;
     let eventTimeDiv = document.getElementById("eventTimeContent");
@@ -94,7 +123,7 @@ async function loadEventInfo(){
 }
 
 const joinEventButton = document.getElementById("joinEventButton");
-joinEventButton.addEventListener('click', () => {joinEvent()})
+joinEventButton.addEventListener('click', joinEvent);
 
-document.addEventListener('DOMContentLoaded', () => { loadEventInfo()});
+document.addEventListener('DOMContentLoaded', loadEventInfo);
 document.addEventListener('DOMContentLoaded', () => { console.log("loaded")});
