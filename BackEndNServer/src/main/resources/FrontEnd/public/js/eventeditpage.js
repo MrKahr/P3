@@ -7,8 +7,6 @@ async function getQueriedEventID() {
     return eventID;
 }
 
-
-
 async function getEventInfo() {
     eventID = await getQueriedEventID();
     try {
@@ -30,6 +28,7 @@ async function getEventInfo() {
         console.log(error);
     }
 }
+
 async function getCurrentUser() {
     try {
         // fetch call on path to usercontroller
@@ -49,35 +48,29 @@ async function getCurrentUser() {
 
 async function loadEventInfo(){
     console.log("load");
-    let joinEventButton = document.getElementById("joinEventButton");
     let eventInfo = await getEventInfo();
     let currentUser = await getCurrentUser();
-    if (eventInfo.users.includes(currentUser)) {
-        console.log("includes");
-        joinEventButton.innerHTML = '<input type="submit" value="Leave Event"></input>';
-        joinEventButton.removeEventListener('click',joinEvent);
-        joinEventButton.addEventListener('click',leaveEvent);
-    } else if(eventInfo.dm != currentUser){
-        joinEventButton.innerHTML = '<input type="submit" value="Join Event"></input>';
-        joinEventButton.removeEventListener('click',leaveEvent);
-        joinEventButton.addEventListener('click',joinEvent);
-        console.log("does not include");
-    }
     
-    let eventTitleDiv = document.getElementById("eventTitleContent");
-    eventTitleDiv.innerHTML = eventInfo.title;
-    let eventTimeDiv = document.getElementById("eventTimeContent");
-    eventTimeDiv.innerHTML = eventInfo.date;
-    let eventPlayersDiv = document.getElementById("eventPlayersContent");
-    eventPlayersDiv.innerHTML = eventInfo.users;
-    let eventPlayercountDiv = document.getElementById("eventPlayercountContent");
-    eventPlayercountDiv.innerHTML = "Players: "+eventInfo.currentNumberOfPlayers+"/"+eventInfo.maxNumberOfPlayers+"";
-    let eventDMDiv = document.getElementById("eventDMContent");
-    eventDMDiv.innerHTML = eventInfo.dm;
-    let eventLocationDiv = document.getElementById("eventLocationContent");
-    eventLocationDiv.innerHTML = eventInfo.location;
-    let eventDescriptionDiv = document.getElementById("eventDescriptionContent");
-    eventDescriptionDiv.innerHTML = eventInfo.description;
+    let eventTitle = document.getElementById("eventTitle");
+    eventTitle.value = eventInfo.title;
+    let eventLocation = document.getElementById("eventLocation");
+    eventLocation.value = eventInfo.location;
+    let eventDescription = document.getElementById("descriptionText");
+    eventDescription.value = eventInfo.description;
+    let eventDate = document.getElementById("eventDate");
+    let eventTime = document.getElementById("eventTime");
+    let eventDateSplit = eventInfo.date.split("T");
+    eventTime.value = eventDateSplit.pop();
+    eventDate.value = eventDateSplit.pop();
+
+    
+    // let eventPlayers = document.getElementById("eventPlayers");
+    // eventPlayersDiv.innerHTML = eventInfo.users;
+    // let eventPlayercountDiv = document.getElementById("eventPlayercountContent");
+    // eventPlayercountDiv.innerHTML = "Players: "+eventInfo.currentNumberOfPlayers+"/"+eventInfo.maxNumberOfPlayers+"";
+    // let eventDMDiv = document.getElementById("eventDMContent");
+    // eventDMDiv.innerHTML = eventInfo.dm;
+    
     console.log(eventInfo);
 }
 
